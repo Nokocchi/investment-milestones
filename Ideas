@@ -4,3 +4,5 @@
 # Show approximate date that milestone will be reached, and how much time is left, and how old you will be
 # Add a "line" in the chart that shows where you are, maybe color some cells differently
 # Add milestones like "stop investing here and you will reach your fire number by age x/in x years"?
+# Could be cool with a vertical line showing months, linearly spaced, with the different milestones for that month shown next to it. Then you can visually see how far different milestones are apart, by the space between them. Maybe this should be a toggle, so that it can also be shown as a simply table instead. The timeline could also show each new year, your age at that year, how many percent of each month have you reached so far, etc.
+# Maybe a big wheel showing percentage of fire?

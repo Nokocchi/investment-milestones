@@ -8,10 +8,12 @@
     let tableData = [];
 
     for (const [networth, milestones] of data.entries()) {
-        let row = [];
-        row[0] = Math.round(networth).toLocaleString();
-        row[1] = milestones.join("<br>");
-        tableData.push(row);
+        for (const milestone of milestones) {
+            let row = [];
+            row[0] = Math.round(networth).toLocaleString();
+            row[1] = milestone;
+            tableData.push(row);
+        }
     }
 </script>
 
