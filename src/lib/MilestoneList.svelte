@@ -1,0 +1,18 @@
+<script lang="ts">
+    import { monthNames, monthsInAYear } from "./constants";
+    import Table from "./Table.svelte";
+
+    let { data } = $props();
+    const headers = ["Net worth", "Milestones"];
+
+    let tableData = [];
+
+    for (const [networth, milestones] of data.entries()) {
+        let row = [];
+        row[0] = Math.round(networth).toLocaleString();
+        row[1] = milestones.join("<br>");
+        tableData.push(row);
+    }
+</script>
+
+<Table {headers} {tableData} />
