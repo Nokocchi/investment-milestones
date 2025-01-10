@@ -180,7 +180,7 @@
 
     for (let interestPercentageOfMonthlySpending of milestones_interestPercentageOfMonthlySpending) {
       const interestPercentageDivided = interestPercentageOfMonthlySpending / 100;
-      const monthlyInterestNeeded = interestPercentageDivided * monthlyContribution;
+      const monthlyInterestNeeded = interestPercentageDivided * monthlyExpensesAfterTax;
       const needed = (monthlyInterestNeeded * monthsInAYear) / interest;
       const message = "Interest is " + interestPercentageOfMonthlySpending + "% of monthly budget";
       addToMap(netWorthMilestoneMap, needed, message);
