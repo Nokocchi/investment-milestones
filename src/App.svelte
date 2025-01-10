@@ -2,6 +2,7 @@
   import { monthsInAYear } from "./lib/constants";
   import Input from "./lib/Input.svelte";
   import MilestoneList from "./lib/MilestoneList.svelte";
+    import NetWorthByMonthTable from "./lib/MilestonesByMonthTable.svelte";
   import NetWorthList from "./lib/NetWorthList.svelte";
   import Table from "./lib/Table.svelte";
 
@@ -64,7 +65,7 @@
     let monthlyInterest = interest / monthsInAYear;
     let netWorthList = [principal];
     for (let i = 0; i < (numberOfYears + 1) * monthsInAYear; i++) {
-      let amount = (netWorthList[i] + mc) * (1 + monthlyInterest);
+      let amount = (netWorthList[i] * (1 + monthlyInterest)) + mc;
       netWorthList.push(amount);
     }
     return netWorthList;
@@ -113,6 +114,7 @@
   };
 
   const generateMilestonesList = (monthlyContribution: number, interest: number): Map<number, string[]> => {
+    monthlyContribution = +monthlyContribution;
     var netWorthMilestoneMap = new Map();
 
     for (let perHour of milestones_perHour) {
@@ -194,8 +196,35 @@
     return new Map([...netWorthMilestoneMap].sort((a, b) => a[0] - b[0]));
   };
 
-  let netWorthByMonthList = $derived(getNetWorthByMonth(currentNetWorth, interest, numberOfYears, monthlyContribution));
-  let netWorthMilestoneSortedMap = $derived(generateMilestonesList(monthlyContribution, interest));
+  let netWorthByMonthList: number[] = getNetWorthByMonth(0, interest, numberOfYears, monthlyContribution);
+  let netWorthMilestoneSortedMap: Map<number, string[]> = generateMilestonesList(monthlyContribution, interest);
+
+
+  const generateMonthMilestoneMap = (netWorthByMonthList: number[], netWorthMilestoneSortedMap: Map<number, string[]>) => {
+
+    var milestonesByMonth: string[][] = [...Array(netWorthByMonthList.length)].map((_) => Array());
+
+    let monthIndex = 0;
+    for (const [networthForMilestone, milestones] of netWorthMilestoneSortedMap) {
+
+      while (networthForMilestone > netWorthByMonthList[monthIndex]) {
+        monthIndex++;
+      }
+
+      if(netWorthByMonthList[monthIndex] === undefined){
+        break;
+      }
+
+      for (const milestone of milestones) {
+        milestonesByMonth[monthIndex].push(milestone);
+      }
+    }
+
+    return milestonesByMonth;
+  };
+
+
+  let milestonesByMonth: string[][] = generateMonthMilestoneMap(netWorthByMonthList, netWorthMilestoneSortedMap);
 </script>
 
 <main>
@@ -209,16 +238,7 @@
     <Input label="Current age" bind:value={currentAge} />
     <Input label="Currency" bind:value={currency} />
   </div>
-  <input type="checkbox" bind:checked={toggle} />
-  {#if toggle}
-    {#key netWorthByMonthList}
-      <NetWorthList {netWorthByMonthList} />
-    {/key}
-  {:else}
-    {#key netWorthMilestoneSortedMap}
-      <MilestoneList data={netWorthMilestoneSortedMap} />
-    {/key}
-  {/if}
+  <NetWorthByMonthTable {milestonesByMonth} {netWorthByMonthList} {currentAge} {currentNetWorth}/>
 </main>
 
 <style>

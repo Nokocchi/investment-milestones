@@ -1,11 +1,11 @@
 <script lang="ts">
-	let { headers, tableData } = $props();
+	let { tableHeaders, tableData } = $props();
 </script>
 
 <table class="blueTable">
 	<thead>
 		<tr>
-			{#each headers as columnHeading}
+			{#each tableHeaders as columnHeading}
 				<th>{columnHeading}</th>
 			{/each}
 		</tr>
@@ -58,7 +58,7 @@
 	table.blueTable thead th {
 		font-size: 15px;
 		font-weight: bold;
-		color: #ff0000;
+		color: #ffffff;
 		border-left: 2px solid #5085b4;
 	}
 	table.blueTable thead th:first-child {
