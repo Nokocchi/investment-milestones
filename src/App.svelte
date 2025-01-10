@@ -196,7 +196,7 @@
     return new Map([...netWorthMilestoneMap].sort((a, b) => a[0] - b[0]));
   };
 
-  let netWorthByMonthList: number[] = getNetWorthByMonth(0, interest, numberOfYears, monthlyContribution);
+  let netWorthByMonthList: number[] = getNetWorthByMonth(currentNetWorth, interest, numberOfYears, monthlyContribution);
   let netWorthMilestoneSortedMap: Map<number, string[]> = generateMilestonesList(monthlyContribution, interest);
 
 
@@ -238,7 +238,7 @@
     <Input label="Current age" bind:value={currentAge} />
     <Input label="Currency" bind:value={currency} />
   </div>
-  <NetWorthByMonthTable {milestonesByMonth} {netWorthByMonthList} {currentAge} {currentNetWorth}/>
+  <NetWorthByMonthTable {milestonesByMonth} {netWorthByMonthList} {currentAge} {currentNetWorth} {currency}/>
 </main>
 
 <style>

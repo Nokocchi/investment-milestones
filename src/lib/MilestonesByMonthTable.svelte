@@ -2,7 +2,7 @@
     import { monthNames, monthsInAYear } from "./constants";
     import Table from "./Table.svelte";
 
-    let { milestonesByMonth, netWorthByMonthList, currentAge, currentNetWorth } = $props();
+    let { milestonesByMonth, netWorthByMonthList, currentAge, currentNetWorth, currency } = $props();
     const milestoneDataHeaders = ["Milestones"];
 
     type MonthData = {
@@ -74,18 +74,42 @@
 </script>
 
 {#each data as year}
-    <p>---------------------------------------------------</p>
-    <p>Age: {year.yearHeader.age} | Year: {year.yearHeader.year} | Years from now: {year.yearHeader.yearsFromNow}</p>
-    <p>---------------------------------------------------</p>
+    <h1>Age: {year.yearHeader.age} | Year: {year.yearHeader.year} | Years from now: {year.yearHeader.yearsFromNow}</h1>
 
     {#each year.monthData as month}
+    <div class="month-data">
         {#if month.currentNetWorthLineAbove}
-        <p><b>HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE</b></p>
+            <p>
+                <b
+                    >HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE -
+                    HERE YOU ARE - HERE YOU ARE - HERE YOU ARE</b
+                >
+            </p>
         {/if}
-        <p>Month: {month.monthName}</p>
-        <p>Estimated net worth: {Math.round(month.estimatedNetWorth).toLocaleString()}</p>
-        {#if month.milestones.length > 0}
-            <Table tableHeaders={milestoneDataHeaders} tableData={month.milestones} />
-        {/if}
+        <div class="horizontal">
+            <div class="month-header">
+                <h2>{month.monthName}</h2>
+                <h4> * {Math.round(month.estimatedNetWorth).toLocaleString()} {currency}</h4>
+            </div>
+            {#if month.milestones.length > 0}
+                <Table tableHeaders={milestoneDataHeaders} tableData={month.milestones} />
+            {/if}
+        </div>
+    </div>
     {/each}
 {/each}
+
+<style>
+    .horizontal {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .month-header {
+        margin-right: 2rem;
+    }
+
+    .month-data {
+        margin-bottom: 2rem;
+    }
+</style>
