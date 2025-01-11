@@ -1,10 +1,16 @@
 <script lang="ts">
-  import { monthsInAYear, type Milestone } from "./lib/constants";
-  import Input from "./lib/Input.svelte";
-  import MilestoneList from "./lib/MilestoneList.svelte";
-    import NetWorthByMonthTable from "./lib/MilestonesByMonthTable.svelte";
-  import NetWorthList from "./lib/NetWorthList.svelte";
-  import Table from "./lib/Table.svelte";
+  import {
+    CURRENT_MONTH,
+    CURRENT_YEAR,
+    monthNames,
+    monthsInAYear,
+    ReachedState,
+    type Milestone,
+    type MonthData,
+    type YearData,
+    type YearHeader,
+  } from "./lib/constants";
+  import MilestonesByMonthTable from "./lib/MilestonesByMonthTable.svelte";
 
   let headers = [
     "NET WORTH",
@@ -36,8 +42,8 @@
 
   let toggle = $state(false);
   const workHoursPerYear = 46 * 40; // 46 work weeeks, 40 hours per week
-  let monthlyContribution: number = $state(16000);
-  let currentAge: number = $state(28);
+  let monthlyContribution: number = $state(25000);
+  let currentAge: number = $state(29);
   let currency = $state("SEK");
   let currentNetWorth = $state(448000);
   let interestPercent = $state(7);
@@ -65,7 +71,7 @@
     let monthlyInterest = interest / monthsInAYear;
     let netWorthList = [principal];
     for (let i = 0; i < (numberOfYears + 1) * monthsInAYear; i++) {
-      let amount = (netWorthList[i] * (1 + monthlyInterest)) + mc;
+      let amount = netWorthList[i] * (1 + monthlyInterest) + mc;
       netWorthList.push(amount);
     }
     return netWorthList;
@@ -111,6 +117,27 @@
     } else {
       mapToAddTo.get(networthNeeded)?.push(message);
     }
+  };
+
+  const getNetWorthByMonthInPast = (currentNetWorth: number, interest: number, monthlyContribution: number): number[] => {
+    let pastNetWorthList: number[] = [];
+    let monthlyInterest = interest / monthsInAYear;
+
+    if (currentNetWorth == 0) {
+      return pastNetWorthList;
+    }
+
+    let nw = currentNetWorth;
+    while (nw > 0) {
+      let pastNetWorth = (nw - monthlyContribution) / (1 + monthlyInterest);
+      if (pastNetWorth < 0) {
+        pastNetWorth = 0;
+      }
+      nw = pastNetWorth;
+      pastNetWorthList.push(pastNetWorth);
+    }
+
+    return pastNetWorthList.reverse();
   };
 
   const generateMilestonesList = (monthlyContribution: number, interest: number): Map<number, string[]> => {
@@ -196,39 +223,114 @@
     return new Map([...netWorthMilestoneMap].sort((a, b) => a[0] - b[0]));
   };
 
-  let netWorthByMonthList: number[] = getNetWorthByMonth(0, interest, numberOfYears, monthlyContribution);
+  let netWorthByMonthListInPast: number[] = getNetWorthByMonthInPast(currentNetWorth, interest, monthlyContribution);
+  let netWorthByMonthListNowAndFuture: number[] = getNetWorthByMonth(currentNetWorth, interest, numberOfYears, monthlyContribution);
+
   let netWorthMilestoneSortedMap: Map<number, string[]> = generateMilestonesList(monthlyContribution, interest);
 
+  // Certified mega monster mayhem method :(
+  const generateTimelineData = (
+    netWorthByMonthListInPast: number[],
+    netWorthByMonthListNowAndFuture: number[],
+    netWorthMilestoneSortedMap: Map<number, string[]>,
+  ): YearData[] => {
+    let currentNetWorth: number = netWorthByMonthListNowAndFuture[0];
+    let netWorthByMonthListTotal: number[] = netWorthByMonthListInPast.concat(netWorthByMonthListNowAndFuture);
+    var milestonesByMonth: Milestone[][] = [...Array(netWorthByMonthListTotal.length)].map((_) => Array());
+    const currentMonthIndex = netWorthByMonthListInPast.length;
 
-  const generateMonthMilestoneMap = (netWorthByMonthList: number[], netWorthMilestoneSortedMap: Map<number, string[]>) => {
+    let yearIndex = 0;
+    const numOfYearsAgoDataStarts = 0 - Math.ceil(currentMonthIndex / monthsInAYear);
 
-    var milestonesByMonth: Milestone[][] = [...Array(netWorthByMonthList.length)].map((_) => Array());
+    let timelineData: YearData[] = [];
 
-    let monthIndex = 0;
-    for (const [networthForMilestone, milestones] of netWorthMilestoneSortedMap) {
+    for (const [i, networthAtThisMonth] of netWorthByMonthListTotal.entries()) {
+      let monthNumber;
 
-      while (networthForMilestone > netWorthByMonthList[monthIndex]) {
-        monthIndex++;
+      if (i < currentMonthIndex) {
+        let monthsAgo = currentMonthIndex - i;
+        let monthsAgoAdjusted = monthsAgo % 12;
+        // Going 9 months back is the same as going 12 - 9 months forward.
+        monthNumber = CURRENT_MONTH + ((monthsInAYear - monthsAgoAdjusted) % monthsInAYear);
+      } else {
+        let monthsInTheFuture = CURRENT_MONTH + (i - currentMonthIndex);
+        monthNumber = monthsInTheFuture % 12;
       }
 
-      if(netWorthByMonthList[monthIndex] === undefined){
-        break;
+      let monthReachedState: ReachedState;
+      if (networthAtThisMonth <= currentNetWorth) {
+        if (netWorthByMonthListTotal[i + 1] > currentNetWorth) {
+          monthReachedState = ReachedState.HERE;
+        } else {
+          monthReachedState = ReachedState.REACHED;
+        }
+      } else {
+        monthReachedState = ReachedState.IN_FUTURE;
       }
 
-      for (const milestone of milestones) {
-        milestonesByMonth[monthIndex].push({neededNetWorth: networthForMilestone, message: milestone});
+      let milestones: Milestone[] = [];
+      for (const [neededNetworth, milestoneMessages] of [...netWorthMilestoneSortedMap.entries()]) {
+        if (neededNetworth > networthAtThisMonth) {
+          break;
+        }
+
+        for (const milestoneMessage of milestoneMessages) {
+          let milestone: Milestone = {
+            neededNetWorth: neededNetworth,
+            message: milestoneMessage,
+          };
+          milestones.push(milestone);
+          netWorthMilestoneSortedMap.delete(neededNetworth);
+        }
+      }
+
+      let monthData: MonthData = {
+        estimatedNetWorth: networthAtThisMonth,
+        monthName: monthNames[monthNumber],
+        milestones: milestones,
+        reachedState: monthReachedState,
+      };
+
+      // It's either the first month at all, or January. Add a new year
+      if (i == 0 || monthNumber == 0) {
+        const yearOffset = numOfYearsAgoDataStarts + yearIndex;
+        let year = CURRENT_YEAR + yearOffset;
+
+        const yearReachedState = year <= CURRENT_YEAR ? ReachedState.REACHED : ReachedState.IN_FUTURE;
+
+        let yearHeader: YearHeader = {
+          year: year,
+          age: currentAge + yearOffset,
+          reachedState: yearReachedState,
+        };
+
+        let yearData = {
+          yearHeader: yearHeader,
+          monthData: [monthData],
+        };
+        timelineData[yearIndex] = yearData;
+      } else {
+        timelineData[yearIndex].monthData.push(monthData);
+      }
+
+      // Finished December, increasing year index
+      if (monthNumber == 11) {
+        yearIndex++;
       }
     }
 
-    return milestonesByMonth;
+    return timelineData;
   };
 
-
-  let milestonesByMonth: Milestone[][] = generateMonthMilestoneMap(netWorthByMonthList, netWorthMilestoneSortedMap);
+  let timelineData: YearData[] = generateTimelineData(
+    netWorthByMonthListInPast,
+    netWorthByMonthListNowAndFuture,
+    netWorthMilestoneSortedMap,
+  );
 </script>
 
 <main>
-  <NetWorthByMonthTable {milestonesByMonth} {netWorthByMonthList} {currentAge} {currentNetWorth} {currency}/>
+  <MilestonesByMonthTable {timelineData} />
 </main>
 
 <style>

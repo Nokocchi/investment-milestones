@@ -31,7 +31,7 @@ export type MonthData = {
 export type YearHeader = {
     year: number;
     age: number;
-    yearsFromNow: number;
+    reachedState: ReachedState
 };
 
 export type YearData = {
@@ -43,3 +43,7 @@ export type Milestone = {
     neededNetWorth: number;
     message: string;
 }
+
+const currentTime = new Date();
+export const CURRENT_MONTH = currentTime.getMonth();
+export const CURRENT_YEAR = currentTime.getFullYear();

@@ -34,6 +34,7 @@
   }
 
   .estimated-net-worth {
+    margin-left: 25px;
     width: 150px;
   }
 </style>
