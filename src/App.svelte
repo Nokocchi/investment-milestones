@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { monthsInAYear } from "./lib/constants";
+  import { monthsInAYear, type Milestone } from "./lib/constants";
   import Input from "./lib/Input.svelte";
   import MilestoneList from "./lib/MilestoneList.svelte";
     import NetWorthByMonthTable from "./lib/MilestonesByMonthTable.svelte";
@@ -196,13 +196,13 @@
     return new Map([...netWorthMilestoneMap].sort((a, b) => a[0] - b[0]));
   };
 
-  let netWorthByMonthList: number[] = getNetWorthByMonth(currentNetWorth, interest, numberOfYears, monthlyContribution);
+  let netWorthByMonthList: number[] = getNetWorthByMonth(0, interest, numberOfYears, monthlyContribution);
   let netWorthMilestoneSortedMap: Map<number, string[]> = generateMilestonesList(monthlyContribution, interest);
 
 
   const generateMonthMilestoneMap = (netWorthByMonthList: number[], netWorthMilestoneSortedMap: Map<number, string[]>) => {
 
-    var milestonesByMonth: string[][] = [...Array(netWorthByMonthList.length)].map((_) => Array());
+    var milestonesByMonth: Milestone[][] = [...Array(netWorthByMonthList.length)].map((_) => Array());
 
     let monthIndex = 0;
     for (const [networthForMilestone, milestones] of netWorthMilestoneSortedMap) {
@@ -216,7 +216,7 @@
       }
 
       for (const milestone of milestones) {
-        milestonesByMonth[monthIndex].push(milestone);
+        milestonesByMonth[monthIndex].push({neededNetWorth: networthForMilestone, message: milestone});
       }
     }
 
@@ -224,20 +224,10 @@
   };
 
 
-  let milestonesByMonth: string[][] = generateMonthMilestoneMap(netWorthByMonthList, netWorthMilestoneSortedMap);
+  let milestonesByMonth: Milestone[][] = generateMonthMilestoneMap(netWorthByMonthList, netWorthMilestoneSortedMap);
 </script>
 
 <main>
-  <div class="input-container">
-    <Input label="Monthly Contribution" bind:value={monthlyContribution} />
-    <Input label="Number of years to invest" bind:value={numberOfYears} />
-    <Input label="Current net worth" bind:value={currentNetWorth} />
-    <Input label="Annual interest %" bind:value={interestPercent} />
-    <Input label="Safe withdrawal rate %" bind:value={safeWithdrawalRatePercentage} />
-    <Input label="Monthly expenses after tax (excluding current monthly contribution)" bind:value={monthlyExpensesAfterTax} />
-    <Input label="Current age" bind:value={currentAge} />
-    <Input label="Currency" bind:value={currency} />
-  </div>
   <NetWorthByMonthTable {milestonesByMonth} {netWorthByMonthList} {currentAge} {currentNetWorth} {currency}/>
 </main>
 

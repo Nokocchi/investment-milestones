@@ -1,27 +1,15 @@
 <script lang="ts">
-    import { monthNames, monthsInAYear } from "./constants";
+    import { monthNames, monthsInAYear, ReachedState, type Milestone, type MonthData, type YearData, type YearHeader } from "./constants";
     import Table from "./Table.svelte";
+    import Month from "./timeline/Month.svelte";
 
-    let { milestonesByMonth, netWorthByMonthList, currentAge, currentNetWorth, currency } = $props();
+    let { milestonesByMonth, netWorthByMonthList, currentAge, currentNetWorth }: {
+        milestonesByMonth: Milestone[][],
+        netWorthByMonthList: number[],
+        currentAge: number,
+        currentNetWorth: number
+    } = $props();
     const milestoneDataHeaders = ["Milestones"];
-
-    type MonthData = {
-        currentNetWorthLineAbove: boolean;
-        monthName: string;
-        estimatedNetWorth: number;
-        milestones: string[][];
-    };
-
-    type YearHeader = {
-        year: number;
-        age: number;
-        yearsFromNow: number;
-    };
-
-    type YearData = {
-        yearHeader: YearHeader;
-        monthData: MonthData[];
-    };
 
     // TODO: a "required net worth" for each milestone
     let passedCurrentNetworth = false;
@@ -33,23 +21,22 @@
         let yearsFromNow = Math.floor(monthNumber / 12);
         let year = 2025 + yearsFromNow;
         let monthName = monthNames[monthNumberInYear];
-        let lineAbove = false;
-        if (!passedCurrentNetworth && networthAtThisTime > currentNetWorth) {
-            lineAbove = true;
-            passedCurrentNetworth = true;
-        }
+        let reachedState: ReachedState;
 
-        const milestones: string[][] = [];
-        for (const milestone of milestonesByMonth[monthNumber]) {
-            milestones.push([milestone]);
+        if (networthAtThisTime < currentNetWorth) {
+            reachedState = ReachedState.REACHED;
+        } else if (!passedCurrentNetworth) {
+            reachedState = ReachedState.HERE;
+            passedCurrentNetworth = true;
+        } else {
+            reachedState = ReachedState.IN_FUTURE;
         }
-        console.log(milestones);
 
         let monthData: MonthData = {
-            currentNetWorthLineAbove: lineAbove,
+            reachedState: reachedState,
             monthName: monthName,
             estimatedNetWorth: networthAtThisTime,
-            milestones: milestones,
+            milestones: milestonesByMonth[monthNumber],
         };
 
         if (monthNumberInYear == 0) {
@@ -70,32 +57,13 @@
         data[yearsFromNow].monthData.push(monthData);
     }
 
-    console.log(data);
 </script>
 
 {#each data as year}
     <h1>Age: {year.yearHeader.age} | Year: {year.yearHeader.year} | Years from now: {year.yearHeader.yearsFromNow}</h1>
 
     {#each year.monthData as month}
-    <div class="month-data">
-        {#if month.currentNetWorthLineAbove}
-            <p>
-                <b
-                    >HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE - HERE YOU ARE -
-                    HERE YOU ARE - HERE YOU ARE - HERE YOU ARE</b
-                >
-            </p>
-        {/if}
-        <div class="horizontal">
-            <div class="month-header">
-                <h2>{month.monthName}</h2>
-                <h4> * {Math.round(month.estimatedNetWorth).toLocaleString()} {currency}</h4>
-            </div>
-            {#if month.milestones.length > 0}
-                <Table tableHeaders={milestoneDataHeaders} tableData={month.milestones} />
-            {/if}
-        </div>
-    </div>
+        <Month {month} />
     {/each}
 {/each}
 
