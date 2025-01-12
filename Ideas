@@ -1,4 +1,3 @@
-
 # Show milestones by color on graph, with net worth as function of months of investment
 # Show percentage at each milestone: "How close are you to this milestone/net worth" in terms of time, not money
 # Show approximate date that milestone will be reached, and how much time is left, and how old you will be
@@ -6,3 +5,5 @@
 # Maybe a big wheel showing percentage of fire?
 # Options menu for inputs.
 # Options for different data views?
+# Add option for how many months ago you started investing, which is then used to scale the simulated past data accordingly. This should also automatically make the percentages (x% of this goal reached, etc.) correct.
+# Add option to track specific milestones? How can I make important milestones stand out? 

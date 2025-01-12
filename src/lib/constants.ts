@@ -25,6 +25,8 @@ export type MonthData = {
     reachedState: ReachedState;
     monthName: string;
     estimatedNetWorth: number;
+    yearsAndMonthsUntil: string;
+    percentageOfReachingThis: number;
     milestones: Milestone[];
 };
 

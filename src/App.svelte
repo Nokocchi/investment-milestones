@@ -42,8 +42,8 @@
 
   let toggle = $state(false);
   const workHoursPerYear = 46 * 40; // 46 work weeeks, 40 hours per week
-  let monthlyContribution: number = $state(25000);
-  let currentAge: number = $state(29);
+  let monthlyContribution: number = $state(16000);
+  let currentAge: number = $state(28);
   let currency = $state("SEK");
   let currentNetWorth = $state(448000);
   let interestPercent = $state(7);
@@ -246,6 +246,7 @@
 
     for (const [i, networthAtThisMonth] of netWorthByMonthListTotal.entries()) {
       let monthNumber;
+      let yearsAndMonthsUntil = "";
 
       if (i < currentMonthIndex) {
         let monthsAgo = currentMonthIndex - i;
@@ -254,7 +255,16 @@
         monthNumber = CURRENT_MONTH + ((monthsInAYear - monthsAgoAdjusted) % monthsInAYear);
       } else {
         let monthsInTheFuture = CURRENT_MONTH + (i - currentMonthIndex);
-        monthNumber = monthsInTheFuture % 12;
+        let monthsInTheFutureAdjusted = monthsInTheFuture % 12;
+        monthNumber = CURRENT_MONTH + monthsInTheFutureAdjusted;
+        let yearsInTheFuture = Math.floor(monthsInTheFuture / monthsInAYear);
+
+        if (i > currentMonthIndex) {
+          if( yearsInTheFuture > 0){
+            yearsAndMonthsUntil += yearsInTheFuture + " years, ";
+          }
+          yearsAndMonthsUntil += monthsInTheFutureAdjusted + " months";
+        }
       }
 
       let monthReachedState: ReachedState;
@@ -289,6 +299,8 @@
         monthName: monthNames[monthNumber],
         milestones: milestones,
         reachedState: monthReachedState,
+        yearsAndMonthsUntil: yearsAndMonthsUntil,
+        percentageOfReachingThis: Math.min(100, (currentMonthIndex / i) * 100),
       };
 
       // It's either the first month at all, or January. Add a new year

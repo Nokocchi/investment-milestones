@@ -8,6 +8,7 @@
   for (const milestone of month.milestones) {
     tableData.push([Math.round(milestone.neededNetWorth).toLocaleString() + " SEK", milestone.message]);
   }
+  
 </script>
 
 <div class="month-wrapper">
@@ -17,6 +18,12 @@
   <TimelineSegment reachedState={month.reachedState} />
   <div class="estimated-net-worth">
     <h4>{Math.round(month.estimatedNetWorth).toLocaleString()} SEK</h4>
+  </div>
+  <div class="estimated-net-worth">
+    <h4>{Math.round(month.percentageOfReachingThis)}%</h4>
+  </div>
+  <div class="estimated-net-worth">
+    <h4>{month.yearsAndMonthsUntil}</h4>
   </div>
   {#if month.milestones.length > 0}
     <Table tableHeaders={["Needed net worth", "Milestones"]} {tableData} />
