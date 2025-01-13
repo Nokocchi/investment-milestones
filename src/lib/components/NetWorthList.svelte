@@ -1,5 +1,7 @@
 <script lang="ts">
-    import { monthNames, monthsInAYear } from "./constants";
+    import { monthNames, monthsInAYear } from "../shared/constants";
+
+
     import Table from "./Table.svelte";
 
     let { netWorthByMonthList } = $props();
@@ -25,4 +27,4 @@
     }
 </script>
 
-<Table {headers} {tableData}/>
+<Table tableHeaders={headers} {tableData}/>

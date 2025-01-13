@@ -1,12 +1,13 @@
 <script lang="ts">
-  import type { MonthData, ReachedState } from "../constants";
-  import Table from "../Table.svelte";
+  import type { MonthData, ReachedState } from "../shared/constants";
+  import Table from "../components/Table.svelte";
   import TimelineSegment from "./TimelineSegment.svelte";
+    import { options } from "../shared/shared.svelte";
 
   let { month }: { month: MonthData } = $props();
   let tableData: string[][] = [];
   for (const milestone of month.milestones) {
-    tableData.push([Math.round(milestone.neededNetWorth).toLocaleString() + " SEK", milestone.message]);
+    tableData.push([Math.round(milestone.neededNetWorth).toLocaleString() + " " + options.currency, milestone.message]);
   }
   
 </script>
@@ -17,7 +18,10 @@
   </div>
   <TimelineSegment reachedState={month.reachedState} />
   <div class="estimated-net-worth">
-    <h4>{Math.round(month.estimatedNetWorth).toLocaleString()} SEK</h4>
+    <h4>{Math.round(month.estimatedNetWorth).toLocaleString()} {options.currency}</h4>
+  </div>
+  <div class="estimated-net-worth">
+    <h4>+{Math.round(month.monthlyGrowth).toLocaleString()} {options.currency}</h4>
   </div>
   <div class="estimated-net-worth">
     <h4>{Math.round(month.percentageOfReachingThis)}%</h4>

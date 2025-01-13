@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { ReachedState } from "../constants";
+    import { ReachedState } from "../shared/constants";
 
     let { reachedState } = $props();
 </script>

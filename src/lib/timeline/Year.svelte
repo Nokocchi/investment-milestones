@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CURRENT_YEAR, type YearHeader } from "../constants";
+  import { CURRENT_YEAR, type YearHeader } from "../shared/constants";
     import TimelineSegment from "./TimelineSegment.svelte";
 
   let { yearHeader }: { yearHeader: YearHeader } = $props();

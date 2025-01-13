@@ -1,9 +1,11 @@
+# A dashboard at the top showing statistics. Age, net worth, monthly contribution, been investing for how long, monthly expenses, wheel/percentage towards FIRE
+
+# New milestones:
+# - Percentage of your hourly rate
+
 # Show milestones by color on graph, with net worth as function of months of investment
-# Show percentage at each milestone: "How close are you to this milestone/net worth" in terms of time, not money
-# Show approximate date that milestone will be reached, and how much time is left, and how old you will be
 # Add milestones like "stop investing here and you will reach your fire number by age x/in x years"?
-# Maybe a big wheel showing percentage of fire?
-# Options menu for inputs.
 # Options for different data views?
 # Add option for how many months ago you started investing, which is then used to scale the simulated past data accordingly. This should also automatically make the percentages (x% of this goal reached, etc.) correct.
 # Add option to track specific milestones? How can I make important milestones stand out? 
+# Turn it into a whole page of various visualized investment things. Like, a graph showing "if you invested x every month from now, how much would you have compared to if you started y years ago? What if you had a principal of z in both scenarios? How much would somebody have to invest if they want to catch up to you in x years, and they started investing y years later than you?"
