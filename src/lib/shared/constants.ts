@@ -1,4 +1,4 @@
-export const monthNames = [
+export const monthNamesFull = [
     "January",
     "February",
     "March",
@@ -11,6 +11,21 @@ export const monthNames = [
     "October",
     "November",
     "December",
+];
+
+export const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
 ];
 
 export const monthsInAYear = monthNames.length;

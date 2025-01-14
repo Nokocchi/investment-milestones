@@ -10,7 +10,9 @@
 <style>
     .timeline-segment {
       width: 20px;
-      border: 3px solid white;
+      border: 1px solid white;
+      box-sizing: border-box;
+      height: 100%;
     }
 
     .REACHED {

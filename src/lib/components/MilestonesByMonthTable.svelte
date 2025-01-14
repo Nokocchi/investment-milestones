@@ -276,26 +276,20 @@
 
 {#key timelineData}
     <div class="page-container">
-        {#each timelineData as year}
-            <Year yearHeader={year.yearHeader} />
-            {#each year.monthData as month}
-                <Month {month} />
-            {/each}
+        {#each timelineData as yearData}
+            <Year {yearData} />
         {/each}
     </div>
 {/key}
 
 <style>
-    .horizontal {
-        display: flex;
-        flex-direction: row;
-    }
-
-    .month-header {
-        margin-right: 2rem;
-    }
-
-    .month-data {
-        margin-bottom: 2rem;
+    .page-container {
+        max-width: min(100%, 1280px);
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
     }
 </style>
