@@ -35,7 +35,7 @@
     <div class="month-column months-until row-padding">
       {month.yearsAndMonthsUntil}
     </div>
-    <div class={["milestone-indicator", { noMilestones }]}>WOW</div>
+    <div class={["milestone-indicator", { noMilestones }]}></div>
   </div>
   <div class={["milestones", { hideMilestones }]}>
     {#if month.milestones.length > 0}
@@ -108,7 +108,10 @@
 
   .milestone-indicator {
     position: absolute;
-    top: 0;
-    right: 0;
+    width: 5px;
+    height: 5px;
+    background-color: green;
+    top: 10px;
+    right: 10px;
   }
 </style>

@@ -221,7 +221,7 @@
                 estimatedNetWorth: networthAtThisMonth,
                 monthName: monthNames[monthNumber],
                 milestones: milestones,
-                monthlyGrowth: networthNextMonth - networthAtThisMonth,
+                monthlyGrowth: Math.max(0, (networthNextMonth - networthAtThisMonth) - options.monthlyContribution),
                 reachedState: monthReachedState,
                 yearsAndMonthsUntil: yearsAndMonthsUntil,
                 percentageOfReachingThis: Math.min(100, (currentMonthIndex / i) * 100),
@@ -283,14 +283,5 @@
 {/key}
 
 <style>
-    .page-container {
-        max-width: 1280px;
-        width: 100%;
-        height: 100%;
-        margin: 0 auto;
-        text-align: center;
-        position: relative;
-        padding: 0.5rem;
-        box-sizing: border-box;
-    }
+
 </style>

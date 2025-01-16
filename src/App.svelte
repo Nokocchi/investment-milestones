@@ -5,7 +5,7 @@
 </script>
 
 <main>
-  
+  <OptionsPanel/>
   <MilestonesByMonthTable />
 </main>
 
