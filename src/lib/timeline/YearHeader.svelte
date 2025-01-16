@@ -11,6 +11,7 @@
     <div class="year header-column row-padding">
         {yearHeader.year}
     </div>
+       
     <div class="timeline-segment">
         <TimelineSegment reachedState={yearHeader.reachedState} />
     </div>
@@ -26,24 +27,24 @@
     .year-wrapper {
         display: flex;
         flex-direction: row;
-        border: 2px solid blue;
+        border: 1px solid blue;
         box-sizing: border-box;
-        gap: 0.5rem;
     }
 
     .year {
-        flex-basis: 6rem;
-        font-size: 2rem;
+        flex: 1 1 10%;
+    }
+
+    .timeline-segment {
+        flex: 1 1 5%;
     }
 
     .estimated-age {
-        flex-basis: 12rem;
-        font-size: 2rem;
+        flex: 1 1 45%;
     }
 
     .estimated-year {
-        flex-basis: 20rem;
-        font-size: 2rem;
+        flex: 1 1 40%;
     }
 
     .row-padding {

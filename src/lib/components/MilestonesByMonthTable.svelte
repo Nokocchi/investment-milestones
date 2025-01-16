@@ -284,12 +284,13 @@
 
 <style>
     .page-container {
-        max-width: min(100%, 1280px);
+        max-width: 1280px;
         width: 100%;
         height: 100%;
         margin: 0 auto;
-        padding: 2rem;
         text-align: center;
         position: relative;
+        padding: 0.5rem;
+        box-sizing: border-box;
     }
 </style>

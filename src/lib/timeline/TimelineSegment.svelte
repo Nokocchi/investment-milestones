@@ -9,7 +9,6 @@
 
 <style>
     .timeline-segment {
-      width: 20px;
       border: 1px solid white;
       box-sizing: border-box;
       height: 100%;
