@@ -8,18 +8,21 @@
 </script>
 
 <div class="year-wrapper">
-    <div class="year header-column row-padding">
-        {yearHeader.year}
+    <div class="left header-column">
+        <div class="year row-padding">
+            {yearHeader.year}
+        </div>
+        <div class="timeline-segment">
+            <TimelineSegment reachedState={yearHeader.reachedState} />
+        </div>
     </div>
-       
-    <div class="timeline-segment">
-        <TimelineSegment reachedState={yearHeader.reachedState} />
-    </div>
-    <div class="estimated-age header-column row-padding">
-        Age: {yearHeader.age}
-    </div>
-    <div class="estimated-year header-column row-padding">
-        {yearsFromNow == 0 ? "This year" : Math.abs(yearsFromNow) + " " + yearText}
+    <div class="right">
+        <div class="estimated-age header-column">
+            Age: {yearHeader.age}
+        </div>
+        <div class="estimated-year header-column">
+            {yearsFromNow == 0 ? "This year" : Math.abs(yearsFromNow) + " " + yearText}
+        </div>
     </div>
 </div>
 
@@ -31,12 +34,24 @@
         box-sizing: border-box;
     }
 
+    .left {
+        display: flex;
+        flex-direction: row;
+        flex: 1 1 20%;
+    }
+
+    .right {
+        display: flex;
+        flex-direction: row;
+        flex: 1 1 80%;
+    }
+
     .year {
-        flex: 1 1 10%;
+        flex: 1 1 80%;
     }
 
     .timeline-segment {
-        flex: 1 1 5%;
+        flex: 1 1 20%;
     }
 
     .estimated-age {
@@ -47,12 +62,12 @@
         flex: 1 1 40%;
     }
 
-    .row-padding {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-    }
-
     .header-column {
         align-self: center;
     }
+
+    .row-padding {
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+  }
 </style>

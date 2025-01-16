@@ -13,29 +13,33 @@
   let hideMilestones = $state(true);
 </script>
 
-<div class="month-wrapper" onclick={() => hideMilestones = !hideMilestones}>
+<div class="month-wrapper" onclick={() => (hideMilestones = !hideMilestones)}>
   <div class="month-header-wrapper">
-    <div class="month-column month-name">
-      {month.monthName}
+    <div class="left">
+      <div class="month-column month-name">
+        {month.monthName}
+      </div>
+      <div class="timeline-segment">
+        <TimelineSegment reachedState={month.reachedState} />
+      </div>
     </div>
-    <div class="timeline-segment">
-      <TimelineSegment reachedState={month.reachedState} />
+    <div class="right">
+      <div class="month-column estimated-net-worth row-padding">
+        {Math.round(month.estimatedNetWorth).toLocaleString()}
+        {options.currency}
+      </div>
+      <div class="month-column monthly-growth row-padding">
+        +{Math.round(month.monthlyGrowth).toLocaleString()}
+        {options.currency}
+      </div>
+      <div class="month-column goal-percentage row-padding">
+        {Math.round(month.percentageOfReachingThis)}%
+      </div>
+      <div class="month-column months-until row-padding">
+        {month.yearsAndMonthsUntil}
+      </div>
+      <div class={["milestone-indicator", { noMilestones }]}></div>
     </div>
-    <div class="month-column estimated-net-worth row-padding">
-      {Math.round(month.estimatedNetWorth).toLocaleString()}
-      {options.currency}
-    </div>
-    <div class="month-column monthly-growth row-padding">
-      +{Math.round(month.monthlyGrowth).toLocaleString()}
-      {options.currency}
-    </div>
-    <div class="month-column goal-percentage row-padding">
-      {Math.round(month.percentageOfReachingThis)}%
-    </div>
-    <div class="month-column months-until row-padding">
-      {month.yearsAndMonthsUntil}
-    </div>
-    <div class={["milestone-indicator", { noMilestones }]}></div>
   </div>
   <div class={["milestones", { hideMilestones }]}>
     {#if month.milestones.length > 0}
@@ -54,16 +58,28 @@
     display: flex;
     flex-direction: row;
     border: 1px solid white;
+  }
+
+  .left {
+    flex: 1 1 20%;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .right {
+    flex: 1 1 80%;
+    display: flex;
+    flex-direction: row;
     position: relative;
     justify-content: space-between;
   }
 
   .month-name {
-    flex: 1 1 10%;
+    flex: 1 1 80%;
   }
 
   .timeline-segment {
-    flex: 1 1 5%;
+    flex: 1 1 20%;
   }
 
   .estimated-net-worth {
@@ -87,10 +103,6 @@
     display: none;
   }
 
-  .milestones {
-
-  }
-
   .hideMilestones {
     display: none;
   }
@@ -100,10 +112,8 @@
   }
 
   .row-padding {
-    /*
     padding-bottom: 1rem;
     padding-top: 1rem;
-    */
   }
 
   .milestone-indicator {
