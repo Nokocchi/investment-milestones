@@ -1,7 +1,6 @@
 <script lang="ts">
-    import { InputType } from "../shared/constants";
+
     import { options } from "../shared/shared.svelte";
-    import Input from "./Input.svelte";
 
     let toggle = $state(true);
 </script>
@@ -11,20 +10,43 @@
     {#if toggle}
         <div class="options-panel">
             <div class="column">
-                <Input label="Monthly Contribution" inputType={InputType.number} bind:value={options.monthlyContribution} />
-                <Input label="Number of years to invest" inputType={InputType.number} bind:value={options.numberOfYears} />
-                <Input label="Current net worth" inputType={InputType.number} bind:value={options.currentNetWorth} />
-                <Input label="Annual interest %" inputType={InputType.number} bind:value={options.interestPercent} />
+                <label class="input-with-label"
+                    >Monthly Contribution
+                    <input type="number" bind:value={options.monthlyContribution}/>
+                </label>
+                <label class="input-with-label">
+                    Number of years to invest
+                    <input type="number" bind:value={options.numberOfYears}/>
+                </label>
+                <label class="input-with-label">
+                    Current net worth
+                    <input type="number" bind:value={options.currentNetWorth} />
+                </label>
+                <label class="input-with-label">
+                    Annual interest %
+                    <input type="number" bind:value={options.interestPercent} />
+                </label>
             </div>
             <div class="column">
-                <Input label="Safe withdrawal rate %" inputType={InputType.number} bind:value={options.safeWithdrawalRatePercentage} />
-                <Input
-                    label="Monthly expenses after tax (excluding current monthly contribution)"
-                    inputType={InputType.number}
-                    bind:value={options.monthlyExpensesAfterTax}
-                />
-                <Input label="Current age" inputType={InputType.number} bind:value={options.currentAge} />
-                <Input label="Currency" inputType={InputType.text} bind:value={options.currency} />
+                <label class="input-with-label">
+                    Safe withdrawal rate %
+                    <input type="number" bind:value={options.safeWithdrawalRatePercentage} />
+                </label>
+
+                <label class="input-with-label">
+                    Monthly expenses after tax (excluding current monthly contribution)
+                    <input type="number" bind:value={options.monthlyExpensesAfterTax} />
+                </label>
+
+                <label class="input-with-label">
+                    Current age
+                    <input type="number" bind:value={options.currentAge} />
+                </label>
+
+                <label class="input-with-label">
+                    Currency
+                    <input type="text" bind:value={options.currency} />
+                </label>
             </div>
         </div>
     {/if}
@@ -32,6 +54,7 @@
 
 <style>
     .options-panel {
+        margin-top: 40px;
         margin-bottom: 50px;
         display: flex;
         flex-direction: row;
@@ -41,5 +64,12 @@
     .column {
         display: flex;
         flex-direction: column;
+    }
+
+    .input-with-label {
+        display: flex;
+        flex-direction: column;
+        margin-right: 25px;
+        margin-bottom: 25px;
     }
 </style>

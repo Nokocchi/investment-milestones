@@ -1,11 +1,14 @@
 <script lang="ts">
-  import type { MonthData, ReachedState } from "../shared/constants";
+  import { ReachedState, type MonthData } from "../shared/constants";
   import Table from "../components/Table.svelte";
   import TimelineSegment from "./TimelineSegment.svelte";
   import { options } from "../shared/shared.svelte";
+  import { flip } from "svelte/animate";
+  import { fade, fly } from "svelte/transition";
 
   let { month }: { month: MonthData } = $props();
   let tableData: string[][] = [];
+  let reachedState = month.reachedState;
   for (const milestone of month.milestones) {
     tableData.push([Math.round(milestone.neededNetWorth).toLocaleString() + " " + options.currency, milestone.message]);
   }
@@ -13,23 +16,23 @@
   let hideMilestones = $state(true);
 </script>
 
-<div class="month-wrapper" onclick={() => (hideMilestones = !hideMilestones)}>
+<div class={["month-wrapper", ReachedState[reachedState]]} onclick={() => (hideMilestones = !hideMilestones)}>
   <div class="month-header-wrapper">
     <div class="left">
       <div class="month-column month-name">
         {month.monthName}
       </div>
       <div class="timeline-segment">
-        <TimelineSegment reachedState={month.reachedState} />
+        <TimelineSegment {reachedState} />
       </div>
     </div>
     <div class="right">
       <div class="month-column estimated-net-worth row-padding">
-        {Math.round(month.estimatedNetWorth).toLocaleString()}
+        {Math.round(month.estimatedNetWorth).toLocaleString()}<br />
         {options.currency}
       </div>
       <div class="month-column monthly-growth row-padding">
-        +{Math.round(month.monthlyGrowth).toLocaleString()}
+        +{Math.round(month.monthlyGrowth).toLocaleString()}<br />
         {options.currency}
       </div>
       <div class="month-column goal-percentage row-padding">
@@ -41,8 +44,8 @@
       <div class={["milestone-indicator", { noMilestones }]}></div>
     </div>
   </div>
-  <div class={["milestones", { hideMilestones }]}>
-    {#if month.milestones.length > 0}
+  <div class="milestones">
+    {#if month.milestones.length > 0 && !hideMilestones}
       <Table tableHeaders={["Needed net worth", "Milestones"]} {tableData} />
     {/if}
   </div>
@@ -52,6 +55,12 @@
   .month-wrapper {
     display: flex;
     flex-direction: column;
+  }
+
+  .month-wrapper.REACHED {
+  }
+
+  .month-wrapper.HERE {
   }
 
   .month-header-wrapper {

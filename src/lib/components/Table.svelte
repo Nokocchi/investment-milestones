@@ -1,8 +1,10 @@
 <script lang="ts">
+    import { fade, fly, slide } from "svelte/transition";
+
 	let { tableHeaders, tableData } = $props();
 </script>
 
-<table>
+<table transition:slide>
 	<thead>
 		<tr>
 			{#each tableHeaders as columnHeading}

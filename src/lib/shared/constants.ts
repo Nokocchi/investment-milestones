@@ -119,8 +119,3 @@ export enum MilestoneType {
     INTEREST_PERCENTAGE_OF_MONTHLY_SPENDING,
     SAFE_MONTHLY_WITHDRAWAL,
 }
-
-export enum InputType {
-    number,
-    text
-}

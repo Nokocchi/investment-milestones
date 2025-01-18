@@ -8,6 +8,7 @@
         workHoursPerYear,
         type Milestone,
         type MonthData,
+        type Options,
         type YearData,
         type YearHeader,
     } from "../shared/constants";
@@ -25,15 +26,25 @@
         milestones_safeMonthlyWithdrawal,
     } from "../shared/milestones";
     import { options } from "../shared/shared.svelte";
-    import Month from "../timeline/Month.svelte";
     import Year from "../timeline/Year.svelte";
 
-    function getNetWorthByMonth(principal: number, interest: number, numberOfYears: number, mc: number) {
-        mc = +mc;
+    let testOptions: Options = $derived({
+        monthlyContribution: options.monthlyContribution || 1,
+        currentAge: options.currentAge,
+        currency: options.currency,
+        currentNetWorth: options.currentNetWorth || 0,
+        interestPercent: options.interestPercent || 0,
+        numberOfYears: options.numberOfYears || 0,
+        monthlyExpensesAfterTax: options.monthlyExpensesAfterTax,
+        safeWithdrawalRatePercentage: options.safeWithdrawalRatePercentage,
+    });
+
+    function getNetWorthByMonth(options: Options) {
+        let interest = options.interestPercent / 100;
         let monthlyInterest = interest / monthsInAYear;
-        let netWorthList = [principal];
-        for (let i = 0; i < (numberOfYears + 1) * monthsInAYear; i++) {
-            let amount = netWorthList[i] * (1 + monthlyInterest) + mc;
+        let netWorthList = [options.currentNetWorth];
+        for (let i = 0; i < (options.numberOfYears + 1) * monthsInAYear; i++) {
+            let amount = netWorthList[i] * (1 + monthlyInterest) + options.monthlyContribution;
             netWorthList.push(amount);
         }
         return netWorthList;
@@ -47,17 +58,17 @@
         }
     };
 
-    const getNetWorthByMonthInPast = (currentNetWorth: number, interest: number, monthlyContribution: number): number[] => {
+    const getNetWorthByMonthInPast = (options: Options): number[] => {
         let pastNetWorthList: number[] = [];
-        let monthlyInterest = interest / monthsInAYear;
+        let monthlyInterest = options.interestPercent / 100 / monthsInAYear;
 
-        if (currentNetWorth == 0) {
+        if (options.currentNetWorth == 0) {
             return pastNetWorthList;
         }
 
-        let nw = currentNetWorth;
+        let nw = options.currentNetWorth;
         while (nw > 0) {
-            let pastNetWorth = (nw - monthlyContribution) / (1 + monthlyInterest);
+            let pastNetWorth = (nw - options.monthlyContribution) / (1 + monthlyInterest);
             if (pastNetWorth < 0) {
                 pastNetWorth = 0;
             }
@@ -68,9 +79,9 @@
         return pastNetWorthList.reverse();
     };
 
-    const generateMilestonesList = (monthlyContribution: number, interestFraction: number): Map<number, string[]> => {
-        monthlyContribution = +monthlyContribution;
+    const generateMilestonesList = (options: Options): Map<number, string[]> => {
         var netWorthMilestoneMap = new Map();
+        let interestFraction = options.interestPercent / 100;
 
         for (let perHour of milestones_perHour) {
             const needed = (perHour * workHoursPerYear) / interestFraction;
@@ -91,21 +102,21 @@
         }
 
         for (let extraMonthOfInvestment of milestones_extraMonthsOfInvestment) {
-            const annualInterestNeeded = extraMonthOfInvestment * monthlyContribution;
+            const annualInterestNeeded = extraMonthOfInvestment * options.monthlyContribution;
             const needed = annualInterestNeeded / interestFraction;
             const message = extraMonthOfInvestment + " extra months of investment per year";
             addToMap(netWorthMilestoneMap, needed, message);
         }
 
         for (let monthlyGrowth of milestones_monthlyGrowth(options.monthlyContribution)) {
-            const monthlyInterestNeeded = monthlyGrowth - monthlyContribution;
+            const monthlyInterestNeeded = monthlyGrowth - options.monthlyContribution;
             const needed = (monthlyInterestNeeded * monthsInAYear) / interestFraction;
             const message = monthlyGrowth.toLocaleString() + " monthly growth";
             addToMap(netWorthMilestoneMap, needed, message);
         }
 
         for (let annualGrowth of milestones_annualGrowth) {
-            const annualInterestNeeded = annualGrowth - monthlyContribution;
+            const annualInterestNeeded = annualGrowth - options.monthlyContribution;
             const needed = annualInterestNeeded / interestFraction;
             const message = annualGrowth.toLocaleString() + "annual growth";
             addToMap(netWorthMilestoneMap, needed, message);
@@ -113,8 +124,8 @@
 
         for (let ownContributionPercentage of milestones_ownContributionPercentageOfGrowth) {
             const ownContributionPercentageDivided = ownContributionPercentage / 100;
-            const monthlyGrowthNeeded = monthlyContribution / ownContributionPercentageDivided;
-            const monthlyInterestNeeded = monthlyGrowthNeeded - monthlyContribution;
+            const monthlyGrowthNeeded = options.monthlyContribution / ownContributionPercentageDivided;
+            const monthlyInterestNeeded = monthlyGrowthNeeded - options.monthlyContribution;
             const needed = (monthlyInterestNeeded * monthsInAYear) / interestFraction;
             const message = "Own contribution is " + ownContributionPercentage + "% of monthly growth";
             addToMap(netWorthMilestoneMap, needed, message);
@@ -122,7 +133,7 @@
 
         for (let interestPercentageOfContribution of milestones_interestPercentageOfContribution) {
             const interestPercentageDivided = interestPercentageOfContribution / 100;
-            const monthlyInterestNeeded = interestPercentageDivided * monthlyContribution;
+            const monthlyInterestNeeded = interestPercentageDivided * options.monthlyContribution;
             const needed = (monthlyInterestNeeded * monthsInAYear) / interestFraction;
             const message = "Interest is " + interestPercentageOfContribution + "% of monthly contribution";
             addToMap(netWorthMilestoneMap, needed, message);
@@ -156,7 +167,11 @@
         netWorthByMonthListInPast: number[],
         netWorthByMonthListNowAndFuture: number[],
         netWorthMilestoneSortedMap: Map<number, string[]>,
+        shouldGenerateData: boolean
     ): YearData[] => {
+        if(!shouldGenerateData){
+            return [];
+        }
         let currentNetWorth: number = netWorthByMonthListNowAndFuture[0];
         let netWorthByMonthListTotal: number[] = netWorthByMonthListInPast.concat(netWorthByMonthListNowAndFuture);
         const currentMonthIndex = netWorthByMonthListInPast.length;
@@ -221,7 +236,7 @@
                 estimatedNetWorth: networthAtThisMonth,
                 monthName: monthNames[monthNumber],
                 milestones: milestones,
-                monthlyGrowth: Math.max(0, (networthNextMonth - networthAtThisMonth) - options.monthlyContribution),
+                monthlyGrowth: Math.max(0, networthNextMonth - networthAtThisMonth - options.monthlyContribution),
                 reachedState: monthReachedState,
                 yearsAndMonthsUntil: yearsAndMonthsUntil,
                 percentageOfReachingThis: Math.min(100, (currentMonthIndex / i) * 100),
@@ -258,19 +273,14 @@
         return timelineData;
     };
 
-    let netWorthByMonthListInPast: number[] = $derived(
-        getNetWorthByMonthInPast(options.currentNetWorth, options.interestPercent / 100, options.monthlyContribution),
-    );
-    let netWorthByMonthListNowAndFuture: number[] = $derived(
-        getNetWorthByMonth(options.currentNetWorth, options.interestPercent / 100, options.numberOfYears, options.monthlyContribution),
-    );
+    let shouldGenerateData = $derived(testOptions.currentNetWorth >= 0 && testOptions.interestPercent >= 0 && testOptions.monthlyContribution >= 0 && testOptions.numberOfYears >= 0);
+    let netWorthByMonthListInPast: number[] = $derived(getNetWorthByMonthInPast(testOptions));
+    let netWorthByMonthListNowAndFuture: number[] = $derived(getNetWorthByMonth(testOptions));
 
-    let netWorthMilestoneSortedMap: Map<number, string[]> = $derived(
-        generateMilestonesList(options.monthlyContribution, options.interestPercent / 100),
-    );
+    let netWorthMilestoneSortedMap: Map<number, string[]> = $derived(generateMilestonesList(testOptions));
 
     let timelineData: YearData[] = $derived(
-        generateTimelineData(netWorthByMonthListInPast, netWorthByMonthListNowAndFuture, netWorthMilestoneSortedMap),
+        generateTimelineData(netWorthByMonthListInPast, netWorthByMonthListNowAndFuture, netWorthMilestoneSortedMap, shouldGenerateData),
     );
 </script>
 
@@ -283,5 +293,4 @@
 {/key}
 
 <style>
-
 </style>
