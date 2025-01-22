@@ -29,7 +29,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    height: 100vh; /*Causes the expansion of milestones to be super slow. Fix!*/
+    height: 100dvh; /*Causes the expansion of milestones to be super slow. Fix!*/
     position: relative;
   }
 
