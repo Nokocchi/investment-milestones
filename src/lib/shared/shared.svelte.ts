@@ -1,4 +1,4 @@
-import type { Options } from "./constants";
+import { MenuChoice, type Options } from "./constants";
 
 export const options: Options = $state({
     monthlyContribution: 25408,
@@ -13,3 +13,5 @@ export const options: Options = $state({
     showAllMilestones: false,
     simulatePastData: false
 });
+
+export let menuChoice: MenuChoice = $state(MenuChoice.MAIN);

@@ -1,12 +1,25 @@
 <script lang="ts">
-    import MilestonesByMonthTable from "./lib/components/MilestonesByMonthTable.svelte";
-    import OptionsPanel from "./lib/components/OptionsPanel.svelte";
+  import About from "./lib/components/About.svelte";
+  import Menu from "./lib/components/Menu.svelte";
+  import MilestonesByMonthTable from "./lib/components/MilestonesByMonthTable.svelte";
+  import OptionsPanel from "./lib/components/OptionsPanel.svelte";
+  import { MenuChoice } from "./lib/shared/constants";
+  import { menuChoice } from "./lib/shared/shared.svelte";
 
+  let page: MenuChoice = $state(MenuChoice.MAIN);
 </script>
 
-<main>
-  <OptionsPanel/>
-  <MilestonesByMonthTable />
+<main class="page-container">
+  <div class="content-container">
+    {#if page == MenuChoice.MAIN}
+      <MilestonesByMonthTable />
+    {:else if page == MenuChoice.OPTIONS}
+      <OptionsPanel />
+    {:else if page == MenuChoice.ABOUT}
+      <About />
+    {/if}
+  </div>
+  <Menu bind:page />
 </main>
 
 <style>
@@ -14,5 +27,27 @@
     margin: 0 auto;
     padding: 0;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /*Causes the expansion of milestones to be super slow. Fix!*/
+    position: relative;
+  }
+
+  .content-container {
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+
+  .page-container {
+    max-width: 1280px;
+    text-align: center;
+    /*
+  position: relative;
+  padding: 0.5rem;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  */
+    box-sizing: border-box;
   }
 </style>

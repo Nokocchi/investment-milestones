@@ -79,17 +79,10 @@ export type Options = {
     simulatePastData: boolean;
 }
 
-export type FancyOptions = {
-    monthlyContribution: number;
-    currentAge: number;
-    currency: string;
-    currentNetWorth: number;
-    interestPercent: number;
-    interest: number;
-    numberOfYears: number;
-    monthlyExpensesAfterTax: number;
-    safeWithdrawalRatePercentage: number;
-    safeWithdrawalRate: number;
+export enum MenuChoice {
+    MAIN,
+    OPTIONS,
+    ABOUT
 }
 
 export const workHoursPerYear = 46 * 40; // 46 work weeeks, 40 hours per week
