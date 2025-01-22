@@ -75,6 +75,8 @@ export type Options = {
     numberOfYears: number;
     monthlyExpensesAfterTax: number;
     safeWithdrawalRatePercentage: number;
+    showAllMilestones: boolean;
+    simulatePastData: boolean;
 }
 
 export type FancyOptions = {

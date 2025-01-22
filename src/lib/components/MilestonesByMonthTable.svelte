@@ -37,6 +37,8 @@
         numberOfYears: options.numberOfYears || 0,
         monthlyExpensesAfterTax: options.monthlyExpensesAfterTax,
         safeWithdrawalRatePercentage: options.safeWithdrawalRatePercentage,
+        showAllMilestones: options.showAllMilestones,
+        simulatePastData: options.simulatePastData
     });
 
     function getNetWorthByMonth(options: Options) {
@@ -59,6 +61,10 @@
     };
 
     const getNetWorthByMonthInPast = (options: Options): number[] => {
+        if  (!options.simulatePastData){
+            return [];
+        }
+
         let pastNetWorthList: number[] = [];
         let monthlyInterest = options.interestPercent / 100 / monthsInAYear;
 

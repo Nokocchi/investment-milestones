@@ -1,4 +1,4 @@
-import type { FancyOptions, Options } from "./constants";
+import type { Options } from "./constants";
 
 export const options: Options = $state({
     monthlyContribution: 25408,
@@ -9,5 +9,7 @@ export const options: Options = $state({
     numberOfYears: 30,
     monthlyExpensesAfterTax: 28000,
     safeWithdrawalRatePercentage: 4,
-    test: 0
+    test: 0,
+    showAllMilestones: false,
+    simulatePastData: false
 });

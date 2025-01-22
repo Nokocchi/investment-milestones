@@ -4,7 +4,7 @@
 	let { tableHeaders, tableData } = $props();
 </script>
 
-<table transition:slide>
+<table>
 	<thead>
 		<tr>
 			{#each tableHeaders as columnHeading}

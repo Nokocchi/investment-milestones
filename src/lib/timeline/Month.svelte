@@ -4,7 +4,7 @@
   import TimelineSegment from "./TimelineSegment.svelte";
   import { options } from "../shared/shared.svelte";
   import { flip } from "svelte/animate";
-  import { fade, fly } from "svelte/transition";
+  import { fade, fly, slide } from "svelte/transition";
 
   let { month }: { month: MonthData } = $props();
   let tableData: string[][] = [];
@@ -14,6 +14,7 @@
   }
   let noMilestones = tableData.length <= 0;
   let hideMilestones = $state(true);
+  let showAllMilestones = $derived(options.showAllMilestones);
 </script>
 
 <div class={["month-wrapper", ReachedState[reachedState]]} onclick={() => (hideMilestones = !hideMilestones)}>
@@ -36,7 +37,9 @@
         {options.currency}
       </div>
       <div class="month-column goal-percentage row-padding">
-        {Math.round(month.percentageOfReachingThis)}%
+        {#if options.simulatePastData}
+          {Math.round(month.percentageOfReachingThis)}%
+        {/if}
       </div>
       <div class="month-column months-until row-padding">
         {month.yearsAndMonthsUntil}
@@ -45,8 +48,10 @@
     </div>
   </div>
   <div class="milestones">
-    {#if month.milestones.length > 0 && !hideMilestones}
-      <Table tableHeaders={["Needed net worth", "Milestones"]} {tableData} />
+    {#if month.milestones.length > 0 && (showAllMilestones || !hideMilestones)}
+      <div transition:slide>
+        <Table tableHeaders={["Needed net worth", "Milestones"]} {tableData} />
+      </div>
     {/if}
   </div>
 </div>

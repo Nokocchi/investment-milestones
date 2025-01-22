@@ -26,6 +26,14 @@
                     Annual interest %
                     <input type="number" bind:value={options.interestPercent} />
                 </label>
+                <label class="input-with-label">
+                    Show all milestones
+                    <input type="checkbox" bind:checked={options.showAllMilestones} />
+                </label>
+                <label class="input-with-label">
+                    Show simulated past data
+                    <input type="checkbox" bind:checked={options.simulatePastData} />
+                </label>
             </div>
             <div class="column">
                 <label class="input-with-label">
