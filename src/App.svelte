@@ -4,7 +4,6 @@
   import MilestonesByMonthTable from "./lib/components/MilestonesByMonthTable.svelte";
   import OptionsPanel from "./lib/components/OptionsPanel.svelte";
   import { MenuChoice } from "./lib/shared/constants";
-  import { menuChoice } from "./lib/shared/shared.svelte";
 
   let page: MenuChoice = $state(MenuChoice.MAIN);
 </script>
@@ -29,7 +28,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    height: 100dvh; /*Causes the expansion of milestones to be super slow. Fix!*/
+    height: 100vh; /*Causes the expansion of milestones to be super slow. Fix*/
     position: relative;
   }
 

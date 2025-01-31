@@ -11,7 +11,8 @@ export const options: Options = $state({
     safeWithdrawalRatePercentage: 4,
     test: 0,
     showAllMilestones: false,
-    simulatePastData: false
+    investmentStart: "2023/05/01",
+    retireByAge: 50
 });
 
 export let menuChoice: MenuChoice = $state(MenuChoice.MAIN);

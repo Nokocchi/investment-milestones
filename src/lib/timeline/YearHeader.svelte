@@ -1,6 +1,5 @@
 <script lang="ts">
     import { CURRENT_YEAR, type YearHeader } from "../shared/constants";
-    import TimelineSegment from "./TimelineSegment.svelte";
 
     let { yearHeader }: { yearHeader: YearHeader } = $props();
     let yearsFromNow: number = yearHeader.year - CURRENT_YEAR;
@@ -8,13 +7,8 @@
 </script>
 
 <div class="year-wrapper">
-    <div class="left header-column">
-        <div class="year row-padding">
-            {yearHeader.year}
-        </div>
-        <div class="timeline-segment">
-            <TimelineSegment reachedState={yearHeader.reachedState} />
-        </div>
+    <div class="left header-column row-padding">
+        {yearHeader.year}
     </div>
     <div class="right">
         <div class="estimated-age header-column">
@@ -46,14 +40,6 @@
         flex: 1 1 80%;
     }
 
-    .year {
-        flex: 1 1 80%;
-    }
-
-    .timeline-segment {
-        flex: 1 1 20%;
-    }
-
     .estimated-age {
         flex: 1 1 45%;
     }
@@ -67,7 +53,7 @@
     }
 
     .row-padding {
-    padding-bottom: 1rem;
-    padding-top: 1rem;
-  }
+        padding-bottom: 1rem;
+        padding-top: 1rem;
+    }
 </style>

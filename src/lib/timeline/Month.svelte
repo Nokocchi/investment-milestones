@@ -1,10 +1,8 @@
 <script lang="ts">
   import { ReachedState, type MonthData } from "../shared/constants";
   import Table from "../components/Table.svelte";
-  import TimelineSegment from "./TimelineSegment.svelte";
   import { options } from "../shared/shared.svelte";
-  import { flip } from "svelte/animate";
-  import { fade, fly, slide } from "svelte/transition";
+  import { slide } from "svelte/transition";
 
   let { month }: { month: MonthData } = $props();
   let tableData: string[][] = [];
@@ -19,13 +17,8 @@
 
 <div class={["month-wrapper", ReachedState[reachedState]]} onclick={() => (hideMilestones = !hideMilestones)}>
   <div class="month-header-wrapper">
-    <div class="left">
-      <div class="month-column month-name">
-        {month.monthName}
-      </div>
-      <div class="timeline-segment">
-        <TimelineSegment {reachedState} />
-      </div>
+    <div class="left month-column">
+      {month.monthName}
     </div>
     <div class="right">
       <div class="month-column estimated-net-worth row-padding">
@@ -37,7 +30,7 @@
         {options.currency}
       </div>
       <div class="month-column goal-percentage row-padding">
-        {#if options.simulatePastData}
+        {#if month.percentageOfReachingThis}
           {Math.round(month.percentageOfReachingThis)}%
         {/if}
       </div>
@@ -86,14 +79,6 @@
     flex-direction: row;
     position: relative;
     justify-content: space-between;
-  }
-
-  .month-name {
-    flex: 1 1 80%;
-  }
-
-  .timeline-segment {
-    flex: 1 1 20%;
   }
 
   .estimated-net-worth {

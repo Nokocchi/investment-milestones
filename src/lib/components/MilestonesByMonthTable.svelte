@@ -1,7 +1,9 @@
 <script lang="ts">
     import {
+        CURRENT_DATETIME,
         CURRENT_MONTH,
         CURRENT_YEAR,
+        getMonth,
         monthNames,
         monthsInAYear,
         ReachedState,
@@ -17,6 +19,7 @@
         milestones_annualInterest,
         milestones_bigNetWorth,
         milestones_extraMonthsOfInvestment,
+        milestones_financiallyIndependentMonths,
         milestones_interestPercentageOfContribution,
         milestones_interestPercentageOfMonthlySpending,
         milestones_monthlyGrowth,
@@ -27,6 +30,8 @@
     } from "../shared/milestones";
     import { options } from "../shared/shared.svelte";
     import Year from "../timeline/Year.svelte";
+    import PercentCircle from "./PercentCircle.svelte";
+    import Stats from "./Stats.svelte";
 
     let testOptions: Options = $derived({
         monthlyContribution: options.monthlyContribution || 1,
@@ -34,18 +39,19 @@
         currency: options.currency,
         currentNetWorth: options.currentNetWorth || 0,
         interestPercent: options.interestPercent || 0,
-        numberOfYears: options.numberOfYears || 0,
         monthlyExpensesAfterTax: options.monthlyExpensesAfterTax,
         safeWithdrawalRatePercentage: options.safeWithdrawalRatePercentage,
         showAllMilestones: options.showAllMilestones,
-        simulatePastData: options.simulatePastData,
+        investmentStart: options.investmentStart ? new Date(options.investmentStart) : null,
+        retireByAge: options.retireByAge || 0,
     });
 
     function getNetWorthByMonth(options: Options) {
         let interest = options.interestPercent / 100;
         let monthlyInterest = interest / monthsInAYear;
         let netWorthList = [options.currentNetWorth];
-        for (let i = 0; i < (options.numberOfYears + 1) * monthsInAYear; i++) {
+        let numberOfYears = options.retireByAge - options.currentAge;
+        for (let i = 0; i < (numberOfYears + 1) * monthsInAYear; i++) {
             let amount = netWorthList[i] * (1 + monthlyInterest) + options.monthlyContribution;
             netWorthList.push(amount);
         }
@@ -58,31 +64,6 @@
         } else {
             mapToAddTo.get(networthNeeded)?.push(message);
         }
-    };
-
-    const getNetWorthByMonthInPast = (options: Options): number[] => {
-        if (!options.simulatePastData) {
-            return [];
-        }
-
-        let pastNetWorthList: number[] = [];
-        let monthlyInterest = options.interestPercent / 100 / monthsInAYear;
-
-        if (options.currentNetWorth == 0) {
-            return pastNetWorthList;
-        }
-
-        let nw = options.currentNetWorth;
-        while (nw > 0) {
-            let pastNetWorth = (nw - options.monthlyContribution) / (1 + monthlyInterest);
-            if (pastNetWorth < 0) {
-                pastNetWorth = 0;
-            }
-            nw = pastNetWorth;
-            pastNetWorthList.push(pastNetWorth);
-        }
-
-        return pastNetWorthList.reverse();
     };
 
     const generateMilestonesList = (options: Options): Map<number, string[]> => {
@@ -164,56 +145,57 @@
             addToMap(netWorthMilestoneMap, needed, message);
         }
 
+        for (let financiallyIndependentMonths of milestones_financiallyIndependentMonths) {
+            const needed = (options.monthlyExpensesAfterTax / (options.safeWithdrawalRatePercentage / 100)) * financiallyIndependentMonths;
+            const message =
+                financiallyIndependentMonths == 12 ? "Financially independent" : `${financiallyIndependentMonths} FIRE months / year`;
+            addToMap(netWorthMilestoneMap, needed, message);
+        }
+
         // Is there really not a better way to sort a map by its keys in Javascript?
         return new Map([...netWorthMilestoneMap].sort((a, b) => a[0] - b[0]));
     };
 
     // Certified mega monster mayhem method :(
     const generateTimelineData = (
-        netWorthByMonthListInPast: number[],
         netWorthByMonthListNowAndFuture: number[],
         netWorthMilestoneSortedMap: Map<number, string[]>,
         shouldGenerateData: boolean,
+        options: Options,
     ): YearData[] => {
         if (!shouldGenerateData) {
             return [];
         }
+        let investmentStartMonth: number | null = options.investmentStart ? getMonth(options.investmentStart) : null;
+        let monthsSinceInvestmentStart: number | null = investmentStartMonth ? getMonth(CURRENT_DATETIME) - investmentStartMonth : null;
         let currentNetWorth: number = netWorthByMonthListNowAndFuture[0];
-        let netWorthByMonthListTotal: number[] = netWorthByMonthListInPast.concat(netWorthByMonthListNowAndFuture);
-        const currentMonthIndex = netWorthByMonthListInPast.length;
 
         let yearIndex = 0;
-        const numOfYearsAgoDataStarts = 0 - Math.ceil(currentMonthIndex / monthsInAYear);
 
         let timelineData: YearData[] = [];
 
-        for (const [i, networthAtThisMonth] of netWorthByMonthListTotal.entries()) {
-            let networthNextMonth = i >= netWorthByMonthListTotal.length ? 0 : netWorthByMonthListTotal[i + 1];
-            let monthNumber;
+        for (const [i, networthAtThisMonth] of netWorthByMonthListNowAndFuture.entries()) {
+            let networthNextMonth = i >= netWorthByMonthListNowAndFuture.length ? 0 : netWorthByMonthListNowAndFuture[i + 1];
             let yearsAndMonthsUntil = "";
+            let reachedPercentage =
+                monthsSinceInvestmentStart === null ? null : (monthsSinceInvestmentStart / (monthsSinceInvestmentStart + i)) * 100;
 
-            if (i < currentMonthIndex) {
-                let monthsAgo = currentMonthIndex - i;
-                let monthsAgoAdjusted = monthsAgo % 12;
-                // Going 9 months back is the same as going 12 - 9 months forward.
-                monthNumber = CURRENT_MONTH + ((monthsInAYear - monthsAgoAdjusted) % monthsInAYear);
+            let monthsInTheFuture = CURRENT_MONTH + i;
+            let monthsInTheFutureAdjusted = monthsInTheFuture % 12;
+            let monthNumber = CURRENT_MONTH + monthsInTheFutureAdjusted;
+
+            if (yearIndex == 0 && monthsInTheFutureAdjusted == 0) {
+                yearsAndMonthsUntil = "Now";
             } else {
-                let monthsInTheFuture = CURRENT_MONTH + (i - currentMonthIndex);
-                let monthsInTheFutureAdjusted = monthsInTheFuture % 12;
-                monthNumber = CURRENT_MONTH + monthsInTheFutureAdjusted;
-                let yearsInTheFuture = Math.floor(monthsInTheFuture / monthsInAYear);
-
-                if (i > currentMonthIndex) {
-                    if (yearsInTheFuture > 0) {
-                        yearsAndMonthsUntil += yearsInTheFuture + " years, ";
-                    }
-                    yearsAndMonthsUntil += monthsInTheFutureAdjusted + " months";
+                if (yearIndex > 0) {
+                    yearsAndMonthsUntil += yearIndex + " years, ";
                 }
+                yearsAndMonthsUntil += monthsInTheFutureAdjusted + " months";
             }
 
             let monthReachedState: ReachedState;
             if (networthAtThisMonth <= currentNetWorth) {
-                if (netWorthByMonthListTotal[i + 1] > currentNetWorth) {
+                if (netWorthByMonthListNowAndFuture[i + 1] > currentNetWorth) {
                     monthReachedState = ReachedState.HERE;
                 } else {
                     monthReachedState = ReachedState.REACHED;
@@ -245,19 +227,18 @@
                 monthlyGrowth: Math.max(0, networthNextMonth - networthAtThisMonth - options.monthlyContribution),
                 reachedState: monthReachedState,
                 yearsAndMonthsUntil: yearsAndMonthsUntil,
-                percentageOfReachingThis: Math.min(100, (currentMonthIndex / i) * 100),
+                percentageOfReachingThis: reachedPercentage,
             };
 
             // It's either the first month at all, or January. Add a new year
             if (i == 0 || monthNumber == 0) {
-                const yearOffset = numOfYearsAgoDataStarts + yearIndex;
-                let year = CURRENT_YEAR + yearOffset;
+                let year = CURRENT_YEAR + yearIndex;
 
                 const yearReachedState = year <= CURRENT_YEAR ? ReachedState.REACHED : ReachedState.IN_FUTURE;
 
                 let yearHeader: YearHeader = {
                     year: year,
-                    age: options.currentAge + yearOffset,
+                    age: options.currentAge + yearIndex,
                     reachedState: yearReachedState,
                 };
 
@@ -283,18 +264,17 @@
         testOptions.currentNetWorth >= 0 &&
             testOptions.interestPercent >= 0 &&
             testOptions.monthlyContribution >= 0 &&
-            testOptions.numberOfYears >= 0,
+            testOptions.retireByAge >= testOptions.currentAge,
     );
-    let netWorthByMonthListInPast: number[] = $derived(getNetWorthByMonthInPast(testOptions));
     let netWorthByMonthListNowAndFuture: number[] = $derived(getNetWorthByMonth(testOptions));
 
     let netWorthMilestoneSortedMap: Map<number, string[]> = $derived(generateMilestonesList(testOptions));
-
     let timelineData: YearData[] = $derived(
-        generateTimelineData(netWorthByMonthListInPast, netWorthByMonthListNowAndFuture, netWorthMilestoneSortedMap, shouldGenerateData),
+        generateTimelineData(netWorthByMonthListNowAndFuture, netWorthMilestoneSortedMap, shouldGenerateData, testOptions),
     );
 </script>
 
+<Stats options={testOptions} {netWorthByMonthListNowAndFuture} />
 {#key timelineData}
     {#each timelineData as yearData}
         <Year {yearData} />
