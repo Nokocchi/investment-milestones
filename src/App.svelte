@@ -5,9 +5,6 @@
   import OptionsPanel from "./lib/components/OptionsPanel.svelte";
   import { CURRENT_MONTH, MenuChoice } from "./lib/shared/constants";
 
-  console.log("Current date time", new Date());
-  console.log("Current month", CURRENT_MONTH);
-
   let page: MenuChoice = $state(MenuChoice.MAIN);
 </script>
 

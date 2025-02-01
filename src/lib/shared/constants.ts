@@ -65,7 +65,7 @@ export type Milestone = {
 }
 
 export const CURRENT_DATETIME = new Date();
-export const CURRENT_MONTH = CURRENT_DATETIME.getMonth() - 1; // Temporary circumvention of time-related bug so I can develop past midnight without worrying about it now..
+export const CURRENT_MONTH = CURRENT_DATETIME.getMonth();
 export const CURRENT_YEAR = CURRENT_DATETIME.getFullYear();
 
 export type Options = {

@@ -51,7 +51,7 @@
         let monthlyInterest = interest / monthsInAYear;
         let netWorthList = [options.currentNetWorth];
         let numberOfYears = options.retireByAge - options.currentAge;
-        for (let i = 0; i < (numberOfYears + 1) * monthsInAYear; i++) {
+        for (let i = 0; i < numberOfYears * monthsInAYear; i++) {
             let amount = netWorthList[i] * (1 + monthlyInterest) + options.monthlyContribution;
             netWorthList.push(amount);
         }
@@ -175,22 +175,20 @@
         let timelineData: YearData[] = [];
 
         for (const [i, networthAtThisMonth] of netWorthByMonthListNowAndFuture.entries()) {
-            let networthNextMonth = i >= netWorthByMonthListNowAndFuture.length ? 0 : netWorthByMonthListNowAndFuture[i + 1];
+            let networthNextMonth = i + 1 >= netWorthByMonthListNowAndFuture.length ? 0 : netWorthByMonthListNowAndFuture[i + 1];
             let yearsAndMonthsUntil = "";
             let reachedPercentage =
                 monthsSinceInvestmentStart === null ? null : (monthsSinceInvestmentStart / (monthsSinceInvestmentStart + i)) * 100;
 
-            let monthsInTheFuture = CURRENT_MONTH + i;
-            let monthsInTheFutureAdjusted = monthsInTheFuture % 12;
-            let monthNumber = CURRENT_MONTH + monthsInTheFutureAdjusted;
+            let calendarMonth = (CURRENT_MONTH + i) % monthsInAYear;
 
-            if (yearIndex == 0 && monthsInTheFutureAdjusted == 0) {
+            if (i == 0) {
                 yearsAndMonthsUntil = "Now";
             } else {
-                if (yearIndex > 0) {
-                    yearsAndMonthsUntil += yearIndex + " years, ";
+                if (i > (monthsInAYear - 1)) {
+                    yearsAndMonthsUntil += Math.floor(i / monthsInAYear) + " years, ";
                 }
-                yearsAndMonthsUntil += monthsInTheFutureAdjusted + " months";
+                yearsAndMonthsUntil += (i % monthsInAYear) + " months";
             }
 
             let monthReachedState: ReachedState;
@@ -222,16 +220,16 @@
 
             let monthData: MonthData = {
                 estimatedNetWorth: networthAtThisMonth,
-                monthName: monthNames[monthNumber],
+                monthName: monthNames[calendarMonth],
                 milestones: milestones,
-                monthlyGrowth: Math.max(0, networthNextMonth - networthAtThisMonth - options.monthlyContribution),
+                monthlyGrowth: Math.max(0, (networthNextMonth - networthAtThisMonth) - options.monthlyContribution),
                 reachedState: monthReachedState,
                 yearsAndMonthsUntil: yearsAndMonthsUntil,
                 percentageOfReachingThis: reachedPercentage,
             };
 
             // It's either the first month at all, or January. Add a new year
-            if (i == 0 || monthNumber == 0) {
+            if (i == 0 || calendarMonth == 0) {
                 let year = CURRENT_YEAR + yearIndex;
 
                 const yearReachedState = year <= CURRENT_YEAR ? ReachedState.REACHED : ReachedState.IN_FUTURE;
@@ -252,7 +250,7 @@
             }
 
             // Finished December, increasing year index
-            if (monthNumber == 11) {
+            if (calendarMonth == 11) {
                 yearIndex++;
             }
         }

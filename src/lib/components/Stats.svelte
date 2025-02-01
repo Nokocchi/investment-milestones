@@ -121,7 +121,7 @@ Time until Coast FIRE
 <br>
 
 Time left until retirement
-<p>{getMonthsAsYearMonthString(netWorthByMonthListNowAndFuture.length)}</p>
+<p>{getMonthsAsYearMonthString(netWorthByMonthListNowAndFuture.length - 1)}</p>
 <style>
     .column {
         display: flex;
