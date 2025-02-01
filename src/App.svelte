@@ -3,7 +3,10 @@
   import Menu from "./lib/components/Menu.svelte";
   import MilestonesByMonthTable from "./lib/components/MilestonesByMonthTable.svelte";
   import OptionsPanel from "./lib/components/OptionsPanel.svelte";
-  import { MenuChoice } from "./lib/shared/constants";
+  import { CURRENT_MONTH, MenuChoice } from "./lib/shared/constants";
+
+  console.log("Current date time", new Date());
+  console.log("Current month", CURRENT_MONTH);
 
   let page: MenuChoice = $state(MenuChoice.MAIN);
 </script>
