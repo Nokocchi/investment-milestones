@@ -18,7 +18,6 @@
             const monthsLeft = netWorthByMonth.length - i;
             const monthlyInterest = (1 + ((options.interestPercent / 100) / 12));
             const noContributionsFinalAmount = networthAtThisMonth * Math.pow(monthlyInterest, monthsLeft);
-            console.log(noContributionsFinalAmount);
             if(noContributionsFinalAmount > fireAmount){
                 return i;
             }
@@ -69,7 +68,6 @@
     let monthsInvestedSoFar: number | null = investmentStartMonth ? getMonth(CURRENT_DATETIME) - investmentStartMonth : null;
 
     let coastFireReachedMonthsInFuture: number = getCoastFireReachedMonthsInFuture(options, netWorthByMonthListNowAndFuture);
-    console.log("Coast, in future", coastFireReachedMonthsInFuture);
     let coastFireReachedPercentage = monthsInvestedSoFar === null ? 0 : (monthsInvestedSoFar / (monthsInvestedSoFar + coastFireReachedMonthsInFuture)) * 100;
     
 

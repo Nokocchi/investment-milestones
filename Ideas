@@ -8,6 +8,7 @@
 
 # LONG TERM IDEAS
 # Show certain milestones graph, with net worth as function of months of investment
+# Somehow be able to scroll through future months and see the page update?
 # Add option to track specific milestones? How can I make important milestones stand out? 
 # Turn it into a whole page of various visualized investment things. Like, a graph showing "if you invested x every month from now, how much would you have compared to if you started y years ago? What if you had a principal of z in both scenarios? How much would somebody have to invest if they want to catch up to you in x years, and they started investing y years later than you?"
 
@@ -15,4 +16,4 @@
 # FIRE months milestones seem to disappear when you change your monthly contributions - range/generator function?
 # Only show the "most recent" milestones at the current month, not all the ones you have reached so far
 # Save options in cookies/local storage
-# 
+# Refactor codebase to remove spaghetti
