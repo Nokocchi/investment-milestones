@@ -8,11 +8,7 @@
         monthsInAYear,
         ReachedState,
         workHoursPerYear,
-        type Milestone,
-        type MonthData,
-        type Options,
-        type YearData,
-        type YearHeader,
+        type DerivedOptions,
     } from "../shared/constants";
     import {
         milestones_annualGrowth,
@@ -29,26 +25,27 @@
         milestones_safeMonthlyWithdrawal,
     } from "../shared/milestones";
     import { options } from "../shared/shared.svelte";
+    import type { Milestone, MonthData, YearData, YearHeader } from "../shared/types";
     import Year from "../timeline/Year.svelte";
-    import PercentCircle from "./PercentCircle.svelte";
     import Stats from "./Stats.svelte";
 
-    let testOptions: Options = $derived({
+    let derivedOptions: DerivedOptions = $derived({
         monthlyContribution: options.monthlyContribution || 1,
-        currentAge: options.currentAge,
-        currency: options.currency,
+        currentAge: options.currentAge || 0,
+        currency: options.currency || "",
         currentNetWorth: options.currentNetWorth || 0,
         interestPercent: options.interestPercent || 0,
-        monthlyExpensesAfterTax: options.monthlyExpensesAfterTax,
-        safeWithdrawalRatePercentage: options.safeWithdrawalRatePercentage,
+        interestDivided: options.interestPercent ? options.interestPercent / 100 : 0,
+        monthlyExpensesAfterTax: options.monthlyExpensesAfterTax || 0,
+        safeWithdrawalRatePercentage: options.safeWithdrawalRatePercentage || 0,
+        safeWithdrawalRateDivided: options.safeWithdrawalRatePercentage ? options.safeWithdrawalRatePercentage / 100 : 0,
         showAllMilestones: options.showAllMilestones,
-        investmentStart: options.investmentStart ? new Date(options.investmentStart) : null,
-        retireByAge: options.retireByAge || 0,
+        investmentStart: options.investmentStart ? new Date(options.investmentStart) : undefined,
+        retireByAge: options.retireByAge || 0
     });
 
-    function getNetWorthByMonth(options: Options) {
-        let interest = options.interestPercent / 100;
-        let monthlyInterest = interest / monthsInAYear;
+    function getNetWorthByMonth(options: DerivedOptions) {
+        let monthlyInterest = options.interestDivided / monthsInAYear;
         let netWorthList = [options.currentNetWorth];
         let numberOfYears = options.retireByAge - options.currentAge;
         for (let i = 0; i < numberOfYears * monthsInAYear; i++) {
@@ -66,45 +63,44 @@
         }
     };
 
-    const generateMilestonesList = (options: Options): Map<number, string[]> => {
+    const generateMilestonesList = (options: DerivedOptions): Map<number, string[]> => {
         var netWorthMilestoneMap = new Map();
-        let interestFraction = options.interestPercent / 100;
 
         for (let perHour of milestones_perHour) {
-            const needed = (perHour * workHoursPerYear) / interestFraction;
+            const needed = (perHour * workHoursPerYear) / options.interestDivided;
             const message = `${perHour} ${options.currency} per hour`;
             addToMap(netWorthMilestoneMap, needed, message);
         }
 
         for (let annualInterest of milestones_annualInterest) {
-            const needed = annualInterest / interestFraction;
+            const needed = annualInterest / options.interestDivided;
             const message = `${annualInterest.toLocaleString()} ${options.currency} annual interest`;
             addToMap(netWorthMilestoneMap, needed, message);
         }
 
         for (let monthlyInterestMilestone of milestones_monthlyInterest) {
-            const needed = (monthlyInterestMilestone * monthsInAYear) / interestFraction;
+            const needed = (monthlyInterestMilestone * monthsInAYear) / options.interestDivided;
             const message = `${monthlyInterestMilestone.toLocaleString()} ${options.currency} monthly interest`;
             addToMap(netWorthMilestoneMap, needed, message);
         }
 
         for (let extraMonthOfInvestment of milestones_extraMonthsOfInvestment) {
             const annualInterestNeeded = extraMonthOfInvestment * options.monthlyContribution;
-            const needed = annualInterestNeeded / interestFraction;
+            const needed = annualInterestNeeded / options.interestDivided;
             const message = extraMonthOfInvestment + ` extra months of investment per year`;
             addToMap(netWorthMilestoneMap, needed, message);
         }
 
         for (let monthlyGrowth of milestones_monthlyGrowth(options.monthlyContribution)) {
             const monthlyInterestNeeded = monthlyGrowth - options.monthlyContribution;
-            const needed = (monthlyInterestNeeded * monthsInAYear) / interestFraction;
+            const needed = (monthlyInterestNeeded * monthsInAYear) / options.interestDivided;
             const message = `${monthlyGrowth.toLocaleString()} ${options.currency} monthly growth`;
             addToMap(netWorthMilestoneMap, needed, message);
         }
 
         for (let annualGrowth of milestones_annualGrowth) {
             const annualInterestNeeded = annualGrowth - options.monthlyContribution;
-            const needed = annualInterestNeeded / interestFraction;
+            const needed = annualInterestNeeded / options.interestDivided;
             const message = `${annualGrowth.toLocaleString()} ${options.currency} annual growth`;
             addToMap(netWorthMilestoneMap, needed, message);
         }
@@ -113,7 +109,7 @@
             const ownContributionPercentageDivided = ownContributionPercentage / 100;
             const monthlyGrowthNeeded = options.monthlyContribution / ownContributionPercentageDivided;
             const monthlyInterestNeeded = monthlyGrowthNeeded - options.monthlyContribution;
-            const needed = (monthlyInterestNeeded * monthsInAYear) / interestFraction;
+            const needed = (monthlyInterestNeeded * monthsInAYear) / options.interestDivided;
             const message = `Own contribution is ${ownContributionPercentage}% of monthly growth`;
             addToMap(netWorthMilestoneMap, needed, message);
         }
@@ -121,7 +117,7 @@
         for (let interestPercentageOfContribution of milestones_interestPercentageOfContribution) {
             const interestPercentageDivided = interestPercentageOfContribution / 100;
             const monthlyInterestNeeded = interestPercentageDivided * options.monthlyContribution;
-            const needed = (monthlyInterestNeeded * monthsInAYear) / interestFraction;
+            const needed = (monthlyInterestNeeded * monthsInAYear) / options.interestDivided;
             const message = `Interest is ${interestPercentageOfContribution}% of monthly contribution`;
             addToMap(netWorthMilestoneMap, needed, message);
         }
@@ -134,19 +130,19 @@
         for (let interestPercentageOfMonthlySpending of milestones_interestPercentageOfMonthlySpending) {
             const interestPercentageDivided = interestPercentageOfMonthlySpending / 100;
             const monthlyInterestNeeded = interestPercentageDivided * options.monthlyExpensesAfterTax;
-            const needed = (monthlyInterestNeeded * monthsInAYear) / interestFraction;
+            const needed = (monthlyInterestNeeded * monthsInAYear) / options.interestDivided;
             const message = `Interest is ${interestPercentageOfMonthlySpending}% of monthly budget`;
             addToMap(netWorthMilestoneMap, needed, message);
         }
 
         for (let safeMonthlyWithdrawal of milestones_safeMonthlyWithdrawal) {
-            const needed = (safeMonthlyWithdrawal * monthsInAYear) / (options.safeWithdrawalRatePercentage / 100);
+            const needed = (safeMonthlyWithdrawal * monthsInAYear) / options.safeWithdrawalRatePercentage;
             const message = `${safeMonthlyWithdrawal.toLocaleString()} ${options.currency} can safely be withdrawn per month`;
             addToMap(netWorthMilestoneMap, needed, message);
         }
 
         for (let financiallyIndependentMonths of milestones_financiallyIndependentMonths) {
-            const needed = (options.monthlyExpensesAfterTax / (options.safeWithdrawalRatePercentage / 100)) * financiallyIndependentMonths;
+            const needed = (options.monthlyExpensesAfterTax / options.safeWithdrawalRateDivided) * financiallyIndependentMonths;
             const message =
                 financiallyIndependentMonths == 12 ? "Financially independent" : `${financiallyIndependentMonths} FIRE months / year`;
             addToMap(netWorthMilestoneMap, needed, message);
@@ -161,7 +157,7 @@
         netWorthByMonthListNowAndFuture: number[],
         netWorthMilestoneSortedMap: Map<number, string[]>,
         shouldGenerateData: boolean,
-        options: Options,
+        options: DerivedOptions,
     ): YearData[] => {
         if (!shouldGenerateData) {
             return [];
@@ -259,20 +255,20 @@
     };
 
     let shouldGenerateData = $derived(
-        testOptions.currentNetWorth >= 0 &&
-            testOptions.interestPercent >= 0 &&
-            testOptions.monthlyContribution >= 0 &&
-            testOptions.retireByAge >= testOptions.currentAge,
+        derivedOptions.currentNetWorth >= 0 &&
+        derivedOptions.interestPercent >= 0 &&
+        derivedOptions.monthlyContribution >= 0 &&
+        derivedOptions.retireByAge >= derivedOptions.currentAge,
     );
-    let netWorthByMonthListNowAndFuture: number[] = $derived(getNetWorthByMonth(testOptions));
+    let netWorthByMonthListNowAndFuture: number[] = $derived(getNetWorthByMonth(derivedOptions));
 
-    let netWorthMilestoneSortedMap: Map<number, string[]> = $derived(generateMilestonesList(testOptions));
+    let netWorthMilestoneSortedMap: Map<number, string[]> = $derived(generateMilestonesList(derivedOptions));
     let timelineData: YearData[] = $derived(
-        generateTimelineData(netWorthByMonthListNowAndFuture, netWorthMilestoneSortedMap, shouldGenerateData, testOptions),
+        generateTimelineData(netWorthByMonthListNowAndFuture, netWorthMilestoneSortedMap, shouldGenerateData, derivedOptions),
     );
 </script>
 
-<Stats options={testOptions} {netWorthByMonthListNowAndFuture} />
+<Stats {derivedOptions} {netWorthByMonthListNowAndFuture} />
 {#key timelineData}
     {#each timelineData as yearData}
         <Year {yearData} />

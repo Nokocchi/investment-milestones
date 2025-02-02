@@ -5,29 +5,26 @@
 
 <div class="options-panel">
     <div class="column">
-        <LabelAndInput label="Monthly Contribution" type="number" bind:something={options.monthlyContribution} />
-        <LabelAndInput label="Current net worth" type="number" bind:something={options.currentNetWorth} />
-        <LabelAndInput label="Annual interest %" type="number" bind:something={options.interestPercent} />
-        <LabelAndInput label="Safe withdrawal rate %" type="number" bind:something={options.safeWithdrawalRatePercentage} />
-        <LabelAndInput label="Monthly expenses after tax (excluding current monthly contribution)" type="number" bind:something={options.monthlyExpensesAfterTax} />
+        <LabelAndInput label="Monthly Contribution" type="number" bind:value={options.monthlyContribution} />
+        <LabelAndInput label="Current net worth" type="number" bind:value={options.currentNetWorth} />
+        <LabelAndInput label="Annual interest %" type="number" bind:value={options.interestPercent} />
+        <LabelAndInput label="Safe withdrawal rate %" type="number" bind:value={options.safeWithdrawalRatePercentage} />
+        <LabelAndInput label="Monthly expenses after tax (excluding current monthly contribution)" type="number" bind:value={options.monthlyExpensesAfterTax} />
     </div>
     <div class="column">
-        <LabelAndInput label="When did you start investing?" type="date" bind:something={options.investmentStart} />
-        <LabelAndInput label="Current age" type="number" bind:something={options.currentAge} />
-        <LabelAndInput label="Retire by age" type="number" bind:something={options.retireByAge} />
-        <LabelAndInput label="Currency" type="text" bind:something={options.currency} />
+        <LabelAndInput label="When did you start investing?" type="date" bind:value={options.investmentStart} />
+        <LabelAndInput label="Current age" type="number" bind:value={options.currentAge} />
+        <LabelAndInput label="Retire by age" type="number" bind:value={options.retireByAge} />
+        <LabelAndInput label="Currency" type="text" bind:value={options.currency} />
        
     </div>
 </div>
 
 <style>
-    label {
-        text-align: left;
-    }
-
     .options-panel {
         display: flex;
         flex-direction: row;
+        justify-content: space-between;
     }
 
     .column {

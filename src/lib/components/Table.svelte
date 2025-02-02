@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { fade, fly, slide } from "svelte/transition";
-
 	let { tableHeaders, tableData } = $props();
 </script>
 

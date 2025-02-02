@@ -1,20 +1,3 @@
-
-import type { SVGAttributes } from 'svelte/elements';
-export const monthNamesFull = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-];
-
 export const monthNames = [
     "Jan",
     "Feb",
@@ -38,46 +21,35 @@ export enum ReachedState {
     IN_FUTURE
 }
 
-export type MonthData = {
-    reachedState: ReachedState;
-    monthName: string;
-    estimatedNetWorth: number;
-    yearsAndMonthsUntil: string;
-    percentageOfReachingThis: number | null;
-    monthlyGrowth: number;
-    milestones: Milestone[];
-};
-
-export type YearHeader = {
-    year: number;
-    age: number;
-    reachedState: ReachedState
-};
-
-export type YearData = {
-    yearHeader: YearHeader;
-    monthData: MonthData[];
-};
-
-export type Milestone = {
-    neededNetWorth: number;
-    message: string;
-}
-
 export const CURRENT_DATETIME = new Date();
 export const CURRENT_MONTH = CURRENT_DATETIME.getMonth();
 export const CURRENT_YEAR = CURRENT_DATETIME.getFullYear();
 
 export type Options = {
+    monthlyContribution?: number;
+    currentAge?: number;
+    currency?: string;
+    currentNetWorth?: number;
+    interestPercent?: number;
+    monthlyExpensesAfterTax?: number;
+    safeWithdrawalRatePercentage?: number;
+    showAllMilestones: boolean;
+    investmentStart?: string;
+    retireByAge?: number;
+}
+
+export type DerivedOptions = {
     monthlyContribution: number;
     currentAge: number;
     currency: string;
     currentNetWorth: number;
     interestPercent: number;
+    interestDivided: number;
     monthlyExpensesAfterTax: number;
     safeWithdrawalRatePercentage: number;
+    safeWithdrawalRateDivided: number;
     showAllMilestones: boolean;
-    investmentStart: Date | null;
+    investmentStart?: Date;
     retireByAge: number;
 }
 
@@ -89,51 +61,6 @@ export enum MenuChoice {
 }
 
 export const workHoursPerYear = 46 * 40; // 46 work weeeks, 40 hours per week
-
-export const headers = [
-    "NET WORTH",
-    "PER_HOUR",
-    "ANNUAL_INTEREST",
-    "MONTHLY_INTEREST",
-    "EXTRA_MONTHS_OF_INVESTMENT",
-    "MONTHLY_GROWTH",
-    "ANNUAL_GROWTH",
-    "OWN_CONTRIBUTION_PERCENTAGE_OF_GROWTH",
-    "INTEREST_PERCENTAGE_OF_CONTRIBUTION",
-    "INTEREST_PERCENTAGE_OF_MONTHLY_SPENDING",
-    "SAFE_MONTHLY_WITHDRAWAL",
-];
-
-export enum MilestoneType {
-    PER_HOUR,
-    ANNUAL_INTEREST,
-    MONTHLY_INTEREST,
-    EXTRA_MONTHS_OF_INVESTMENT,
-    MONTHLY_GROWTH,
-    ANNUAL_GROWTH,
-    OWN_CONTRIBUTION_PERCENTAGE_OF_GROWTH,
-    INTEREST_PERCENTAGE_OF_CONTRIBUTION,
-    BIG_NET_WORTH,
-    INTEREST_PERCENTAGE_OF_MONTHLY_SPENDING,
-    SAFE_MONTHLY_WITHDRAWAL,
-}
-
-
-type SvgAttrs = SVGAttributes<SVGElement>;
-
-export interface CircleProps extends Omit<SvgAttrs, 'width' | 'height'> {
-    lineWidth?: number;
-    bgColor?: string;
-    color?: string;
-    textColor?: string;
-    percent?: number;
-    rounded?: boolean;
-    responsive?: boolean;
-    animation?: boolean;
-    textStyle?: string;
-    size?: number;
-    title?: string;
-}
 
 export const getMonth = (date: Date): number => {
     return date.getFullYear() * 12 + date.getMonth();

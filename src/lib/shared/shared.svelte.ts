@@ -11,7 +11,7 @@ export const options: Options = $state({
     safeWithdrawalRatePercentage: 4,
     test: 0,
     showAllMilestones: false,
-    investmentStart: "2023/05/01",
+    investmentStart: "2023-05-01",
     retireByAge: 50
 });
 

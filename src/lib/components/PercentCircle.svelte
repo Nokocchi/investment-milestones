@@ -1,5 +1,6 @@
 <script lang="ts">
-    import type { CircleProps } from "../shared/constants";
+    import type { CircleProps } from "../shared/types";
+
 
     const {
         size = 200,

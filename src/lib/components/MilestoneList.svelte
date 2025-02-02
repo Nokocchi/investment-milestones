@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { monthNames, monthsInAYear } from "./constants";
     import Table from "./Table.svelte";
 
     let { data } = $props();
-    const headers = ["Net worth", "Milestones"];
+    const tableHeaders = ["Net worth", "Milestones"];
 
     let tableData = [];
 
@@ -17,4 +16,4 @@
     }
 </script>
 
-<Table {headers} {tableData} />
+<Table {tableHeaders} {tableData} />

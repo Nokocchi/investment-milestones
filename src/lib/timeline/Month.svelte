@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { ReachedState, type MonthData } from "../shared/constants";
+  import { ReachedState } from "../shared/constants";
   import Table from "../components/Table.svelte";
   import { options } from "../shared/shared.svelte";
   import { slide } from "svelte/transition";
+    import type { MonthData } from "../shared/types";
 
   let { month }: { month: MonthData } = $props();
   let tableData: string[][] = [];

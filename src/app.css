@@ -11,6 +11,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
 }
 
 a {
@@ -27,6 +28,7 @@ html, body {
   height: 100%;
   margin: 0 auto;
   padding: 0;
+  overscroll-behavior-y: none;
 }
 
 @media (prefers-color-scheme: light) {

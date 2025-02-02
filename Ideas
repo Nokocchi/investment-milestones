@@ -17,3 +17,4 @@
 # Only show the "most recent" milestones at the current month, not all the ones you have reached so far
 # Save options in cookies/local storage
 # Refactor codebase to remove spaghetti
+# tooltip buttons to make things easier to understand

@@ -9,6 +9,7 @@
 </script>
 
 <main class="page-container">
+  <Menu bind:page />
   <div class="content-container">
     {#if page == MenuChoice.MAIN}
       <MilestonesByMonthTable />
@@ -18,7 +19,6 @@
       <About />
     {/if}
   </div>
-  <Menu bind:page />
 </main>
 
 <style>

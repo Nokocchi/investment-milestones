@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { monthsInAYear, type CircleProps } from "../shared/constants";
 
   const {
     numberOfMonths: numberOfMonthsReached = 0,

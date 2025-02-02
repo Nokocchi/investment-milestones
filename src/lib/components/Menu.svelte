@@ -12,7 +12,7 @@
 
 <style>
     .menu {
-        height: 75px;
+        height: 45px;
         width: 100%;
         display: flex;
         flex-direction: row;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type YearData } from "../shared/constants";
+    import type { YearData } from "../shared/types";
   import Month from "./Month.svelte";
     import YearHeader from "./YearHeader.svelte";
 

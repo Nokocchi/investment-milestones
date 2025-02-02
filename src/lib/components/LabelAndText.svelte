@@ -16,6 +16,7 @@
     .label {
         color: darkgreen;
         font-weight: bold;
+        font-size: 1.2em;
     }
 
     .text {
