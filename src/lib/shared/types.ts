@@ -34,7 +34,7 @@ export interface CircleProps extends Omit<SvgAttrs, 'width' | 'height'> {
     bgColor?: string;
     color?: string;
     textColor?: string;
-    percent?: number;
+    percent?: number | null;
     rounded?: boolean;
     responsive?: boolean;
     animation?: boolean;

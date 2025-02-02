@@ -1,7 +1,6 @@
 <script lang="ts">
     import type { CircleProps } from "../shared/types";
 
-
     const {
         size = 200,
         lineWidth = 30,
@@ -17,7 +16,7 @@
         ...rest
     }: CircleProps = $props();
 
-    const offset = $derived(1100 * (1 - percent / 100));
+    const offset = $derived(percent ? 1100 * (1 - percent / 100) : 1100);
     const svgSize = $derived(responsive ? "100%" : size);
 </script>
 
@@ -37,7 +36,11 @@
         fill="none"
     />
     <text style={textStyle} fill={textColor} x="50%" y="50%" dx="-25" text-anchor="middle">
-        {percent}
-        <tspan dx="10">%</tspan>
+        {#if percent}
+            {Math.round(percent)}
+            <tspan dx="10">%</tspan>
+        {:else}
+            Impossible
+        {/if}
     </text>
 </svg>

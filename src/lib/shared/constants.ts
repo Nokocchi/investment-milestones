@@ -68,3 +68,10 @@ export const getMonthsAsYearMonthString = (months: number | null) => {
 
     return yearSegment + divider + monthSegment;
 };
+
+export const getPercentage = (a: number, b: number): number => {
+    if (a && b) {
+        return (a / b) * 100;
+    }
+    return 0;
+}

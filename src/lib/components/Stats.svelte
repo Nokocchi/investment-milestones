@@ -10,48 +10,34 @@
     const {
         derivedOptions,
         netWorthByMonthListNowAndFuture,
-    }: { derivedOptions: DerivedOptions; netWorthByMonthListNowAndFuture: number[] } = $props();
+        fireMonthsInFuture,
+        coastFireReachedMonthsInFuture,
+    }: {
+        derivedOptions: DerivedOptions;
+        netWorthByMonthListNowAndFuture: number[];
+        fireMonthsInFuture: number | null;
+        coastFireReachedMonthsInFuture: number | null;
+    } = $props();
 
-    const fireHowManyMonthsInFuture = (netWorthByMonthList: number[], fireNumber: number): number => {
-        for (const [i, networthAtThisMonth] of netWorthByMonthList.entries()) {
-            if (fireNumber < networthAtThisMonth) {
-                return i;
-            }
-        }
-        return 0;
-    };
+    const coastFireReachedPercentage = derivedOptions.monthsSinceInvestmentStart && coastFireReachedMonthsInFuture
+        ? (derivedOptions.monthsSinceInvestmentStart / (derivedOptions.monthsSinceInvestmentStart + coastFireReachedMonthsInFuture)) * 100
+        : null;
 
-    const getCoastFireReachedMonthsInFuture = (options: DerivedOptions, netWorthByMonth: number[]): number => {
-        for (const [i, networthAtThisMonth] of netWorthByMonth.entries()) {
-            const monthsLeft = netWorthByMonth.length - i;
-            const monthlyInterest = 1 + options.monthlyInterestDivided;
-            const noContributionsFinalAmount = networthAtThisMonth * Math.pow(monthlyInterest, monthsLeft);
-            if (noContributionsFinalAmount > options.fireNumber) {
-                return i;
-            }
-        }
-        return 0;
-    };
+    const fireReachedPercentage = derivedOptions.monthsSinceInvestmentStart && fireMonthsInFuture
+        ? (derivedOptions.monthsSinceInvestmentStart / (derivedOptions.monthsSinceInvestmentStart + fireMonthsInFuture)) * 100
+        : null;
 
-    const monthsSinceInvestmentStart = derivedOptions.monthsSinceInvestmentStart;
-    const fireMonthsInFuture = fireHowManyMonthsInFuture(netWorthByMonthListNowAndFuture, derivedOptions.fireNumber);
-    const fireReachedPercentage = monthsSinceInvestmentStart
-        ? (monthsSinceInvestmentStart / (monthsSinceInvestmentStart + fireMonthsInFuture)) * 100
-        : 0;
 
-    const coastFireReachedMonthsInFuture: number = getCoastFireReachedMonthsInFuture(derivedOptions, netWorthByMonthListNowAndFuture);
-    const coastFireReachedPercentage = monthsSinceInvestmentStart
-        ? (monthsSinceInvestmentStart / (monthsSinceInvestmentStart + coastFireReachedMonthsInFuture)) * 100
-        : 0;
+
 </script>
 
 <div class="stats"></div>
 <div class="row circles">
     <div class="column">
-        <PercentCircle percent={Math.round(coastFireReachedPercentage)} title="Coast FIRE" />
+        <PercentCircle percent={coastFireReachedPercentage} title="Coast FIRE" />
     </div>
     <div class="column">
-        <PercentCircle percent={Math.round(fireReachedPercentage)} title="FIRE" />
+        <PercentCircle percent={fireReachedPercentage} title="FIRE" />
     </div>
     <div class="column">
         <MonthCircle numberOfMonths={derivedOptions.fireMonthsFractional} title="FI months" />
