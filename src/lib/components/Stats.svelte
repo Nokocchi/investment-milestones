@@ -1,5 +1,6 @@
 <script lang="ts">
     import { CURRENT_DATETIME, getMonth, monthsInAYear, workHoursPerYear, type Options } from "../shared/constants";
+    import LabelAndText from "./LabelAndText.svelte";
     import MonthCircle from "./MonthCircle.svelte";
     import PercentCircle from "./PercentCircle.svelte";
 
@@ -16,9 +17,9 @@
         const fireAmount = (options.monthlyExpensesAfterTax * 12) / (options.safeWithdrawalRatePercentage / 100);
         for (const [i, networthAtThisMonth] of netWorthByMonth.entries()) {
             const monthsLeft = netWorthByMonth.length - i;
-            const monthlyInterest = (1 + ((options.interestPercent / 100) / 12));
+            const monthlyInterest = 1 + options.interestPercent / 100 / 12;
             const noContributionsFinalAmount = networthAtThisMonth * Math.pow(monthlyInterest, monthsLeft);
-            if(noContributionsFinalAmount > fireAmount){
+            if (noContributionsFinalAmount > fireAmount) {
                 return i;
             }
         }
@@ -26,50 +27,49 @@
     };
 
     const getMonthsAsYearMonthString = (months: number | null) => {
-        if(!months){
+        if (!months) {
             return "";
         }
 
         let coastFireReachedYearsInFuture = months / monthsInAYear;
         let coastFireReachedYearsInFutureFloored = Math.floor(coastFireReachedYearsInFuture);
         let coastFireReachedMonthPart = Math.ceil((coastFireReachedYearsInFuture % 1) * monthsInAYear);
-        
-        if (coastFireReachedYearsInFuture == 0 && coastFireReachedMonthPart == 0){
+
+        if (coastFireReachedYearsInFuture == 0 && coastFireReachedMonthPart == 0) {
             return "";
         }
-        
+
         let yearSegment = "";
-        if(coastFireReachedYearsInFutureFloored != 0){
-            yearSegment = `${coastFireReachedYearsInFutureFloored} years`
+        if (coastFireReachedYearsInFutureFloored != 0) {
+            yearSegment = `${coastFireReachedYearsInFutureFloored} years`;
         }
 
         let monthSegment = "";
-        if(coastFireReachedMonthPart != 0){
-            monthSegment = `${coastFireReachedMonthPart} months`
+        if (coastFireReachedMonthPart != 0) {
+            monthSegment = `${coastFireReachedMonthPart} months`;
         }
 
         let divider = "";
-        if(coastFireReachedMonthPart != 0 && coastFireReachedYearsInFutureFloored != 0){
+        if (coastFireReachedMonthPart != 0 && coastFireReachedYearsInFutureFloored != 0) {
             divider = ", ";
         }
 
         return yearSegment + divider + monthSegment;
-    }
+    };
 
     let { options, netWorthByMonthListNowAndFuture }: { options: Options; netWorthByMonthListNowAndFuture: number[] } = $props();
-
 
     let perHour = (options.currentNetWorth * (options.interestPercent / 100)) / workHoursPerYear;
     let fireMonths = (options.currentNetWorth * (options.safeWithdrawalRatePercentage / 100)) / options.monthlyExpensesAfterTax;
 
-    let safeWithdrawalPerMonth = (options.currentNetWorth * (options.safeWithdrawalRatePercentage / 100)) / monthsInAYear
+    let safeWithdrawalPerMonth = (options.currentNetWorth * (options.safeWithdrawalRatePercentage / 100)) / monthsInAYear;
 
     let investmentStartMonth: number | null = options.investmentStart ? getMonth(options.investmentStart) : null;
     let monthsInvestedSoFar: number | null = investmentStartMonth ? getMonth(CURRENT_DATETIME) - investmentStartMonth : null;
 
     let coastFireReachedMonthsInFuture: number = getCoastFireReachedMonthsInFuture(options, netWorthByMonthListNowAndFuture);
-    let coastFireReachedPercentage = monthsInvestedSoFar === null ? 0 : (monthsInvestedSoFar / (monthsInvestedSoFar + coastFireReachedMonthsInFuture)) * 100;
-    
+    let coastFireReachedPercentage =
+        monthsInvestedSoFar === null ? 0 : (monthsInvestedSoFar / (monthsInvestedSoFar + coastFireReachedMonthsInFuture)) * 100;
 
     let fireNumber = (options.monthlyExpensesAfterTax * monthsInAYear) / (options.safeWithdrawalRatePercentage / 100);
     let fireMonthsInFuture = fireHowManyMonthsInFuture(netWorthByMonthListNowAndFuture, fireNumber);
@@ -83,45 +83,36 @@
 <div class="stats"></div>
 <div class="row">
     <div class="column">
-        Coast FIRE
-        <PercentCircle percent={Math.round(coastFireReachedPercentage)} />
+        <PercentCircle percent={Math.round(coastFireReachedPercentage)} title="Coast FIRE" />
     </div>
     <div class="column">
-        FIRE
-        <PercentCircle percent={Math.round(fireReachedPercentage)} />
+        <PercentCircle percent={Math.round(fireReachedPercentage)} title="FIRE" />
     </div>
     <div class="column">
-        <p>Financially independent months per year</p>
-        <MonthCircle numberOfMonths={fireMonths} />
+        <MonthCircle numberOfMonths={fireMonths} title="FI months per year" />
     </div>
 </div>
 
-Net worth
-<p>{Math.round(options.currentNetWorth).toLocaleString()} {options.currency} net worth</p>
-<br>
+<div class="row">
+    <div class="column">
+        <LabelAndText label={"Net worth"} text={`${Math.round(options.currentNetWorth).toLocaleString()} ${options.currency} net worth`} />
+        <LabelAndText label={"Earn per work hour"} text={`${Math.round(perHour).toLocaleString()} ${options.currency} per hour`} />
+        <LabelAndText
+            label={"Monthly interest"}
+            text={`${Math.round(monthlyInterest).toLocaleString()} ${options.currency} monthly interest`}
+        />
+        <LabelAndText
+            label={"Safe monthly withdrawal"}
+            text={`${Math.round(safeWithdrawalPerMonth).toLocaleString()} ${options.currency} safe monthly withdrawal`}
+        />
+    </div>
+    <div class="column">
+        <LabelAndText label={"Investing for"} text={getMonthsAsYearMonthString(monthsInvestedSoFar)} />
+        <LabelAndText label={"Time until Coast FIRE"} text={getMonthsAsYearMonthString(coastFireReachedMonthsInFuture)} />
+        <LabelAndText label={"Time left until retirement"} text={getMonthsAsYearMonthString(netWorthByMonthListNowAndFuture.length - 1)} />
+    </div>
+</div>
 
-Investing for
-<p>{getMonthsAsYearMonthString(monthsInvestedSoFar)}</p>
-<br>
-
-Earn per work hour
-<p>{Math.round(perHour).toLocaleString()} {options.currency} per hour</p>
-<br>
-
-Monthly interest
-<p>{Math.round(monthlyInterest).toLocaleString()} {options.currency} monthly interest</p>
-<br>
-
-Safe monthly withdrawal
-<p>{Math.round(safeWithdrawalPerMonth).toLocaleString()} {options.currency} safe monthly withdrawal</p>
-<br>
-
-Time until Coast FIRE
-<p>{getMonthsAsYearMonthString(coastFireReachedMonthsInFuture)}</p>
-<br>
-
-Time left until retirement
-<p>{getMonthsAsYearMonthString(netWorthByMonthListNowAndFuture.length - 1)}</p>
 <style>
     .column {
         display: flex;

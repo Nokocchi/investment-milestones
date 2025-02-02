@@ -21,4 +21,8 @@
 <p>The entire net worth specified is used to calculate how close you are to FIRE. So do not include net worth from an investment account that you can only reach at a certain age in the future, unless you only plan to FIRE after this age.</p>
 
 <style>
+	h1 {
+  		font-size: 3.2em;
+  		line-height: 1.1;
+	}
 </style>

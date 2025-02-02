@@ -132,6 +132,7 @@ export interface CircleProps extends Omit<SvgAttrs, 'width' | 'height'> {
     animation?: boolean;
     textStyle?: string;
     size?: number;
+    title?: string;
 }
 
 export const getMonth = (date: Date): number => {

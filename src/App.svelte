@@ -35,6 +35,7 @@
   .content-container {
     overflow-y: auto;
     flex-grow: 1;
+    padding: 0.5rem;
   }
 
   .page-container {
