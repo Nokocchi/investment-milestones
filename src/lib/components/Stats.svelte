@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { getMonthsAsYearMonthString } from "../shared/constants";
     import { options } from "../shared/shared.svelte";
     import type { DerivedOptions } from "../shared/types";
+    import { getMonthsAsYearMonthString } from "../shared/utils";
     import LabelAndText from "./LabelAndText.svelte";
     import LabelAndToggle from "./LabelAndToggle.svelte";
     import MonthCircle from "./MonthCircle.svelte";
@@ -19,11 +19,11 @@
         coastFireReachedMonthsInFuture: number | null;
     } = $props();
 
-    const coastFireReachedPercentage = derivedOptions.monthsSinceInvestmentStart && coastFireReachedMonthsInFuture
+    const coastFireReachedPercentage = derivedOptions.monthsSinceInvestmentStart && coastFireReachedMonthsInFuture !== null
         ? (derivedOptions.monthsSinceInvestmentStart / (derivedOptions.monthsSinceInvestmentStart + coastFireReachedMonthsInFuture)) * 100
         : null;
 
-    const fireReachedPercentage = derivedOptions.monthsSinceInvestmentStart && fireMonthsInFuture
+    const fireReachedPercentage = derivedOptions.monthsSinceInvestmentStart && fireMonthsInFuture !== null
         ? (derivedOptions.monthsSinceInvestmentStart / (derivedOptions.monthsSinceInvestmentStart + fireMonthsInFuture)) * 100
         : null;
 
@@ -69,8 +69,8 @@
             text={`${derivedOptions.retireByAge} years | ${getMonthsAsYearMonthString(netWorthByMonthListNowAndFuture.length - 1)} from now`}
         />
         <LabelAndText label={"Investing for"} text={getMonthsAsYearMonthString(derivedOptions.monthsSinceInvestmentStart)} />
-        <LabelAndText label={"Until Coast FIRE"} text={getMonthsAsYearMonthString(coastFireReachedMonthsInFuture)} />
-        <LabelAndText label={"Until FIRE"} text={getMonthsAsYearMonthString(fireMonthsInFuture)} />
+        <LabelAndText label={"Until Coast FIRE"} text={getMonthsAsYearMonthString(coastFireReachedMonthsInFuture, "Reached")} />
+        <LabelAndText label={"Until FIRE"} text={getMonthsAsYearMonthString(fireMonthsInFuture, "Reached")} />
         <LabelAndToggle label="Expand all milestones" bind:checked={options.showAllMilestones} />
     </div>
 </div>

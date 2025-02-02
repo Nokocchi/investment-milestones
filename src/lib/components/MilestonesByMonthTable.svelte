@@ -3,7 +3,6 @@
         CURRENT_DATETIME,
         CURRENT_MONTH,
         CURRENT_YEAR,
-        getMonth as getAbsoluteMonth,
         monthNames,
         monthsInAYear,
         ReachedState,
@@ -13,18 +12,19 @@
         milestones_annualGrowth,
         milestones_annualInterest,
         milestones_bigNetWorth,
-        milestones_extraMonthsOfInvestment,
-        milestones_financiallyIndependentMonths,
-        milestones_interestPercentageOfContribution,
-        milestones_interestPercentageOfMonthlySpending,
-        milestones_monthlyGrowth,
+        milestones_extraMonthsOfInvestmentGenerator,
+        milestones_financiallyIndependentMonthsGenerator,
+        milestones_interestPercentageOfContributionGenerator,
+        milestones_interestPercentageOfMonthlySpendingGenerator,
+        milestones_monthlyGrowthGenerator,
         milestones_monthlyInterest,
-        milestones_ownContributionPercentageOfGrowth,
-        milestones_perHour,
+        milestones_ownContributionPercentageOfGrowthGenerator,
+        milestones_perHourGenerator,
         milestones_safeMonthlyWithdrawal,
     } from "../shared/milestones";
     import { options } from "../shared/shared.svelte";
     import type { DerivedOptions, Milestone, MonthData, Options, YearData, YearHeader } from "../shared/types";
+    import { getAbsoluteMonth, getMonthsAsYearMonthString, range } from "../shared/utils";
     import Year from "../timeline/Year.svelte";
     import Stats from "./Stats.svelte";
 
@@ -121,7 +121,8 @@
         const simulatedPreviousMonth = (options.currentNetWorth - options.monthlyContribution) / (1 + options.monthlyInterestDivided);
         const cutoffForMilestonesMonth0 = Math.max(0, simulatedPreviousMonth);
 
-        for (let perHour of milestones_perHour) {
+        
+        for (let perHour of milestones_perHourGenerator()) {
             const needed = (perHour * workHoursPerYear) / options.annualInterestDivided;
             const message = `${perHour} ${options.currency} per hour`;
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
@@ -139,14 +140,14 @@
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
         }
 
-        for (let extraMonthOfInvestment of milestones_extraMonthsOfInvestment) {
+        for (let extraMonthOfInvestment of milestones_extraMonthsOfInvestmentGenerator()) {
             const annualInterestNeeded = extraMonthOfInvestment * options.monthlyContribution;
             const needed = annualInterestNeeded / options.annualInterestDivided;
             const message = extraMonthOfInvestment + ` extra months of investment per year`;
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
         }
 
-        for (let monthlyGrowth of milestones_monthlyGrowth(options.monthlyContribution)) {
+        for (let monthlyGrowth of milestones_monthlyGrowthGenerator(options.monthlyContribution)) {
             const monthlyInterestNeeded = monthlyGrowth - options.monthlyContribution;
             const needed = monthlyInterestNeeded / options.monthlyInterestDivided;
             const message = `${monthlyGrowth.toLocaleString()} ${options.currency} monthly growth`;
@@ -160,7 +161,7 @@
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
         }
 
-        for (let ownContributionPercentage of milestones_ownContributionPercentageOfGrowth) {
+        for (let ownContributionPercentage of milestones_ownContributionPercentageOfGrowthGenerator()) {
             const ownContributionPercentageDivided = ownContributionPercentage / 100;
             const monthlyGrowthNeeded = options.monthlyContribution / ownContributionPercentageDivided;
             const monthlyInterestNeeded = monthlyGrowthNeeded - options.monthlyContribution;
@@ -169,7 +170,7 @@
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
         }
 
-        for (let interestPercentageOfContribution of milestones_interestPercentageOfContribution) {
+        for (let interestPercentageOfContribution of milestones_interestPercentageOfContributionGenerator()) {
             const interestPercentageDivided = interestPercentageOfContribution / 100;
             const monthlyInterestNeeded = interestPercentageDivided * options.monthlyContribution;
             const needed = monthlyInterestNeeded / options.monthlyInterestDivided;
@@ -181,22 +182,24 @@
             const message = `` + bigNetWorth.toLocaleString();
             //addToMap(netWorthMilestoneMap, bigNetWorth, message);
         }
+            
 
-        for (let interestPercentageOfMonthlySpending of milestones_interestPercentageOfMonthlySpending) {
+        for (let interestPercentageOfMonthlySpending of milestones_interestPercentageOfMonthlySpendingGenerator()) {
             const interestPercentageDivided = interestPercentageOfMonthlySpending / 100;
             const monthlyInterestNeeded = interestPercentageDivided * options.monthlyExpensesAfterTax;
             const needed = monthlyInterestNeeded / options.monthlyInterestDivided;
-            const message = `Interest is ${interestPercentageOfMonthlySpending}% of monthly budget`;
+            const message = `Monthly interest is ${interestPercentageOfMonthlySpending}% of monthly budget`;
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
         }
 
+        
         for (let safeMonthlyWithdrawal of milestones_safeMonthlyWithdrawal) {
             const needed = safeMonthlyWithdrawal / options.monthlySafeWithdrawalRateDivided;
             const message = `${safeMonthlyWithdrawal.toLocaleString()} ${options.currency} can safely be withdrawn per month`;
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
         }
 
-        for (let financiallyIndependentMonths of milestones_financiallyIndependentMonths) {
+        for (let financiallyIndependentMonths of milestones_financiallyIndependentMonthsGenerator()) {
             const needed = (options.monthlyExpensesAfterTax * financiallyIndependentMonths) / options.safeWithdrawalRateDivided;
             const message =
                 financiallyIndependentMonths == 12 ? "Financially independent" : `${financiallyIndependentMonths} FIRE months / year`;
@@ -208,41 +211,52 @@
 
             if (fireMonthsInFuture) {
                 const totalMonthsToFire = investedMonthsSoFar + fireMonthsInFuture;
-                for (const percent of [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]) {
+                for (const percent of range(10, 100, 10, true)) {
                     const firePercentageTotalMonths = Math.ceil(totalMonthsToFire * (percent / 100));
-                    const fireMonthsInFuture = firePercentageTotalMonths - investedMonthsSoFar;
-                    if (fireMonthsInFuture > 0) {
+                    const firePercentageMonthsInFuture = firePercentageTotalMonths - investedMonthsSoFar;
+                    if (firePercentageMonthsInFuture > 0) {
                         // Your fire number can be calculated accurately, and is usually a round number. Make this milestone look nicer
                         if (percent == 100) {
                             addToMap(netWorthMilestoneMap, options.fireNumber, `${percent}% of FIRE`, cutoffForMilestonesMonth0);
                         } else {
                             addToMap(
                                 netWorthMilestoneMap,
-                                netWorthByMonthListNowAndFuture[fireMonthsInFuture],
+                                netWorthByMonthListNowAndFuture[firePercentageMonthsInFuture],
                                 `${percent}% of FIRE`,
                                 cutoffForMilestonesMonth0,
                             );
                         }
                     }
                 }
+
+                for (let i = 1; fireMonthsInFuture - (i * monthsInAYear) > 0; i++){
+                    const month = fireMonthsInFuture - (i * monthsInAYear);
+                    addToMap(netWorthMilestoneMap, netWorthByMonthListNowAndFuture[month], `${i} years to FIRE`, cutoffForMilestonesMonth0);
+                }   
             }
             if (coastFireReachedMonthsInFuture) {
                 const totalMonthsToCoastFire = investedMonthsSoFar + coastFireReachedMonthsInFuture;
 
-                for (const percent of [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]) {
+                for (const percent of range(10, 100, 10, true)) {
                     const coastFirePercentageTotalMonths = Math.ceil(totalMonthsToCoastFire * (percent / 100));
-                    const coastFireMonthsInFuture = coastFirePercentageTotalMonths - investedMonthsSoFar;
-                    if (coastFireMonthsInFuture > 0) {
+                    const coastFirePercentageMonthsInFuture = coastFirePercentageTotalMonths - investedMonthsSoFar;
+                    if (coastFirePercentageMonthsInFuture > 0) {
                         addToMap(
                             netWorthMilestoneMap,
-                            netWorthByMonthListNowAndFuture[coastFireMonthsInFuture],
-                            `${percent}% of FIRE`,
+                            netWorthByMonthListNowAndFuture[coastFirePercentageMonthsInFuture],
+                            `${percent}% of coast FIRE`,
                             cutoffForMilestonesMonth0,
                         );
                     }
                 }
+
+                for (let i = 1; coastFireReachedMonthsInFuture - (i * monthsInAYear) > 0; i++){
+                    const month = coastFireReachedMonthsInFuture - (i * monthsInAYear);
+                    addToMap(netWorthMilestoneMap, netWorthByMonthListNowAndFuture[month], `${i} years to Coast FIRE`, cutoffForMilestonesMonth0);
+                }   
             }
         }
+            
 
         // Is there really not a better way to sort a map by its keys in Javascript?
         return new Map([...netWorthMilestoneMap].sort((a, b) => a[0] - b[0]));
@@ -271,14 +285,7 @@
 
             let calendarMonth = (CURRENT_MONTH + i) % monthsInAYear;
 
-            if (i == 0) {
-                yearsAndMonthsUntil = "Now";
-            } else {
-                if (i > monthsInAYear - 1) {
-                    yearsAndMonthsUntil += Math.floor(i / monthsInAYear) + " years, ";
-                }
-                yearsAndMonthsUntil += (i % monthsInAYear) + " months";
-            }
+            yearsAndMonthsUntil = getMonthsAsYearMonthString(i, "Now");
 
             let monthReachedState: ReachedState;
             if (networthAtThisMonth <= currentNetWorth) {

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { range } from "../shared/utils";
+
 
   const {
     numberOfMonths: numberOfMonthsReached = 0,
@@ -38,7 +40,7 @@
 {title}
 <svg xmlns="http://www.w3.org/2000/svg" width={svgSize} height={svgSize} viewBox="-25 -25 400 400" {...rest}>
   <circle stroke={bgColor} cx={radius} cy={radius} r={radius} stroke-width={lineWidth} fill="none" />
-  {#each [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as segmentNumber}
+  {#each range(12) as segmentNumber}
     {#if segmentNumber < numberOfMonthsReached}
       <circle
         stroke="hsl({(120 / 12) * segmentNumber}, 100%, 50%)"

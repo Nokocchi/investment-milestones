@@ -1,6 +1,6 @@
 import { range } from "./utils";
 
-export const milestones_perHour = range(5, 305, 5);
+export const milestones_perHourGenerator = () => {return range(5, 305, 5)};
 export const milestones_annualInterest = [
     5000, 10000, 20000, 25000, 30000, 40000, 50000, 60000, 70000, 75000, 80000, 90000, 100000, 110000, 120000, 125000, 130000, 140000,
     150000, 160000, 170000, 175000, 180000, 190000, 200000, 210000, 220000, 225000, 230000, 240000, 250000, 260000, 270000, 275000,
@@ -12,26 +12,26 @@ export const milestones_monthlyInterest = [
     8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000, 24000, 25000, 26000,
     27000, 28000, 29000, 30000, 31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000,
 ];
-export const milestones_extraMonthsOfInvestment = range(1, 37);
-export const milestones_monthlyGrowth = (monthlyContribution: number) => range(monthlyContribution, 4 * monthlyContribution, 5000);
+export const milestones_extraMonthsOfInvestmentGenerator = () => {return range(1, 37)};
+export const milestones_monthlyGrowthGenerator = (monthlyContribution: number) => {return range(monthlyContribution, 4 * monthlyContribution, 5000)};
 export const milestones_annualGrowth = [
     180000, 190000, 200000, 210000, 220000, 225000, 230000, 240000, 250000, 260000, 270000, 275000, 280000, 290000, 300000, 310000,
     320000, 325000, 330000, 340000, 350000, 360000, 370000, 375000, 380000, 390000, 400000, 410000, 420000, 425000, 430000, 440000,
     450000, 460000, 470000, 475000, 480000, 490000, 500000,
 ];
-export const milestones_ownContributionPercentageOfGrowth = range(100, 0, -5);
-export const milestones_interestPercentageOfContribution = range(5, 205, 5);
+export const milestones_ownContributionPercentageOfGrowthGenerator = () => {return range(100, 0, -5)};
+export const milestones_interestPercentageOfContributionGenerator = () => {return range(5, 205, 5)};
 export const milestones_bigNetWorth = [
     10000, 25000, 50000, 75000, 100000, 125000, 150000, 175000, 200000, 250000, 300000, 350000, 400000, 450000, 500000, 600000, 700000,
     750000, 800000, 900000, 1000000, 1250000, 1500000, 1750000, 2000000, 2250000, 2500000, 2750000, 3000000, 3250000, 3500000, 3750000,
     4000000, 4250000, 4500000, 4750000, 5000000, 5250000, 5500000, 5750000, 6000000, 6250000, 650000, 6750000, 7000000, 7250000,
     7500000, 7750000, 8000000,
 ];
-export const milestones_interestPercentageOfMonthlySpending = range(5, 205, 5);
+export const milestones_interestPercentageOfMonthlySpendingGenerator = () => {return range(5, 205, 5)};
 export const milestones_safeMonthlyWithdrawal = [
     100, 200, 250, 300, 400, 500, 600, 700, 750, 800, 900, 1000, 1250, 1500, 1750, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 6000, 7000,
     8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000, 24000, 25000, 26000,
     27000, 28000, 29000, 30000, 31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000,
 ];
 
-export const milestones_financiallyIndependentMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+export const milestones_financiallyIndependentMonthsGenerator = () => {return range(1, 13)};
