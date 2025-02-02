@@ -1,11 +1,12 @@
-import { MenuChoice, type Options } from "./constants";
+import { MenuChoice } from "./constants";
+import type { Options } from "./types";
 
 export const options: Options = $state({
     monthlyContribution: 25408,
     currentAge: 29,
     currency: "SEK",
     currentNetWorth: 470000,
-    interestPercent: 7,
+    annualInterestPercent: 7,
     numberOfYears: 30,
     monthlyExpensesAfterTax: 28000,
     safeWithdrawalRatePercentage: 4,

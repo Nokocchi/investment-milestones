@@ -42,3 +42,43 @@ export interface CircleProps extends Omit<SvgAttrs, 'width' | 'height'> {
     size?: number;
     title?: string;
 }
+
+export type Options = {
+    monthlyContribution?: number;
+    currentAge?: number;
+    currency?: string;
+    currentNetWorth?: number;
+    annualInterestPercent?: number;
+    monthlyExpensesAfterTax?: number;
+    safeWithdrawalRatePercentage?: number;
+    showAllMilestones: boolean;
+    investmentStart?: string;
+    retireByAge?: number;
+}
+
+export type DerivedOptions = {
+    monthlyContribution: number;
+    currentAge: number;
+    currency: string;
+    currentNetWorth: number;
+    annualInterestPercent: number;
+    annualInterestDivided: number;
+    monthlyInterestDivided: number;
+    monthlyExpensesAfterTax: number;
+    annualExpensesAfterTax: number;
+    annualInterestGrowth: number;
+    monthlyInterestGrowth: number;
+    safeWithdrawalRatePercentage: number;
+    safeWithdrawalRateDivided: number;
+    monthlySafeWithdrawalRateDivided: number;
+    safeannualWithdrawal: number;
+    safeMonthlyWithdrawal: number;
+    showAllMilestones: boolean;
+    investmentStart?: Date;
+    retireByAge: number;
+    monthsSinceInvestmentStart: number | null;
+    shouldGenerateData: boolean;
+    fireNumber: number;
+    perHour: number;
+    fireMonthsFractional: number;
+}

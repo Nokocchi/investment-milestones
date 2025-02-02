@@ -7,7 +7,7 @@
     <div class="column">
         <LabelAndInput label="Monthly Contribution" type="number" bind:value={options.monthlyContribution} />
         <LabelAndInput label="Current net worth" type="number" bind:value={options.currentNetWorth} />
-        <LabelAndInput label="Annual interest %" type="number" bind:value={options.interestPercent} />
+        <LabelAndInput label="Annual interest %" type="number" bind:value={options.annualInterestPercent} />
         <LabelAndInput label="Safe withdrawal rate %" type="number" bind:value={options.safeWithdrawalRatePercentage} />
         <LabelAndInput label="Monthly expenses after tax (excluding current monthly contribution)" type="number" bind:value={options.monthlyExpensesAfterTax} />
     </div>

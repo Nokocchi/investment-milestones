@@ -1,10 +1,9 @@
 # NEW MILESTONES
-# - Percentage of your current hourly rate at work
+# - Percentage of your current hourly rate at work (Maybe an optional monthly income field? Before or after tax, including pension and other perks or not?)
 # - "stop investing here and you will reach your fire number by age x/in x years"?
 # - Percentage towards coast fire
-# - x months of financial independent months
-# - x years until FIRE
 # - x years until Coast FIRE
+# - x years until FIRE
 
 # LONG TERM IDEAS
 # Show certain milestones graph, with net worth as function of months of investment
@@ -13,8 +12,8 @@
 # Turn it into a whole page of various visualized investment things. Like, a graph showing "if you invested x every month from now, how much would you have compared to if you started y years ago? What if you had a principal of z in both scenarios? How much would somebody have to invest if they want to catch up to you in x years, and they started investing y years later than you?"
 
 # TODO:
-# FIRE months milestones seem to disappear when you change your monthly contributions - range/generator function?
+# Some milestones seem to disappear when you change your monthly contributions - range/generator function?
 # Only show the "most recent" milestones at the current month, not all the ones you have reached so far
 # Save options in cookies/local storage
-# Refactor codebase to remove spaghetti
 # tooltip buttons to make things easier to understand
+# Make milestone table look nicer

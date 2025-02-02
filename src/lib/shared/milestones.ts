@@ -34,4 +34,4 @@ export const milestones_safeMonthlyWithdrawal = [
     27000, 28000, 29000, 30000, 31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000,
 ];
 
-export const milestones_financiallyIndependentMonths = range(1, 13);
+export const milestones_financiallyIndependentMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
