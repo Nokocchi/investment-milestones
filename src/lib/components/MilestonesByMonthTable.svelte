@@ -45,6 +45,7 @@
         const safeMonthlyWithdrawal = safeannualWithdrawal / monthsInAYear;
         const showAllMilestones = opts.showAllMilestones;
         const investmentStart = opts.investmentStart ? new Date(opts.investmentStart) : undefined;
+        const coastFromDate = opts.coastFromDate ? new Date(opts.coastFromDate) : undefined;
         const retireByAge = opts.retireByAge || 0;
         const investmentStartMonthAbsolute: number | null = investmentStart ? getAbsoluteMonth(investmentStart) : null;
         const monthsSinceInvestmentStart: number | null = investmentStartMonthAbsolute
@@ -83,16 +84,20 @@
             fireNumber: fireNumber,
             perHour: perHour,
             fireMonthsFractional: fireMonthsFractional,
+            coastFromDate: coastFromDate
         };
     };
 
     let derivedOptions: DerivedOptions = $derived(getDerivedOptions(options));
 
     function getNetWorthByMonth(options: DerivedOptions) {
-        let netWorthList = [options.currentNetWorth];
-        let numberOfYears = options.retireByAge - options.currentAge;
+        const netWorthList = [options.currentNetWorth];
+        const numberOfYears = options.retireByAge - options.currentAge;
+        const coastFromDateMonthsInFuture = options.coastFromDate ? getAbsoluteMonth(options.coastFromDate) - getAbsoluteMonth(CURRENT_DATETIME) : null;
+
         for (let i = 0; i < numberOfYears * monthsInAYear; i++) {
-            let amount = netWorthList[i] * (1 + options.monthlyInterestDivided) + options.monthlyContribution;
+            const monthlyContribution = (coastFromDateMonthsInFuture && coastFromDateMonthsInFuture <= i) ? 0 : options.monthlyContribution;
+            const amount = netWorthList[i] * (1 + options.monthlyInterestDivided) + monthlyContribution;
             netWorthList.push(amount);
         }
         return netWorthList;
@@ -314,14 +319,18 @@
                 }
             }
 
+            const coastFromDateMonthsInFuture = options.coastFromDate ? getAbsoluteMonth(options.coastFromDate) - getAbsoluteMonth(CURRENT_DATETIME) : null;
+            const coasting = coastFromDateMonthsInFuture && coastFromDateMonthsInFuture <= i ? true : false; // Surely there has to be a better way than this..
+            const monthlyContribution = coasting ? 0 : options.monthlyContribution;
             let monthData: MonthData = {
                 estimatedNetWorth: networthAtThisMonth,
                 monthName: monthNames[calendarMonth],
                 milestones: milestones,
-                monthlyGrowth: Math.max(0, networthNextMonth - networthAtThisMonth - options.monthlyContribution),
+                monthlyGrowth: Math.max(0, (networthNextMonth - networthAtThisMonth) - monthlyContribution),
                 reachedState: monthReachedState,
                 yearsAndMonthsUntil: yearsAndMonthsUntil,
                 percentageOfReachingThis: reachedPercentage,
+                coasting: coasting
             };
 
             // It's either the first month at all, or January. Add a new year

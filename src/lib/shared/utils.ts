@@ -19,18 +19,18 @@ export const getAbsoluteMonth = (date: Date): number => {
     return date.getFullYear() * 12 + date.getMonth();
 };
 
-export const getMonthsAsYearMonthString = (months: number | null, reachedText: string = "") => {
+export const getMonthsAsYearMonthString = (months: number | null, reachedText: string = "", nullText: string = "Impossible") => {
     if(months == 0){
         return reachedText;
     }
     
     if (!months) {
-        return "";
+        return nullText;
     }
 
     let yearsInFuture = months / monthsInAYear;
     let yearsInFutureFloored = Math.floor(yearsInFuture);
-    let monthPart = Math.ceil((yearsInFuture % 1) * monthsInAYear);
+    let monthPart = months % monthsInAYear;
 
     if (yearsInFuture == 0 && monthPart == 0) {
         return "";

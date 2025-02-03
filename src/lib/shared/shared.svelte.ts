@@ -13,7 +13,8 @@ export const options: Options = $state({
     test: 0,
     showAllMilestones: false,
     investmentStart: "2023-05-01",
-    retireByAge: 50
+    retireByAge: 50,
+    coastFromDate: null
 });
 
 export let menuChoice: MenuChoice = $state(MenuChoice.MAIN);

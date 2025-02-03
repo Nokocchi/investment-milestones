@@ -16,7 +16,7 @@
         <LabelAndInput label="Current age" type="number" bind:value={options.currentAge} />
         <LabelAndInput label="Retire by age" type="number" bind:value={options.retireByAge} />
         <LabelAndInput label="Currency" type="text" bind:value={options.currency} />
-       
+        <LabelAndInput label="Coast from" type="date" bind:value={options.coastFromDate} />
     </div>
 </div>
 

@@ -11,4 +11,11 @@
 # Save options in cookies/local storage
 # tooltip buttons to make things easier to understand
 # Make milestone table look nicer
-# Option for "coasting from x month", which sets your monthly contribution to 0 from that month onward, 
+# Starting to wonder if it makes sense to have a class/object for each month instead of just number[]. 
+# Stats: 
+# - Estimated net worth at retirement
+# - coasting from
+# Current FIRE and Coast Fire numbers are generated based on estimated growth. If you pick that you want to coast from x date, the "coast from" stat feels a bit redundant..?
+# Label and text: Optional 2nd line of text
+# "Time from now" in table is broken - showing the same months multiple times in a row
+# Some better checks for the coasting date picker: Do I want to limit the date from it? How to handle if it's before current date? etc.

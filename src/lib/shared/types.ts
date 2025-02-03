@@ -9,6 +9,7 @@ export type MonthData = {
     percentageOfReachingThis: number | null;
     monthlyGrowth: number;
     milestones: Milestone[];
+    coasting: boolean;
 };
 
 export type YearHeader = {
@@ -54,6 +55,7 @@ export type Options = {
     showAllMilestones: boolean;
     investmentStart?: string;
     retireByAge?: number;
+    coastFromDate?: string | null;
 }
 
 export type DerivedOptions = {
@@ -81,4 +83,5 @@ export type DerivedOptions = {
     fireNumber: number;
     perHour: number;
     fireMonthsFractional: number;
+    coastFromDate?: Date;
 }

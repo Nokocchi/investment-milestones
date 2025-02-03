@@ -12,11 +12,12 @@
     tableData.push([Math.round(milestone.neededNetWorth).toLocaleString() + " " + options.currency, milestone.message]);
   }
   let noMilestones = tableData.length <= 0;
+  let coasting = month.coasting;
   let hideMilestones = $state(true);
   let showAllMilestones = $derived(options.showAllMilestones);
 </script>
 
-<div class={["month-wrapper", ReachedState[reachedState]]} onclick={() => (hideMilestones = !hideMilestones)}>
+<div class={["month-wrapper", ReachedState[reachedState], {coasting}]} onclick={() => (hideMilestones = !hideMilestones)}>
   <div class="month-header-wrapper">
     <div class="left month-column">
       {month.monthName}
@@ -54,6 +55,10 @@
   .month-wrapper {
     display: flex;
     flex-direction: column;
+  }
+
+  .month-wrapper.coasting {
+    background: green;
   }
 
   .month-wrapper.REACHED {
