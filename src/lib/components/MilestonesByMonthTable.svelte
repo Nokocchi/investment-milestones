@@ -3,6 +3,8 @@
         CURRENT_DATETIME,
         CURRENT_MONTH,
         CURRENT_YEAR,
+        CURRENT_DATETIME_ABSOLUTE,
+        DEFAULT_RETIREMENT_AGE,
         monthNames,
         monthsInAYear,
         ReachedState,
@@ -24,7 +26,7 @@
     } from "../shared/milestones";
     import { options } from "../shared/shared.svelte";
     import type { DerivedOptions, Milestone, MonthData, Options, YearData, YearHeader } from "../shared/types";
-    import { getAbsoluteMonth, getMonthsAsYearMonthString, range } from "../shared/utils";
+    import { getAbsoluteMonth, getFutureValueAnnual, getMonthlyContributionNeededForFutureValue, getMonthsAsYearMonthString, getNoContributionFinalAmount, getPrincipalNeededForNoContributionFutureValue, range } from "../shared/utils";
     import Year from "../timeline/Year.svelte";
     import Stats from "./Stats.svelte";
 
@@ -36,6 +38,7 @@
         const annualInterestPercent = opts.annualInterestPercent || 0;
         const annualInterestDivided = annualInterestPercent / 100;
         const monthlyInterestDivided = annualInterestDivided / monthsInAYear;
+        const monthlyInterestPlusOne = 1 + monthlyInterestDivided;
         const monthlyExpensesAfterTax = opts.monthlyExpensesAfterTax || 0;
         const annualExpensesAfterTax = monthlyExpensesAfterTax * monthsInAYear;
         const safeWithdrawalRatePercentage = opts.safeWithdrawalRatePercentage || 0;
@@ -44,19 +47,19 @@
         const safeannualWithdrawal = currentNetWorth * safeWithdrawalRateDivided;
         const safeMonthlyWithdrawal = safeannualWithdrawal / monthsInAYear;
         const showAllMilestones = opts.showAllMilestones;
-        const investmentStart = opts.investmentStart ? new Date(opts.investmentStart) : undefined;
+        const investmentStart = opts.investmentStart ? new Date(opts.investmentStart) : new Date();
         const coastFromDate = opts.coastFromDate ? new Date(opts.coastFromDate) : undefined;
-        const retireByAge = opts.retireByAge || 0;
-        const investmentStartMonthAbsolute: number | null = investmentStart ? getAbsoluteMonth(investmentStart) : null;
-        const monthsSinceInvestmentStart: number | null = investmentStartMonthAbsolute
-            ? getAbsoluteMonth(CURRENT_DATETIME) - investmentStartMonthAbsolute
-            : null;
+        const coastFromDateMonthsInFuture = coastFromDate ? getAbsoluteMonth(coastFromDate) - CURRENT_DATETIME_ABSOLUTE : undefined;
+        const retireByAge = opts.retireByAge || DEFAULT_RETIREMENT_AGE;
+        const monthsUntilRetirement = (retireByAge - currentAge) * monthsInAYear;
+        const monthsSinceInvestmentStart = CURRENT_DATETIME_ABSOLUTE - getAbsoluteMonth(investmentStart);
         const annualInterestGrowth = currentNetWorth * annualInterestDivided;
         const monthlyInterestGrowth = annualInterestGrowth / monthsInAYear;
         const fireNumber = (monthlyExpensesAfterTax * monthsInAYear) / safeWithdrawalRateDivided;
         const perHour = (currentNetWorth * annualInterestDivided) / workHoursPerYear;
         const fireMonthsFractional = (currentNetWorth * safeWithdrawalRateDivided) / monthlyExpensesAfterTax;
-
+        const netWorthNeededNowForCoast = Math.ceil(getPrincipalNeededForNoContributionFutureValue(fireNumber, monthlyInterestPlusOne, monthsUntilRetirement));
+        const minimumMonthlyContributionsNeededToReachFire = Math.ceil(getMonthlyContributionNeededForFutureValue(fireNumber, currentNetWorth, monthsUntilRetirement, monthlyInterestDivided));
         const shouldGenerateData = retireByAge >= currentAge;
 
         return {
@@ -67,6 +70,7 @@
             annualInterestPercent: annualInterestPercent,
             annualInterestDivided: annualInterestDivided,
             monthlyInterestDivided: monthlyInterestDivided,
+            monthlyInterestPlusOne: monthlyInterestPlusOne,
             monthlyExpensesAfterTax: monthlyExpensesAfterTax,
             annualExpensesAfterTax: annualExpensesAfterTax,
             annualInterestGrowth: annualInterestGrowth,
@@ -79,12 +83,16 @@
             showAllMilestones: showAllMilestones,
             investmentStart: investmentStart,
             retireByAge: retireByAge,
+            monthsUntilRetirement: monthsUntilRetirement,
             monthsSinceInvestmentStart: monthsSinceInvestmentStart,
             shouldGenerateData: shouldGenerateData,
             fireNumber: fireNumber,
             perHour: perHour,
             fireMonthsFractional: fireMonthsFractional,
-            coastFromDate: coastFromDate
+            coastFromDate: coastFromDate,
+            coastFromDateMonthsInFuture: coastFromDateMonthsInFuture,
+            netWorthNeededNowForCoast: netWorthNeededNowForCoast,
+            minimumMonthlyContributionsNeededToReachFire: minimumMonthlyContributionsNeededToReachFire
         };
     };
 
@@ -97,7 +105,7 @@
 
         for (let i = 0; i < numberOfYears * monthsInAYear; i++) {
             const monthlyContribution = (coastFromDateMonthsInFuture && coastFromDateMonthsInFuture <= i) ? 0 : options.monthlyContribution;
-            const amount = netWorthList[i] * (1 + options.monthlyInterestDivided) + monthlyContribution;
+            const amount = (netWorthList[i] + monthlyContribution) * (1 + options.monthlyInterestDivided);
             netWorthList.push(amount);
         }
         return netWorthList;
@@ -375,8 +383,7 @@
     const getCoastFireReachedMonthsInFuture = (options: DerivedOptions, netWorthByMonth: number[]): number | null => {
         for (const [i, networthAtThisMonth] of netWorthByMonth.entries()) {
             const monthsLeft = netWorthByMonth.length - i;
-            const monthlyInterest = 1 + options.monthlyInterestDivided;
-            const noContributionsFinalAmount = networthAtThisMonth * Math.pow(monthlyInterest, monthsLeft);
+            const noContributionsFinalAmount = getNoContributionFinalAmount(networthAtThisMonth, options.monthlyInterestPlusOne, monthsLeft);
             if (noContributionsFinalAmount > options.fireNumber) {
                 return i;
             }

@@ -66,6 +66,7 @@ export type DerivedOptions = {
     annualInterestPercent: number;
     annualInterestDivided: number;
     monthlyInterestDivided: number;
+    monthlyInterestPlusOne: number;
     monthlyExpensesAfterTax: number;
     annualExpensesAfterTax: number;
     annualInterestGrowth: number;
@@ -78,10 +79,14 @@ export type DerivedOptions = {
     showAllMilestones: boolean;
     investmentStart?: Date;
     retireByAge: number;
-    monthsSinceInvestmentStart: number | null;
+    monthsUntilRetirement: number;
+    monthsSinceInvestmentStart: number;
     shouldGenerateData: boolean;
     fireNumber: number;
     perHour: number;
     fireMonthsFractional: number;
     coastFromDate?: Date;
+    coastFromDateMonthsInFuture?: number;
+    netWorthNeededNowForCoast: number;
+    minimumMonthlyContributionsNeededToReachFire: number;
 }

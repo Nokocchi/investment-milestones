@@ -1,3 +1,5 @@
+import { getAbsoluteMonth } from "./utils";
+
 export const monthNames = [
     "Jan",
     "Feb",
@@ -14,6 +16,7 @@ export const monthNames = [
 ];
 
 export const monthsInAYear = monthNames.length;
+export const DEFAULT_RETIREMENT_AGE = 67;
 
 export enum ReachedState {
     REACHED,
@@ -21,9 +24,17 @@ export enum ReachedState {
     IN_FUTURE
 }
 
+export const getLastMonth = () => {
+    let lastMonth = new Date();
+    lastMonth.setDate(0);
+    return lastMonth;
+}
+
+
 export const CURRENT_DATETIME = new Date();
 export const CURRENT_MONTH = CURRENT_DATETIME.getMonth();
 export const CURRENT_YEAR = CURRENT_DATETIME.getFullYear();
+export const CURRENT_DATETIME_ABSOLUTE = getAbsoluteMonth(CURRENT_DATETIME);
 
 export enum MenuChoice {
     MAIN,

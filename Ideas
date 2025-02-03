@@ -1,4 +1,5 @@
 # NEW MILESTONES
+# - None at the moment
 
 # LONG TERM IDEAS
 # Show certain milestones graph, with net worth as function of months of investment
@@ -6,16 +7,26 @@
 # Add option to track specific milestones? How can I make important milestones stand out? 
 # Turn it into a whole page of various visualized investment things. Like, a graph showing "if you invested x every month from now, how much would you have compared to if you started y years ago? What if you had a principal of z in both scenarios? How much would somebody have to invest if they want to catch up to you in x years, and they started investing y years later than you?"
 
-# TODO:
+# Other TODO:
 # Improved menu, maybe hamburger button and title bar? Maybe view for advanced stats, view for graph that dynamically lights up as you scroll down..?
 # Save options in cookies/local storage
 # tooltip buttons to make things easier to understand
 # Make milestone table look nicer
-# Starting to wonder if it makes sense to have a class/object for each month instead of just number[]. 
-# Stats: 
-# - Estimated net worth at retirement
-# - coasting from
-# Current FIRE and Coast Fire numbers are generated based on estimated growth. If you pick that you want to coast from x date, the "coast from" stat feels a bit redundant..?
-# Label and text: Optional 2nd line of text
-# "Time from now" in table is broken - showing the same months multiple times in a row
 # Some better checks for the coasting date picker: Do I want to limit the date from it? How to handle if it's before current date? etc.
+
+# Stats TODO: 
+# - Minimum monthly contribution needed to reach fire before chosen retirement age
+# - Minimum needed for coast 
+# - - (some kind of icon that shows if you invest more) 
+# - - (Also, I just changed the networthlist calculation - do the numbers still add up?) 
+# - - (Also, avoid it saying -0 when you don't need to add anything when coasting)
+
+# TOOLTIPS:
+# Retirement Age
+# - When you want to retire. Your investments are simulated until this date. The tool will say whether coast fire or fire are possible given this timeframe and your other selected options.
+# - Some info about the fact that it's important to pick an investment start date and invest steadily. The FIRE and Coast FIRE percentage circles cannot calculate how much of the way 
+
+# Questions
+# Does it matter that I calculate interest monthly in the networthlist, and annually when using formulas?
+# Utils future value formulas don't seem to give the same answer as the manual networthlist calculation
+# In the FV formula, you can take into account that each consecutive payment of x value is worth less and less due to inflation, so that you see the result in "today's money" but with the monthly contributions losing value? But I guess I don't want this, and instead I just want everything to be inflation adjusted, assuming you invest 3%/12 extra every month? Should I write something about this?

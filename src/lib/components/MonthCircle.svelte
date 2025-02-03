@@ -1,27 +1,41 @@
-<script lang="ts">
-    import { range } from "../shared/utils";
+<script module lang="ts">
+  export enum CircleType {
+    MONTHS,
+    PERCENT,
+  }
+</script>
 
+<script lang="ts">
+  import { range } from "../shared/utils";
 
   const {
-    numberOfMonths: numberOfMonthsReached = 0,
-    lineWidth = 30,
-    bgColor = "black",
-    color = "red",
-    textColor = "yellow",
-    responsive = true,
-    animation = true,
-    textStyle = "font: bold 4rem Helvetica, Arial, sans-serif;",
+    value,
+    type,
     title,
-    ...rest
+  }: {
+    value: number | null;
+    type: CircleType;
+    title: string;
   } = $props();
 
-  const lastSegmentCompletionDecimals = numberOfMonthsReached % 1;
-  const numberOfCompletedMonths = Math.floor(numberOfMonthsReached);
+  const lineWidth = 30;
+  const bgColor = "black";
+  const textColor = "yellow";
+  const textStyle = "font: bold 4rem Helvetica, Arial, sans-serif;";
+  const textPercent = "font: bold 5rem Helvetica, Arial, sans-serif;";
   const svgSize = "100%";
   const radius = 175;
-  const circumference = Math.PI * 2 * radius;
   const segmentDividerSize = 10;
-  const segmentSize = circumference / 12 - segmentDividerSize;
+  const valueNotNull = value === null ? 0 : value;
+
+  // When working with months, each segment is one month. But when working with percentage, each segment is 10%. 
+  const adjustedValue = type === CircleType.MONTHS ? valueNotNull : valueNotNull / 10;
+  const segments = type === CircleType.MONTHS ? 12 : 10;
+
+  const lastSegmentCompletionDecimals = adjustedValue % 1;
+  const numberOfCompletedSegments = Math.floor(adjustedValue);
+  const circumference = Math.PI * 2 * radius;
+  const segmentSize = circumference / segments - segmentDividerSize;
   const segmentSizeDegrees = (segmentSize / circumference) * 360;
   const segmentDividerDegrees = (segmentDividerSize / circumference) * 360;
 
@@ -30,20 +44,20 @@
   };
 
   const getDashArray = (segmentNumber: number): string => {
-    const segmentFilledPercent = segmentNumber == numberOfCompletedMonths ? lastSegmentCompletionDecimals : 1;
-    const dash0 = segmentSize * segmentFilledPercent + segmentDividerSize;
-    const dash1 = circumference - (segmentSize * segmentFilledPercent + segmentDividerSize);
+    const segmentFilledRatio = segmentNumber == numberOfCompletedSegments ? lastSegmentCompletionDecimals : 1;
+    const dash0 = segmentSize * segmentFilledRatio + segmentDividerSize;
+    const dash1 = circumference - (segmentSize * segmentFilledRatio + segmentDividerSize);
     return dash0 + " " + dash1;
   };
 </script>
 
 {title}
-<svg xmlns="http://www.w3.org/2000/svg" width={svgSize} height={svgSize} viewBox="-25 -25 400 400" {...rest}>
+<svg xmlns="http://www.w3.org/2000/svg" width={svgSize} height={svgSize} viewBox="-25 -25 400 400">
   <circle stroke={bgColor} cx={radius} cy={radius} r={radius} stroke-width={lineWidth} fill="none" />
-  {#each range(12) as segmentNumber}
-    {#if segmentNumber < numberOfMonthsReached}
+  {#each range(segments) as segmentNumber}
+    {#if segmentNumber < adjustedValue}
       <circle
-        stroke="hsl({(120 / 12) * segmentNumber}, 100%, 50%)"
+        stroke="hsl({(120 / segments) * segmentNumber}, 100%, 50%)"
         transform="rotate({getRotationOfSegment(segmentNumber) - 90} 175 175)"
         cx={radius}
         cy={radius}
@@ -66,10 +80,17 @@
       fill="none"
     />
   {/each}
-  <text style={textStyle} fill={textColor} x="50%" y="35%" dx="-25" text-anchor="middle">
-    {Math.floor(numberOfMonthsReached * 10) / 10}
-  </text>
-  <text style={textStyle} fill={textColor} x="50%" y="55%" dx="-25" text-anchor="middle">
-    Months
-  </text>
+  {#if value === null}
+    <text style={textStyle} fill={textColor} x="50%" y="50%" dx="-25" text-anchor="middle">Impossible</text>
+  {:else if type === CircleType.MONTHS}
+    <text style={textStyle} fill={textColor} x="50%" y="35%" dx="-25" text-anchor="middle">
+      {Math.floor(adjustedValue * 10) / 10}
+    </text>
+    <text style={textStyle} fill={textColor} x="50%" y="55%" dx="-25" text-anchor="middle"> Months </text>
+  {:else}
+    <text style={textPercent} fill={textColor} x="50%" y="50%" dx="-25" text-anchor="middle">
+      {Math.round(adjustedValue * 10)}
+      <tspan dx="10">%</tspan>
+    </text>
+  {/if}
 </svg>

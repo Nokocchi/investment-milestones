@@ -1,12 +1,16 @@
 <script lang="ts">
-    let {label, text} = $props();
+    let { label, text, text2 }: { label: string; text: string; text2?: string } = $props();
 </script>
 
 <p class="label">{label}</p>
-<p class="text">{text}</p>
+<div class="text">
+    <p>{text}</p>
+    {#if text2}
+        <p>{text2}</p>
+    {/if}
+</div>
 
 <style>
-
     p {
         margin-block-start: 0;
         margin-block-end: 0;
@@ -22,5 +26,4 @@
     .text {
         margin-bottom: 25px;
     }
-
 </style>
