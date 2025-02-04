@@ -59,7 +59,7 @@
         const perHour = (currentNetWorth * annualInterestDivided) / workHoursPerYear;
         const fireMonthsFractional = (currentNetWorth * safeWithdrawalRateDivided) / monthlyExpensesAfterTax;
         const netWorthNeededNowForCoast = Math.ceil(getPrincipalNeededForNoContributionFutureValue(fireNumber, monthlyInterestPlusOne, monthsUntilRetirement));
-        const minimumMonthlyContributionsNeededToReachFire = Math.ceil(getMonthlyContributionNeededForFutureValue(fireNumber, currentNetWorth, monthsUntilRetirement, monthlyInterestDivided));
+        const minimumMonthlyContributionsNeededToReachFire = Math.max(0, Math.abs(Math.ceil(getMonthlyContributionNeededForFutureValue(fireNumber, currentNetWorth, monthsUntilRetirement, monthlyInterestDivided))));
         const shouldGenerateData = retireByAge >= currentAge;
 
         return {

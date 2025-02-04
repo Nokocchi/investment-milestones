@@ -103,3 +103,7 @@ export const getNoContributionFinalAmount = (principal: number, monthlyInterestP
 export const getPrincipalNeededForNoContributionFutureValue = (futureValue: number, monthlyInterestPlusOne: number, months: number) => {
     return futureValue / Math.pow(monthlyInterestPlusOne, months);
 }
+
+export const roundAndFormat = (value: number, currency: string) => {
+    return `${Math.round(value).toLocaleString()} ${currency}`;
+}

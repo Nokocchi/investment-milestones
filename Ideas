@@ -9,22 +9,23 @@
 
 # Other TODO:
 # Improved menu, maybe hamburger button and title bar? Maybe view for advanced stats, view for graph that dynamically lights up as you scroll down..?
-# Save options in cookies/local storage
 # tooltip buttons to make things easier to understand
 # Make milestone table look nicer
 # Some better checks for the coasting date picker: Do I want to limit the date from it? How to handle if it's before current date? etc.
+# Maybe a way to define multiple investments periods with different monthly contributions? 
+# Make it possible to pick which milestones you want to see in the list
 
 # Stats TODO: 
-# - Minimum monthly contribution needed to reach fire before chosen retirement age
-# - Minimum needed for coast 
-# - - (some kind of icon that shows if you invest more) 
-# - - (Also, I just changed the networthlist calculation - do the numbers still add up?) 
-# - - (Also, avoid it saying -0 when you don't need to add anything when coasting)
+# Minimum needed for fire: some kind of icon that shows if you invest more or less than this
+# It says i can coast from September 2030, but when I put in September 2030 as my coast date, it says FIRE is impossible?
+
+
+#------------------------------------------------------------------------------
 
 # TOOLTIPS:
 # Retirement Age
 # - When you want to retire. Your investments are simulated until this date. The tool will say whether coast fire or fire are possible given this timeframe and your other selected options.
-# - Some info about the fact that it's important to pick an investment start date and invest steadily. The FIRE and Coast FIRE percentage circles cannot calculate how much of the way 
+# - Some info about the fact that it's important to pick an investment start date and invest steadily. The FIRE and Coast FIRE percentage circles cannot calculate how far along you are if you started investing this month, or invest different amounts
 
 # Questions
 # Does it matter that I calculate interest monthly in the networthlist, and annually when using formulas?

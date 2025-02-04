@@ -1,6 +1,13 @@
 <script lang="ts">
     import { options } from "../shared/shared.svelte";
+    import type { Options } from "../shared/types";
     import LabelAndInput from "./LabelAndInput.svelte";
+
+    export const saveToLocalStorage = (opts: Options) => {
+        localStorage.setItem("options", JSON.stringify(opts));
+    };
+
+    $effect(() => saveToLocalStorage(options));
 </script>
 
 <div class="options-panel">
@@ -9,7 +16,11 @@
         <LabelAndInput label="Current net worth" type="number" bind:value={options.currentNetWorth} />
         <LabelAndInput label="Annual interest %" type="number" bind:value={options.annualInterestPercent} />
         <LabelAndInput label="Safe withdrawal rate %" type="number" bind:value={options.safeWithdrawalRatePercentage} />
-        <LabelAndInput label="Monthly expenses after tax (excluding current monthly contribution)" type="number" bind:value={options.monthlyExpensesAfterTax} />
+        <LabelAndInput
+            label="Monthly expenses after tax (excluding current monthly contribution)"
+            type="number"
+            bind:value={options.monthlyExpensesAfterTax}
+        />
     </div>
     <div class="column">
         <LabelAndInput label="When did you start investing?" type="date" bind:value={options.investmentStart} />

@@ -52,7 +52,7 @@ export type Options = {
     annualInterestPercent?: number;
     monthlyExpensesAfterTax?: number;
     safeWithdrawalRatePercentage?: number;
-    showAllMilestones: boolean;
+    showAllMilestones?: boolean;
     investmentStart?: string;
     retireByAge?: number;
     coastFromDate?: string | null;

@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { label, text, text2 }: { label: string; text: string; text2?: string } = $props();
+    let { label, text, text2, text3 }: { label: string; text: string; text2?: string; text3?: string } = $props();
 </script>
 
 <p class="label">{label}</p>
@@ -7,6 +7,9 @@
     <p>{text}</p>
     {#if text2}
         <p>{text2}</p>
+    {/if}
+    {#if text3}
+        <p>{text3}</p>
     {/if}
 </div>
 

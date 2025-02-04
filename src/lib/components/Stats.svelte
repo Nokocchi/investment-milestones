@@ -1,7 +1,7 @@
 <script lang="ts">
     import { options } from "../shared/shared.svelte";
     import type { DerivedOptions } from "../shared/types";
-    import { getMonthAsAgeYearString, getMonthsAsYearMonthString } from "../shared/utils";
+    import { getMonthAsAgeYearString, getMonthsAsYearMonthString, roundAndFormat } from "../shared/utils";
     import LabelAndText from "./LabelAndText.svelte";
     import LabelAndToggle from "./LabelAndToggle.svelte";
     import MonthCircle, { CircleType } from "./MonthCircle.svelte";
@@ -29,7 +29,6 @@
         fireMonthsInFuture !== null
             ? (derivedOptions.monthsSinceInvestmentStart / (derivedOptions.monthsSinceInvestmentStart + fireMonthsInFuture)) * 100
             : null;
-         
 </script>
 
 <div class="stats"></div>
@@ -47,55 +46,56 @@
 
 <div class="row">
     <div class="column">
-        <LabelAndText
-            label={"Net worth"}
-            text={`${Math.round(derivedOptions.currentNetWorth).toLocaleString()} ${derivedOptions.currency}`}
-        />
-        <LabelAndText
-            label={"Earn per work hour"}
-            text={`${Math.round(derivedOptions.perHour).toLocaleString()} ${derivedOptions.currency}`}
-        />
-        <LabelAndText
-            label={"Monthly interest"}
-            text={`${Math.round(derivedOptions.monthlyInterestGrowth).toLocaleString()} ${derivedOptions.currency}`}
-        />
+        <LabelAndText label={"Net worth"} text={roundAndFormat(derivedOptions.currentNetWorth, derivedOptions.currency)} />
+        <LabelAndText label={"Earn per work hour"} text={roundAndFormat(derivedOptions.perHour, derivedOptions.currency)} />
+        <LabelAndText label={"Monthly interest"} text={roundAndFormat(derivedOptions.monthlyInterestGrowth, derivedOptions.currency)} />
         <LabelAndText
             label={"Safe monthly withdrawal"}
-            text={`${Math.round(derivedOptions.safeMonthlyWithdrawal).toLocaleString()} ${derivedOptions.currency}`}
+            text={roundAndFormat(derivedOptions.safeMonthlyWithdrawal, derivedOptions.currency)}
         />
         <LabelAndText
-            label={"Needed for coast now"}
-            text={`${Math.round(derivedOptions.netWorthNeededNowForCoast).toLocaleString()} ${derivedOptions.currency}`}
+            label={"Needed to coast now"}
+            text={roundAndFormat(derivedOptions.netWorthNeededNowForCoast, derivedOptions.currency)}
         />
         <LabelAndText
-        label={"Minimum monthly Contribution for FIRE"}
-        text={`${Math.max(0, Math.abs(Math.round(derivedOptions.minimumMonthlyContributionsNeededToReachFire))).toLocaleString()} ${derivedOptions.currency}`}
-    />
+            label={"Minimum monthly Contribution for FIRE"}
+            text={roundAndFormat(derivedOptions.minimumMonthlyContributionsNeededToReachFire, derivedOptions.currency)}
+        />
     </div>
     <div class="column">
-        <LabelAndText
-            label={"Planned retirement"}
-            text={getMonthsAsYearMonthString(netWorthByMonthListNowAndFuture.length - 1)}
-            text2={getMonthAsAgeYearString(netWorthByMonthListNowAndFuture.length - 1, derivedOptions.currentAge)}
-        />
         <LabelAndText label={"Investing for"} text={getMonthsAsYearMonthString(derivedOptions.monthsSinceInvestmentStart)} />
         {#if derivedOptions.coastFromDateMonthsInFuture}
             <LabelAndText
                 label={"Chosen Coast Date"}
                 text={getMonthsAsYearMonthString(derivedOptions.coastFromDateMonthsInFuture, "Reached")}
                 text2={getMonthAsAgeYearString(derivedOptions.coastFromDateMonthsInFuture, derivedOptions.currentAge)}
+                text3={derivedOptions.coastFromDateMonthsInFuture
+                    ? `${roundAndFormat(netWorthByMonthListNowAndFuture[derivedOptions.coastFromDateMonthsInFuture], derivedOptions.currency)}`
+                    : undefined}
             />
         {:else}
             <LabelAndText
                 label={"Estimated Coast FIRE"}
                 text={getMonthsAsYearMonthString(coastFireReachedMonthsInFuture, "Reached")}
                 text2={getMonthAsAgeYearString(coastFireReachedMonthsInFuture, derivedOptions.currentAge)}
+                text3={coastFireReachedMonthsInFuture
+                    ? `${roundAndFormat(netWorthByMonthListNowAndFuture[coastFireReachedMonthsInFuture], derivedOptions.currency)}`
+                    : undefined}
             />
         {/if}
         <LabelAndText
             label={"Estimated FIRE"}
             text={getMonthsAsYearMonthString(fireMonthsInFuture, "Reached")}
             text2={getMonthAsAgeYearString(fireMonthsInFuture, derivedOptions.currentAge)}
+            text3={fireMonthsInFuture
+                ? `${roundAndFormat(netWorthByMonthListNowAndFuture[fireMonthsInFuture], derivedOptions.currency)}`
+                : undefined}
+        />
+        <LabelAndText
+            label={"Planned retirement"}
+            text={getMonthsAsYearMonthString(netWorthByMonthListNowAndFuture.length - 1)}
+            text2={getMonthAsAgeYearString(netWorthByMonthListNowAndFuture.length - 1, derivedOptions.currentAge)}
+            text3={`${roundAndFormat(netWorthByMonthListNowAndFuture[netWorthByMonthListNowAndFuture.length - 1], derivedOptions.currency)}`}
         />
         <LabelAndToggle label="Expand all milestones" bind:checked={options.showAllMilestones} />
     </div>
