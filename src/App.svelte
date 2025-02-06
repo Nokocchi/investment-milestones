@@ -16,17 +16,21 @@
 
 <main>
   <div class="top-menu">
-    <Menu bind:menuBtnOpen bind:settingsBtnOpen bind:page/>
+    <Menu bind:menuBtnOpen bind:settingsBtnOpen bind:page />
   </div>
   <div class="rest-of-page">
     {#if menuBtnOpen}
       <div class="sidemenu" transition:fly={{ x: "-100%" }}>
-        <SideMenu bind:menuBtnOpen bind:settingsBtnOpen bind:page/>
+        <SideMenu bind:menuBtnOpen bind:settingsBtnOpen bind:page />
       </div>
     {/if}
     {#if settingsBtnOpen}
       <div class="settings" transition:fly={{ x: "100%" }}>
-        <OptionsPanel saveHandler={() => {settingsBtnOpen = false}}/>
+        <OptionsPanel
+          saveHandler={() => {
+            settingsBtnOpen = false;
+          }}
+        />
       </div>
     {/if}
 
@@ -43,7 +47,6 @@
 </main>
 
 <style>
-
   main {
     margin: 0 auto;
     padding: 0;
