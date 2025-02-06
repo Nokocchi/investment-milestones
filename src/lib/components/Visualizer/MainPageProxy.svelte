@@ -91,5 +91,7 @@
 {#key derivedOptions}
     {#if derivedOptions}
         <MainPage {derivedOptions} />
+    {:else}
+        Retirement age and current age must be set!
     {/if}
 {/key}
