@@ -11,7 +11,6 @@
     import MainPage from "./MainPage.svelte";
 
     const getDerivedOptions = (opts: Options): DerivedOptions | null => {
-
         if (!(opts.currentAge && opts.retireByAge && opts.retireByAge >= opts.currentAge)) {
             return null;
         }
@@ -89,6 +88,8 @@
     const derivedOptions: DerivedOptions | null = $derived(getDerivedOptions(options));
 </script>
 
-{#if derivedOptions}
-    <MainPage {derivedOptions} />
-{/if}
+{#key derivedOptions}
+    {#if derivedOptions}
+        <MainPage {derivedOptions} />
+    {/if}
+{/key}

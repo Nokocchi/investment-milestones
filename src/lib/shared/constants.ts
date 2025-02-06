@@ -37,10 +37,10 @@ export const CURRENT_YEAR = CURRENT_DATETIME.getFullYear();
 export const CURRENT_DATETIME_ABSOLUTE = getAbsoluteMonth(CURRENT_DATETIME);
 
 export enum MenuChoice {
-    MAIN,
-    OPTIONS,
+    HOME,
+    VISUALIZER,
     ABOUT,
-    STATS
+    ADVANCED_STATS
 }
 
 export const workHoursPerYear = 46 * 40; // 46 work weeeks, 40 hours per week
