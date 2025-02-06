@@ -3,13 +3,11 @@
         CURRENT_DATETIME,
         CURRENT_MONTH,
         CURRENT_YEAR,
-        CURRENT_DATETIME_ABSOLUTE,
-        DEFAULT_RETIREMENT_AGE,
         monthNames,
         monthsInAYear,
         ReachedState,
         workHoursPerYear,
-    } from "../shared/constants";
+    } from "../../shared/constants";
     import {
         milestones_annualGrowth,
         milestones_annualInterest,
@@ -23,80 +21,11 @@
         milestones_ownContributionPercentageOfGrowthGenerator,
         milestones_perHourGenerator,
         milestones_safeMonthlyWithdrawal,
-    } from "../shared/milestones";
-    import { options } from "../shared/shared.svelte";
-    import type { DerivedOptions, Milestone, MonthData, Options, YearData, YearHeader } from "../shared/types";
-    import { getAbsoluteMonth, getFutureValueAnnual, getMonthlyContributionNeededForFutureValue, getMonthsAsYearMonthString, getNoContributionFinalAmount, getPrincipalNeededForNoContributionFutureValue, range } from "../shared/utils";
-    import Year from "../timeline/Year.svelte";
-    import Stats from "./Stats.svelte";
-
-    const getDerivedOptions = (opts: Options): DerivedOptions => {
-        const monthlyContribution = opts.monthlyContribution || 0;
-        const currentAge = opts.currentAge || 0;
-        const currency = opts.currency || "";
-        const currentNetWorth = opts.currentNetWorth || 0;
-        const annualInterestPercent = opts.annualInterestPercent || 0;
-        const annualInterestDivided = annualInterestPercent / 100;
-        const monthlyInterestDivided = annualInterestDivided / monthsInAYear;
-        const monthlyInterestPlusOne = 1 + monthlyInterestDivided;
-        const monthlyExpensesAfterTax = opts.monthlyExpensesAfterTax || 0;
-        const annualExpensesAfterTax = monthlyExpensesAfterTax * monthsInAYear;
-        const safeWithdrawalRatePercentage = opts.safeWithdrawalRatePercentage || 0;
-        const safeWithdrawalRateDivided = opts.safeWithdrawalRatePercentage ? opts.safeWithdrawalRatePercentage / 100 : 0;
-        const monthlySafeWithdrawalRateDivided = safeWithdrawalRateDivided / monthsInAYear;
-        const safeannualWithdrawal = currentNetWorth * safeWithdrawalRateDivided;
-        const safeMonthlyWithdrawal = safeannualWithdrawal / monthsInAYear;
-        const showAllMilestones = opts.showAllMilestones;
-        const investmentStart = opts.investmentStart ? new Date(opts.investmentStart) : new Date();
-        const coastFromDate = opts.coastFromDate ? new Date(opts.coastFromDate) : undefined;
-        const coastFromDateMonthsInFuture = coastFromDate ? getAbsoluteMonth(coastFromDate) - CURRENT_DATETIME_ABSOLUTE : undefined;
-        const retireByAge = opts.retireByAge || DEFAULT_RETIREMENT_AGE;
-        const monthsUntilRetirement = (retireByAge - currentAge) * monthsInAYear;
-        const monthsSinceInvestmentStart = CURRENT_DATETIME_ABSOLUTE - getAbsoluteMonth(investmentStart);
-        const annualInterestGrowth = currentNetWorth * annualInterestDivided;
-        const monthlyInterestGrowth = annualInterestGrowth / monthsInAYear;
-        const fireNumber = (monthlyExpensesAfterTax * monthsInAYear) / safeWithdrawalRateDivided;
-        const perHour = (currentNetWorth * annualInterestDivided) / workHoursPerYear;
-        const fireMonthsFractional = (currentNetWorth * safeWithdrawalRateDivided) / monthlyExpensesAfterTax;
-        const netWorthNeededNowForCoast = Math.ceil(getPrincipalNeededForNoContributionFutureValue(fireNumber, monthlyInterestPlusOne, monthsUntilRetirement));
-        const minimumMonthlyContributionsNeededToReachFire = Math.max(0, Math.abs(Math.ceil(getMonthlyContributionNeededForFutureValue(fireNumber, currentNetWorth, monthsUntilRetirement, monthlyInterestDivided))));
-        const shouldGenerateData = retireByAge >= currentAge;
-
-        return {
-            monthlyContribution: monthlyContribution,
-            currentAge: currentAge,
-            currency: currency,
-            currentNetWorth: currentNetWorth,
-            annualInterestPercent: annualInterestPercent,
-            annualInterestDivided: annualInterestDivided,
-            monthlyInterestDivided: monthlyInterestDivided,
-            monthlyInterestPlusOne: monthlyInterestPlusOne,
-            monthlyExpensesAfterTax: monthlyExpensesAfterTax,
-            annualExpensesAfterTax: annualExpensesAfterTax,
-            annualInterestGrowth: annualInterestGrowth,
-            monthlyInterestGrowth: monthlyInterestGrowth,
-            safeWithdrawalRatePercentage: safeWithdrawalRatePercentage,
-            safeWithdrawalRateDivided: safeWithdrawalRateDivided,
-            monthlySafeWithdrawalRateDivided: monthlySafeWithdrawalRateDivided,
-            safeannualWithdrawal: safeannualWithdrawal,
-            safeMonthlyWithdrawal: safeMonthlyWithdrawal,
-            showAllMilestones: showAllMilestones,
-            investmentStart: investmentStart,
-            retireByAge: retireByAge,
-            monthsUntilRetirement: monthsUntilRetirement,
-            monthsSinceInvestmentStart: monthsSinceInvestmentStart,
-            shouldGenerateData: shouldGenerateData,
-            fireNumber: fireNumber,
-            perHour: perHour,
-            fireMonthsFractional: fireMonthsFractional,
-            coastFromDate: coastFromDate,
-            coastFromDateMonthsInFuture: coastFromDateMonthsInFuture,
-            netWorthNeededNowForCoast: netWorthNeededNowForCoast,
-            minimumMonthlyContributionsNeededToReachFire: minimumMonthlyContributionsNeededToReachFire
-        };
-    };
-
-    let derivedOptions: DerivedOptions = $derived(getDerivedOptions(options));
+    } from "../../shared/milestones";
+    import type { DerivedOptions, Milestone, MonthData, YearData, YearHeader } from "../../shared/types";
+    import { getAbsoluteMonth, getMonthsAsYearMonthString, getNoContributionFinalAmount, range } from "../../shared/utils";
+    import Year from "./timeline/Year.svelte";
+    import Stats from "../Stats/Stats.svelte";
 
     function getNetWorthByMonth(options: DerivedOptions) {
         const netWorthList = [options.currentNetWorth];
@@ -112,7 +41,7 @@
     }
 
     const addToMap = (mapToAddTo: Map<number, string[]>, networthNeeded: number, message: string, cutoff: number) => {
-        if (networthNeeded < cutoff) {
+        if (networthNeeded == 0 || networthNeeded < cutoff) {
             return;
         }
 
@@ -281,10 +210,6 @@
         netWorthMilestoneSortedMap: Map<number, string[]>,
         options: DerivedOptions,
     ): YearData[] => {
-        if (!options.shouldGenerateData) {
-            return [];
-        }
-
         let currentNetWorth: number = netWorthByMonthListNowAndFuture[0];
         let yearIndex = 0;
         let timelineData: YearData[] = [];
@@ -391,17 +316,13 @@
         return null;
     };
 
-    let netWorthByMonthListNowAndFuture: number[] = $derived(getNetWorthByMonth(derivedOptions));
-
-    const fireMonthsInFuture = $derived(fireHowManyMonthsInFuture(netWorthByMonthListNowAndFuture, derivedOptions.fireNumber));
-    const coastFireReachedMonthsInFuture = $derived(getCoastFireReachedMonthsInFuture(derivedOptions, netWorthByMonthListNowAndFuture));
-    let netWorthMilestoneSortedMap: Map<number, string[]> = $derived(
-        generateMilestonesList(derivedOptions, netWorthByMonthListNowAndFuture, fireMonthsInFuture, coastFireReachedMonthsInFuture),
-    );
-
-    let timelineData: YearData[] = $derived(
-        generateTimelineData(netWorthByMonthListNowAndFuture, netWorthMilestoneSortedMap, derivedOptions),
-    );
+    const {derivedOptions} : {derivedOptions: DerivedOptions} = $props();
+    
+    const netWorthByMonthListNowAndFuture: number[] = getNetWorthByMonth(derivedOptions);
+    const fireMonthsInFuture: number | null = fireHowManyMonthsInFuture(netWorthByMonthListNowAndFuture, derivedOptions.fireNumber);
+    const coastFireReachedMonthsInFuture: number | null = getCoastFireReachedMonthsInFuture(derivedOptions, netWorthByMonthListNowAndFuture);
+    const netWorthMilestoneSortedMap: Map<number, string[]> = generateMilestonesList(derivedOptions, netWorthByMonthListNowAndFuture, fireMonthsInFuture, coastFireReachedMonthsInFuture);
+    const timelineData: YearData[] = generateTimelineData(netWorthByMonthListNowAndFuture, netWorthMilestoneSortedMap, derivedOptions);
 </script>
 
 <Stats {derivedOptions} {netWorthByMonthListNowAndFuture} {fireMonthsInFuture} {coastFireReachedMonthsInFuture} />

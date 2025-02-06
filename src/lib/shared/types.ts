@@ -81,7 +81,6 @@ export type DerivedOptions = {
     retireByAge: number;
     monthsUntilRetirement: number;
     monthsSinceInvestmentStart: number;
-    shouldGenerateData: boolean;
     fireNumber: number;
     perHour: number;
     fireMonthsFractional: number;

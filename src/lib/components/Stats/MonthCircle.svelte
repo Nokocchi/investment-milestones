@@ -6,7 +6,9 @@
 </script>
 
 <script lang="ts">
-  import { range } from "../shared/utils";
+    import { range } from "../../shared/utils";
+
+
 
   const {
     value,

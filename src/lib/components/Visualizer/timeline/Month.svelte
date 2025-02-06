@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { ReachedState } from "../shared/constants";
-  import Table from "../components/Table.svelte";
-  import { options } from "../shared/shared.svelte";
   import { slide } from "svelte/transition";
-    import type { MonthData } from "../shared/types";
+  import { options } from "../../../shared/shared.svelte";
+  import type { MonthData } from "../../../shared/types";
+  import { ReachedState } from "../../../shared/constants";
+  import Table from "../Table.svelte";
 
   let { month }: { month: MonthData } = $props();
   let tableData: string[][] = [];
@@ -17,7 +17,7 @@
   let showAllMilestones = $derived(options.showAllMilestones);
 </script>
 
-<div class={["month-wrapper", ReachedState[reachedState], {coasting}]} onclick={() => (hideMilestones = !hideMilestones)}>
+<div class={["month-wrapper", ReachedState[reachedState], { coasting }]} onclick={() => (hideMilestones = !hideMilestones)}>
   <div class="month-header-wrapper">
     <div class="left month-column">
       {month.monthName}

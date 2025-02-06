@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { YearData } from "../shared/types";
+  import type { YearData } from "../../../shared/types";
   import Month from "./Month.svelte";
-    import YearHeader from "./YearHeader.svelte";
+  import YearHeader from "./YearHeader.svelte";
 
   let { yearData }: { yearData: YearData } = $props();
   let yearHeader = yearData.yearHeader;

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { MenuChoice } from "../shared/constants";
+    import { MenuChoice } from "../../shared/constants";
 
     let { page = $bindable() }: { page: MenuChoice } = $props();
 </script>

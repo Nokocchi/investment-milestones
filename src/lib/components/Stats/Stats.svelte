@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { options } from "../shared/shared.svelte";
-    import type { DerivedOptions } from "../shared/types";
-    import { getMonthAsAgeYearString, getMonthsAsYearMonthString, roundAndFormat } from "../shared/utils";
+    import { options } from "../../shared/shared.svelte";
+    import type { DerivedOptions } from "../../shared/types";
+    import { getMonthAsAgeYearString, getMonthsAsYearMonthString, roundAndFormat } from "../../shared/utils";
     import LabelAndText from "./LabelAndText.svelte";
+    import MonthCircle from "./MonthCircle.svelte";
+    import { CircleType } from "./MonthCircle.svelte";
     import LabelAndToggle from "./LabelAndToggle.svelte";
-    import MonthCircle, { CircleType } from "./MonthCircle.svelte";
-    import PercentCircle from "./PercentCircle.svelte";
 
     const {
         derivedOptions,
@@ -55,11 +55,11 @@
         />
         <LabelAndText
             label={"Needed to coast now"}
-            text={roundAndFormat(derivedOptions.netWorthNeededNowForCoast, derivedOptions.currency)}
+            text={coastFireReachedMonthsInFuture ? roundAndFormat(derivedOptions.netWorthNeededNowForCoast, derivedOptions.currency) : "Impossible"}
         />
         <LabelAndText
             label={"Minimum monthly Contribution for FIRE"}
-            text={roundAndFormat(derivedOptions.minimumMonthlyContributionsNeededToReachFire, derivedOptions.currency)}
+            text={fireMonthsInFuture ? roundAndFormat(derivedOptions.minimumMonthlyContributionsNeededToReachFire, derivedOptions.currency) : "Impossible"}
         />
     </div>
     <div class="column">

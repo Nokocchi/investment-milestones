@@ -14,6 +14,9 @@
 # Some better checks for the coasting date picker: Do I want to limit the date from it? How to handle if it's before current date? etc.
 # Maybe a way to define multiple investments periods with different monthly contributions? 
 # Make it possible to pick which milestones you want to see in the list
+# If current age or retirement age are not filled out (often on first visit), make it a nice experience: Maybe show the options page in this case? Save the menu in local storage? 
+# Make it obvious that current age and retirement age need to be filled out
+
 
 # Stats TODO: 
 # Minimum needed for fire: some kind of icon that shows if you invest more or less than this

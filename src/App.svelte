@@ -1,9 +1,11 @@
 <script lang="ts">
-  import About from "./lib/components/About.svelte";
-  import Menu from "./lib/components/Menu.svelte";
-  import MilestonesByMonthTable from "./lib/components/MilestonesByMonthTable.svelte";
-  import OptionsPanel from "./lib/components/OptionsPanel.svelte";
-  import { CURRENT_MONTH, MenuChoice } from "./lib/shared/constants";
+    import About from "./lib/components/About/About.svelte";
+    import OptionsPanel from "./lib/components/Options/OptionsPanel.svelte";
+    import MainPageProxy from "./lib/components/Visualizer/MainPageProxy.svelte";
+    import Menu from "./lib/components/Visualizer/Menu.svelte";
+
+
+  import { MenuChoice } from "./lib/shared/constants";
 
   let page: MenuChoice = $state(MenuChoice.MAIN);
 </script>
@@ -12,7 +14,7 @@
   <Menu bind:page />
   <div class="content-container">
     {#if page == MenuChoice.MAIN}
-      <MilestonesByMonthTable />
+      <MainPageProxy />
     {:else if page == MenuChoice.OPTIONS}
       <OptionsPanel />
     {:else if page == MenuChoice.ABOUT}

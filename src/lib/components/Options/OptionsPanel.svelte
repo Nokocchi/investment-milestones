@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { options } from "../shared/shared.svelte";
-    import type { Options } from "../shared/types";
+    import { options } from "../../shared/shared.svelte";
+    import type { Options } from "../../shared/types";
     import LabelAndInput from "./LabelAndInput.svelte";
 
     export const saveToLocalStorage = (opts: Options) => {

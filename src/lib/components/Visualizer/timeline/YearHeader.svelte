@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { CURRENT_YEAR} from "../shared/constants";
-    import type { YearHeader } from "../shared/types";
+    import { CURRENT_YEAR} from "../../../shared/constants";
+    import type { YearHeader } from "../../../shared/types";
 
     let { yearHeader }: { yearHeader: YearHeader } = $props();
     let yearsFromNow: number = yearHeader.year - CURRENT_YEAR;
