@@ -62,7 +62,6 @@
 
   .rest-of-page {
     position: relative;
-    overflow-y: scroll;
     overflow-x: hidden;
     flex-grow: 1;
   }
@@ -105,7 +104,6 @@
     box-sizing: border-box;
     position: relative;
     overflow-x: hidden;
-    overflow-y: scroll;
     flex-grow: 1;
     padding: 1rem;
   }
