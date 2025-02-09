@@ -27,6 +27,7 @@
         flex-direction: row;
         border: 1px solid blue;
         box-sizing: border-box;
+        background-color: rgba(150, 150, 255, 50%);
     }
 
     .left {

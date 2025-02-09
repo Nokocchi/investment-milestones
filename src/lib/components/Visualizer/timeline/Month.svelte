@@ -15,6 +15,9 @@
   let coasting = month.coasting;
   let hideMilestones = $state(true);
   let showAllMilestones = $derived(options.showAllMilestones);
+
+  // TODO: Figure out a way to scale text so that everything fits, but only if necessary. Or, use short form yearsAndMonthsUntil if necessary. 
+
 </script>
 
 <div class={["month-wrapper", ReachedState[reachedState], { coasting }]} onclick={() => (hideMilestones = !hideMilestones)}>
@@ -50,10 +53,15 @@
         {/if}
       </div>
       <div class="month-column months-until row-padding">
-        {month.yearsAndMonthsUntil}
+        {#if month.yearsUntil}
+          {month.yearsUntil}Y <br />
+        {/if}
+        {#if month.monthsUntil}
+          {month.monthsUntil}M
+        {/if}
       </div>
-      <div class={["milestone-indicator", { noMilestones }]}></div>
     </div>
+    <div class={["milestone-indicator", { noMilestones }]}></div>
   </div>
   <div class="milestones">
     {#if month.milestones.length > 0 && (showAllMilestones || !hideMilestones)}
@@ -68,6 +76,7 @@
   .month-wrapper {
     display: flex;
     flex-direction: column;
+    font-size: 0.8rem;
   }
 
   .month-wrapper.coasting {
@@ -84,16 +93,18 @@
     display: flex;
     flex-direction: row;
     border: 1px solid white;
+    padding: 0.5rem;
+    position: relative;
   }
 
   .left {
-    flex: 1 1 20%;
+    flex: 1 1 10%;
     display: flex;
     flex-direction: row;
   }
 
   .right {
-    flex: 1 1 80%;
+    flex: 1 1 90%;
     display: flex;
     flex-direction: row;
     position: relative;
@@ -104,17 +115,17 @@
     flex: 1 1 25%;
   }
 
+  .monthly-growth {
+    flex: 1 1 20%;
+  }
+
   .goal-percentage {
     flex: 1 1 10%;
   }
 
   .months-until {
-    flex: 1 1 30%;
+    flex: 1 1 10%;
     white-space: wrap;
-  }
-
-  .monthly-growth {
-    flex: 1 1 20%;
   }
 
   .noMilestones {
@@ -129,17 +140,13 @@
     align-self: center;
   }
 
-  .row-padding {
-    padding-bottom: 1rem;
-    padding-top: 1rem;
-  }
-
   .milestone-indicator {
     position: absolute;
-    width: 5px;
-    height: 5px;
-    background-color: green;
-    top: 10px;
-    right: 10px;
+    width: 10px;
+    height: 10px;
+    background-color: gold;
+    border-radius: 5px;
+    top: 5px;
+    right: 5px;
   }
 </style>

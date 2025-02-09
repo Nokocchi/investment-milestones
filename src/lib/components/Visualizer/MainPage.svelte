@@ -247,7 +247,9 @@
 
             let calendarMonth = (CURRENT_MONTH + i) % monthsInAYear;
 
-            yearsAndMonthsUntil = getMonthsAsYearMonthString(i, "Now");
+            let yearsInFuture = i / monthsInAYear;
+            let yearsInFutureFloored = Math.floor(yearsInFuture);
+            let monthPart = i % monthsInAYear;
 
             let monthReachedState: ReachedState;
             if (networthAtThisMonth <= currentNetWorth) {
@@ -287,7 +289,8 @@
                 milestones: milestones,
                 monthlyGrowth: Math.max(0, networthNextMonth - networthAtThisMonth - monthlyContribution),
                 reachedState: monthReachedState,
-                yearsAndMonthsUntil: yearsAndMonthsUntil,
+                yearsUntil: yearsInFutureFloored,
+                monthsUntil: monthPart,
                 percentageOfReachingThis: reachedPercentage,
                 percentageTowardsFire: percentageTowardsFire,
                 percentageTowardsCoastFire: percentageTowardsCoastFire,

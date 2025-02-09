@@ -5,7 +5,8 @@ export type MonthData = {
     reachedState: ReachedState;
     monthName: string;
     estimatedNetWorth: number;
-    yearsAndMonthsUntil: string;
+    yearsUntil: number;
+    monthsUntil: number;
     percentageOfReachingThis: number | null;
     percentageTowardsFire: number | null;
     percentageTowardsCoastFire: number | null;
