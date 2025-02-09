@@ -1,29 +1,27 @@
 # NEW MILESTONES
 # - None at the moment
 
-# LONG TERM IDEAS
+# UI TODO:
+# Minimum needed for fire: some kind of icon that shows if you currently are investing more or less than this
+# If current age or retirement age are not filled out (often on first visit), make it a nice experience: Maybe show the options page in this case? Save the menu in local storage? Make it obvious that current age and retirement age need to be filled out
+# Make milestone table look nicer
+# Some better checks for the coasting date picker: Can I somehow limit it to be between current date and chosen retirement age?
+# tooltip buttons to make things easier to understand
+
+# FEATURE IDEAS:
+# Maybe a way to define multiple investments periods with different monthly contributions? 
+# Make it possible to pick which milestones you want to see in the list
+# Maybe view for advanced stats
+# view for graph that dynamically lights up as you scroll down..?
 # Show certain milestones graph, with net worth as function of months of investment
-# Somehow be able to scroll through future months and see the page update?
 # Add option to track specific milestones? How can I make important milestones stand out? 
 # Turn it into a whole page of various visualized investment things. Like, a graph showing "if you invested x every month from now, how much would you have compared to if you started y years ago? What if you had a principal of z in both scenarios? How much would somebody have to invest if they want to catch up to you in x years, and they started investing y years later than you?"
 
-# Other TODO:
-# When deleting from currency input, put cursor back where it was before.
-# Maybe view for advanced stats, view for graph that dynamically lights up as you scroll down..?
-# tooltip buttons to make things easier to understand
-# Make milestone table look nicer
-# Some better checks for the coasting date picker: Do I want to limit the date from it? How to handle if it's before current date? etc.
-# Maybe a way to define multiple investments periods with different monthly contributions? 
-# Make it possible to pick which milestones you want to see in the list
-# If current age or retirement age are not filled out (often on first visit), make it a nice experience: Maybe show the options page in this case? Save the menu in local storage? 
-# Make it obvious that current age and retirement age need to be filled out
-# Coast from date should check that it's between current date and retirement date
-
+# BUGS:
+# When deleting from or typing in the currency input, put cursor where it belongs was before.
 
 # Stats TODO: 
-# Minimum needed for fire: some kind of icon that shows if you invest more or less than this
 # "Minimum monthly Contribution for FIRE" seems to be a little bit off. Maybe we're off by a month? It leaves us with a few months of coasting, for somer eason
-# Minimum monthly Contribution for FIRE: if Months of contribution is 0 and fire cannot be reached, put N/A?
 
 #------------------------------------------------------------------------------
 

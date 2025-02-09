@@ -1,7 +1,7 @@
 <script lang="ts">
     import { InputType } from "../../shared/constants";
 
-    // TODO: Maybe some day I will rewrite this to be a generic LabelAndInput class that takes an input as a snippet and renders it. Not sure how to properly bind that to the reactive options object without making the solution more ugly..
+// TODO: Maybe some day I will rewrite this to be a generic LabelAndInput class that takes an input as a snippet and renders it. Not sure how to properly bind that to the reactive options object without making the solution more ugly..
 
     let {
         label,
@@ -19,21 +19,22 @@
         if (type !== InputType.currency) {
             return value;
         }
-
+        
         return formatter.format(getValueAsNumber(value));
-    };
+    }
 
     const getValueAsNumber = (val?: string): number => {
         if (!val) {
             return 0;
         }
 
-        return +String(val).replace(/[^0-9]/g, "");
+        return +(String(val).replace(/[^0-9]/g, ""));
     };
 
     let internalValue = $state(formatIfNecessary(value));
     const typeAdjusted = type === InputType.currency ? InputType.string : type;
 
+    // Make sure the caret is in the correct location after update. 
     const onInputHandler = () => {
         if (type !== InputType.currency) {
             value = internalValue;

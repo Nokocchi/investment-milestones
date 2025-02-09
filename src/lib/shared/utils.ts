@@ -131,18 +131,34 @@ export const findMonthlyContribution = (
     //console.log("Principal", principal);
     //console.log("Final amount", finalAmount);
     //console.log("Interest", interest);
+
+    // Avoid infinite loop.
+    if (monthsWithContribution == 0) {
+        return 0;
+    }
+
+    // If you will hit fire without any contributions at all, then we don't want to get stuck in the while loop.
+    const noContributionCheck = calculateFinalBalance(
+        principal,
+        interest,
+        0,
+        monthsWithContribution,
+        monthsWithoutContribution
+    );
+
+    if (noContributionCheck >= finalAmount){
+        return 0;
+    }
+
     let lowerBound = 0;
     let upperBound = finalAmount / monthsWithContribution; // A reasonable upper guess
     let monthlyContributionSoFar = 0;
     let calculatedFinalSoFar = 0;
 
-    if (monthsWithContribution == 0){
-        return 0;
-    }
-
     // Use bisection method to find the correct monthly contribution
-    while (calculatedFinalSoFar < finalAmount || Math.abs((calculatedFinalSoFar - finalAmount)) > 1) {
-        //console.log("Calculated final", calculatedFinalSoFar);
+    while (calculatedFinalSoFar < finalAmount || (calculatedFinalSoFar - finalAmount) > 1) {
+        console.log("Final amount", finalAmount);
+        console.log("Calculated final", calculatedFinalSoFar);
         monthlyContributionSoFar = (lowerBound + upperBound) / 2;
         calculatedFinalSoFar = calculateFinalBalance(
             principal,
@@ -151,6 +167,9 @@ export const findMonthlyContribution = (
             monthsWithContribution,
             monthsWithoutContribution
         );
+
+        console.log("lower bound", lowerBound);
+        console.log("upper bound", upperBound);
 
         if (calculatedFinalSoFar < finalAmount) {
             // Increase the monthly contribution

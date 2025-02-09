@@ -91,7 +91,7 @@
     <text style={textStyle} fill={textColor} x="50%" y="55%" dx="-25" text-anchor="middle"> Months </text>
   {:else}
     <text style={textPercent} fill={textColor} x="50%" y="50%" dx="-25" text-anchor="middle">
-      {Math.round(adjustedValue * 10)}
+      {Math.floor(adjustedValue * 10)}
       <tspan dx="10">%</tspan>
     </text>
   {/if}
