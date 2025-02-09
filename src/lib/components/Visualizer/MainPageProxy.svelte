@@ -1,13 +1,9 @@
 <script lang="ts">
-    import { CURRENT_DATETIME_ABSOLUTE, monthsInAYear, workHoursPerYear } from "../../shared/constants";
+    import { CURRENT_DATETIME, CURRENT_DATETIME_ABSOLUTE, monthsInAYear, workHoursPerYear } from "../../shared/constants";
 
     import { options } from "../../shared/shared.svelte";
     import type { DerivedOptions, Options } from "../../shared/types";
-    import {
-        getAbsoluteMonth,
-        getMonthlyContributionNeededForFutureValue,
-        getPrincipalNeededForNoContributionFutureValue,
-    } from "../../shared/utils";
+    import { findMonthlyContribution, getAbsoluteMonth, getPrincipalNeededForNoContributionFutureValue } from "../../shared/utils";
     import MainPage from "./MainPage.svelte";
 
     const getAsNumber = (input?: string): number => {
@@ -15,7 +11,29 @@
     };
 
     const getDerivedOptions = (opts: Options): DerivedOptions | null => {
-        if (!(opts.currentAge && opts.retireByAge && opts.retireByAge >= opts.currentAge)) {
+        const coastFromDateUnchecked = opts.coastFromDate;
+        const currentAgeUnchecked = opts.currentAge;
+        const retireByAgeUnchecked = opts.retireByAge;
+
+        if (!currentAgeUnchecked || !retireByAgeUnchecked) {
+            return null;
+        }
+
+        const retireByAge: number = getAsNumber(retireByAgeUnchecked);
+        const currentAge: number = getAsNumber(currentAgeUnchecked);
+
+        const monthsUntilRetirement: number = (retireByAge - currentAge) * monthsInAYear;
+
+        const agesAreOkay = retireByAge > currentAge;
+
+        let coastFromDateOkay = true;
+        if (coastFromDateUnchecked) {
+            const coastFromDate = new Date(coastFromDateUnchecked);
+            const chosenCoastDateMonthsInFuture = getAbsoluteMonth(coastFromDate) - CURRENT_DATETIME_ABSOLUTE;
+            coastFromDateOkay = (coastFromDate >= CURRENT_DATETIME) && (chosenCoastDateMonthsInFuture <= monthsUntilRetirement);
+        }
+
+        if (!coastFromDateOkay || !agesAreOkay) {
             return null;
         }
 
@@ -39,9 +57,6 @@
         const coastFromDateMonthsInFuture: number | undefined = coastFromDate
             ? getAbsoluteMonth(coastFromDate) - CURRENT_DATETIME_ABSOLUTE
             : undefined;
-        const retireByAge: number = getAsNumber(opts.retireByAge);
-        const currentAge: number = getAsNumber(opts.currentAge);
-        const monthsUntilRetirement: number = (retireByAge - currentAge) * monthsInAYear;
         const monthsSinceInvestmentStart: number = CURRENT_DATETIME_ABSOLUTE - getAbsoluteMonth(investmentStart);
         const annualInterestGrowth: number = currentNetWorth * annualInterestDivided;
         const monthlyInterestGrowth: number = annualInterestGrowth / monthsInAYear;
@@ -55,12 +70,19 @@
         );
         const minimumMonthlyContributionsNeededToReachFire: number = Math.max(
             0,
-            Math.abs(
-                Math.ceil(
-                    getMonthlyContributionNeededForFutureValue(fireNumber, currentNetWorth, monthsUntilRetirement, monthlyInterestDivided),
+            Math.ceil(
+                findMonthlyContribution(
+                    currentNetWorth,
+                    annualInterestDivided,
+                    monthsUntilRetirement,
+                    fireNumber,
+                    coastFromDateMonthsInFuture,
                 ),
             ),
         );
+
+        //console.log("Net worth needed now for coast", netWorthNeededNowForCoast);
+        //console.log("Minimum monthly contribution needed to reach fire", minimumMonthlyContributionsNeededToReachFire);
 
         return {
             monthlyContribution: monthlyContribution,

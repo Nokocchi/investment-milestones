@@ -7,6 +7,8 @@ export type MonthData = {
     estimatedNetWorth: number;
     yearsAndMonthsUntil: string;
     percentageOfReachingThis: number | null;
+    percentageTowardsFire: number | null;
+    percentageTowardsCoastFire: number | null;
     monthlyGrowth: number;
     milestones: Milestone[];
     coasting: boolean;

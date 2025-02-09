@@ -33,7 +33,20 @@
       </div>
       <div class="month-column goal-percentage row-padding">
         {#if month.percentageOfReachingThis}
-          {Math.round(month.percentageOfReachingThis)}%
+          {Math.floor(month.percentageOfReachingThis)}%<br />
+          🎯
+        {/if}
+      </div>
+      <div class="month-column goal-percentage row-padding">
+        {#if month.percentageTowardsCoastFire}
+          {Math.floor(month.percentageTowardsCoastFire)}%<br />
+          🏄
+        {/if}
+      </div>
+      <div class="month-column goal-percentage row-padding">
+        {#if month.percentageTowardsFire}
+          {Math.floor(month.percentageTowardsFire)}%<br />
+          🔥
         {/if}
       </div>
       <div class="month-column months-until row-padding">

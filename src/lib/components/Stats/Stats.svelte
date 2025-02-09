@@ -53,13 +53,15 @@
             label={"Safe monthly withdrawal"}
             text={roundAndFormat(derivedOptions.safeMonthlyWithdrawal, derivedOptions.currency)}
         />
+        <!-- The needed amount is nice to keep, for the extra info. Maybe I can mark as "already reached"? derivedOptions.netWorthNeededNowForCoast <= derivedOptions.currentNetWorth -->
         <LabelAndText
             label={"Needed to coast now"}
-            text={coastFireReachedMonthsInFuture ? roundAndFormat(derivedOptions.netWorthNeededNowForCoast, derivedOptions.currency) : "Impossible"}
+            text={roundAndFormat(derivedOptions.netWorthNeededNowForCoast, derivedOptions.currency)}
         />
+        <!-- If we have no months left to invest, and we are projected not to hit fire, there's nothing to print here -->
         <LabelAndText
             label={"Minimum monthly Contribution for FIRE"}
-            text={fireMonthsInFuture ? roundAndFormat(derivedOptions.minimumMonthlyContributionsNeededToReachFire, derivedOptions.currency) : "Impossible"}
+            text={coastFireReachedMonthsInFuture == 0 && !fireMonthsInFuture ? "N/A" : roundAndFormat(derivedOptions.minimumMonthlyContributionsNeededToReachFire, derivedOptions.currency)}
         />
     </div>
     <div class="column">

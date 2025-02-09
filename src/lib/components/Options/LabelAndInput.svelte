@@ -1,6 +1,8 @@
 <script lang="ts">
     import { InputType } from "../../shared/constants";
 
+    // TODO: Maybe some day I will rewrite this to be a generic LabelAndInput class that takes an input as a snippet and renders it. Not sure how to properly bind that to the reactive options object without making the solution more ugly..
+
     let {
         label,
         type,
@@ -17,16 +19,16 @@
         if (type !== InputType.currency) {
             return value;
         }
-        
+
         return formatter.format(getValueAsNumber(value));
-    }
+    };
 
     const getValueAsNumber = (val?: string): number => {
         if (!val) {
             return 0;
         }
 
-        return +(String(val).replace(/[^0-9]/g, ""));
+        return +String(val).replace(/[^0-9]/g, "");
     };
 
     let internalValue = $state(formatIfNecessary(value));

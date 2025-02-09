@@ -30,10 +30,13 @@
     function getNetWorthByMonth(options: DerivedOptions) {
         const netWorthList = [options.currentNetWorth];
         const numberOfYears = options.retireByAge - options.currentAge;
-        const coastFromDateMonthsInFuture = options.coastFromDate ? getAbsoluteMonth(options.coastFromDate) - getAbsoluteMonth(CURRENT_DATETIME) : null;
+        const coastFromDateMonthsInFuture = options.coastFromDate
+            ? getAbsoluteMonth(options.coastFromDate) - getAbsoluteMonth(CURRENT_DATETIME)
+            : null;
 
         for (let i = 0; i < numberOfYears * monthsInAYear; i++) {
-            const monthlyContribution = (coastFromDateMonthsInFuture && coastFromDateMonthsInFuture <= i) ? 0 : options.monthlyContribution;
+            const monthlyContribution =
+                coastFromDateMonthsInFuture != null && coastFromDateMonthsInFuture <= i ? 0 : options.monthlyContribution;
             const amount = (netWorthList[i] + monthlyContribution) * (1 + options.monthlyInterestDivided);
             netWorthList.push(amount);
         }
@@ -63,7 +66,6 @@
         const simulatedPreviousMonth = (options.currentNetWorth - options.monthlyContribution) / (1 + options.monthlyInterestDivided);
         const cutoffForMilestonesMonth0 = Math.max(0, simulatedPreviousMonth);
 
-        
         for (let perHour of milestones_perHourGenerator()) {
             const needed = (perHour * workHoursPerYear) / options.annualInterestDivided;
             const message = `${perHour} ${options.currency} per hour`;
@@ -125,7 +127,6 @@
             const message = `` + bigNetWorth.toLocaleString();
             //addToMap(netWorthMilestoneMap, bigNetWorth, message);
         }
-            
 
         for (let interestPercentageOfMonthlySpending of milestones_interestPercentageOfMonthlySpendingGenerator()) {
             const interestPercentageDivided = interestPercentageOfMonthlySpending / 100;
@@ -135,7 +136,6 @@
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
         }
 
-        
         for (let safeMonthlyWithdrawal of milestones_safeMonthlyWithdrawal) {
             const needed = safeMonthlyWithdrawal / options.monthlySafeWithdrawalRateDivided;
             const message = `${safeMonthlyWithdrawal.toLocaleString()} ${options.currency} can safely be withdrawn per month`;
@@ -151,7 +151,6 @@
 
         const investedMonthsSoFar = options.monthsSinceInvestmentStart;
         if (investedMonthsSoFar) {
-
             if (fireMonthsInFuture) {
                 const totalMonthsToFire = investedMonthsSoFar + fireMonthsInFuture;
                 for (const percent of range(10, 100, 10, true)) {
@@ -172,10 +171,10 @@
                     }
                 }
 
-                for (let i = 1; fireMonthsInFuture - (i * monthsInAYear) > 0; i++){
-                    const month = fireMonthsInFuture - (i * monthsInAYear);
+                for (let i = 1; fireMonthsInFuture - i * monthsInAYear > 0; i++) {
+                    const month = fireMonthsInFuture - i * monthsInAYear;
                     addToMap(netWorthMilestoneMap, netWorthByMonthListNowAndFuture[month], `${i} years to FIRE`, cutoffForMilestonesMonth0);
-                }   
+                }
             }
             if (coastFireReachedMonthsInFuture) {
                 const totalMonthsToCoastFire = investedMonthsSoFar + coastFireReachedMonthsInFuture;
@@ -193,13 +192,17 @@
                     }
                 }
 
-                for (let i = 1; coastFireReachedMonthsInFuture - (i * monthsInAYear) > 0; i++){
-                    const month = coastFireReachedMonthsInFuture - (i * monthsInAYear);
-                    addToMap(netWorthMilestoneMap, netWorthByMonthListNowAndFuture[month], `${i} years to Coast FIRE`, cutoffForMilestonesMonth0);
-                }   
+                for (let i = 1; coastFireReachedMonthsInFuture - i * monthsInAYear > 0; i++) {
+                    const month = coastFireReachedMonthsInFuture - i * monthsInAYear;
+                    addToMap(
+                        netWorthMilestoneMap,
+                        netWorthByMonthListNowAndFuture[month],
+                        `${i} years to Coast FIRE`,
+                        cutoffForMilestonesMonth0,
+                    );
+                }
             }
         }
-            
 
         // Is there really not a better way to sort a map by its keys in Javascript?
         return new Map([...netWorthMilestoneMap].sort((a, b) => a[0] - b[0]));
@@ -210,6 +213,8 @@
         netWorthByMonthListNowAndFuture: number[],
         netWorthMilestoneSortedMap: Map<number, string[]>,
         options: DerivedOptions,
+        fireMonthsInFuture: number | null,
+        coastFireReachedMonthsInFuture: number | null,
     ): YearData[] => {
         let currentNetWorth: number = netWorthByMonthListNowAndFuture[0];
         let yearIndex = 0;
@@ -219,8 +224,26 @@
             let networthNextMonth = i + 1 >= netWorthByMonthListNowAndFuture.length ? 0 : netWorthByMonthListNowAndFuture[i + 1];
             let yearsAndMonthsUntil = "";
             let reachedPercentage = options.monthsSinceInvestmentStart
-                ? (options.monthsSinceInvestmentStart / (options.monthsSinceInvestmentStart + i)) * 100
+                ? Math.min(100, (options.monthsSinceInvestmentStart / (options.monthsSinceInvestmentStart + i)) * 100)
                 : null;
+
+            let percentageTowardsFire =
+                fireMonthsInFuture !== null && options.monthsSinceInvestmentStart
+                    ? Math.min(
+                          100,
+                          ((options.monthsSinceInvestmentStart + i) / (options.monthsSinceInvestmentStart + fireMonthsInFuture)) * 100,
+                      )
+                    : null;
+
+            let percentageTowardsCoastFire =
+                coastFireReachedMonthsInFuture !== null && options.monthsSinceInvestmentStart
+                    ? Math.min(
+                          100,
+                          ((options.monthsSinceInvestmentStart + i) /
+                              (options.monthsSinceInvestmentStart + coastFireReachedMonthsInFuture)) *
+                              100,
+                      )
+                    : null;
 
             let calendarMonth = (CURRENT_MONTH + i) % monthsInAYear;
 
@@ -253,18 +276,22 @@
                 }
             }
 
-            const coastFromDateMonthsInFuture = options.coastFromDate ? getAbsoluteMonth(options.coastFromDate) - getAbsoluteMonth(CURRENT_DATETIME) : null;
-            const coasting = coastFromDateMonthsInFuture && coastFromDateMonthsInFuture <= i ? true : false; // Surely there has to be a better way than this..
+            const coastFromDateMonthsInFuture = options.coastFromDate
+                ? getAbsoluteMonth(options.coastFromDate) - getAbsoluteMonth(CURRENT_DATETIME)
+                : null;
+            const coasting = coastFromDateMonthsInFuture !== null && coastFromDateMonthsInFuture <= i;
             const monthlyContribution = coasting ? 0 : options.monthlyContribution;
             let monthData: MonthData = {
                 estimatedNetWorth: networthAtThisMonth,
                 monthName: monthNames[calendarMonth],
                 milestones: milestones,
-                monthlyGrowth: Math.max(0, (networthNextMonth - networthAtThisMonth) - monthlyContribution),
+                monthlyGrowth: Math.max(0, networthNextMonth - networthAtThisMonth - monthlyContribution),
                 reachedState: monthReachedState,
                 yearsAndMonthsUntil: yearsAndMonthsUntil,
                 percentageOfReachingThis: reachedPercentage,
-                coasting: coasting
+                percentageTowardsFire: percentageTowardsFire,
+                percentageTowardsCoastFire: percentageTowardsCoastFire,
+                coasting: coasting,
             };
 
             // It's either the first month at all, or January. Add a new year
@@ -308,22 +335,42 @@
 
     const getCoastFireReachedMonthsInFuture = (options: DerivedOptions, netWorthByMonth: number[]): number | null => {
         for (const [i, networthAtThisMonth] of netWorthByMonth.entries()) {
-            const monthsLeft = netWorthByMonth.length - i;
-            const noContributionsFinalAmount = getNoContributionFinalAmount(networthAtThisMonth, options.monthlyInterestPlusOne, monthsLeft);
+            const monthsLeft = netWorthByMonth.length - (i + 1); // TODO: I added +1 here so that the coast fire date works. Is this correct?
+            const noContributionsFinalAmount = getNoContributionFinalAmount(
+                networthAtThisMonth,
+                options.monthlyInterestPlusOne,
+                monthsLeft,
+            );
             if (noContributionsFinalAmount > options.fireNumber) {
+                console.log("Can coast with ", netWorthByMonth[i]);
                 return i;
             }
         }
         return null;
     };
 
-    const {derivedOptions} : {derivedOptions: DerivedOptions} = $props();
-    
+    const { derivedOptions }: { derivedOptions: DerivedOptions } = $props();
+
     const netWorthByMonthListNowAndFuture: number[] = getNetWorthByMonth(derivedOptions);
     const fireMonthsInFuture: number | null = fireHowManyMonthsInFuture(netWorthByMonthListNowAndFuture, derivedOptions.fireNumber);
-    const coastFireReachedMonthsInFuture: number | null = getCoastFireReachedMonthsInFuture(derivedOptions, netWorthByMonthListNowAndFuture);
-    const netWorthMilestoneSortedMap: Map<number, string[]> = generateMilestonesList(derivedOptions, netWorthByMonthListNowAndFuture, fireMonthsInFuture, coastFireReachedMonthsInFuture);
-    const timelineData: YearData[] = generateTimelineData(netWorthByMonthListNowAndFuture, netWorthMilestoneSortedMap, derivedOptions);
+    const coastFireReachedMonthsInFuture: number | null =
+        derivedOptions.coastFromDateMonthsInFuture ?? getCoastFireReachedMonthsInFuture(derivedOptions, netWorthByMonthListNowAndFuture);
+    const netWorthMilestoneSortedMap: Map<number, string[]> = generateMilestonesList(
+        derivedOptions,
+        netWorthByMonthListNowAndFuture,
+        fireMonthsInFuture,
+        coastFireReachedMonthsInFuture,
+    );
+    const timelineData: YearData[] = generateTimelineData(
+        netWorthByMonthListNowAndFuture,
+        netWorthMilestoneSortedMap,
+        derivedOptions,
+        fireMonthsInFuture,
+        coastFireReachedMonthsInFuture,
+    );
+
+    //console.log("Fire months in future", fireMonthsInFuture);
+    //console.log("Coast fire months in future", coastFireReachedMonthsInFuture);
 </script>
 
 <Stats {derivedOptions} {netWorthByMonthListNowAndFuture} {fireMonthsInFuture} {coastFireReachedMonthsInFuture} />
