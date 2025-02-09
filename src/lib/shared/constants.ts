@@ -24,6 +24,13 @@ export enum ReachedState {
     IN_FUTURE
 }
 
+export enum InputType {
+    number,
+    string,
+    date,
+    currency
+}
+
 export const getLastMonth = () => {
     let lastMonth = new Date();
     lastMonth.setDate(0);

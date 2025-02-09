@@ -45,17 +45,17 @@ export interface CircleProps extends Omit<SvgAttrs, 'width' | 'height'> {
 }
 
 export type Options = {
-    monthlyContribution?: number;
-    currentAge?: number;
+    monthlyContribution?: string;
+    currentAge?: string;
     currency?: string;
-    currentNetWorth?: number;
-    annualInterestPercent?: number;
-    monthlyExpensesAfterTax?: number;
-    safeWithdrawalRatePercentage?: number;
+    currentNetWorth?: string;
+    annualInterestPercent?: string;
+    monthlyExpensesAfterTax?: string;
+    safeWithdrawalRatePercentage?: string;
     showAllMilestones?: boolean;
     investmentStart?: string;
-    retireByAge?: number;
-    coastFromDate?: string | null;
+    retireByAge?: string;
+    coastFromDate?: string;
 }
 
 export type DerivedOptions = {

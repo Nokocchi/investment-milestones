@@ -89,6 +89,7 @@
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
         }
 
+        // TODO: Becomes horribly slow if you put in huge monthly contribution numbers. But who does that anyway? I can't really limit this to an absolute number because currencies have different values.
         for (let monthlyGrowth of milestones_monthlyGrowthGenerator(options.monthlyContribution)) {
             const monthlyInterestNeeded = monthlyGrowth - options.monthlyContribution;
             const needed = monthlyInterestNeeded / options.monthlyInterestDivided;

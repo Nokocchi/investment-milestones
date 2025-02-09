@@ -27,9 +27,11 @@
 
 <style>
     .frontpage-content {
-        border: 1px solid white;
+        border: 1px solid #121212;
         padding: 1rem;
         border-radius: 0.5rem;
+        background-color: #2A2A2A;
+        box-shadow: 2px 4px #121212;
     }
 
     .visualizer-btn {

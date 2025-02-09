@@ -20,12 +20,12 @@
   </div>
   <div class="rest-of-page">
     {#if menuBtnOpen}
-      <div class="sidemenu" transition:fly={{ x: "-100%" }}>
+      <div class="sidemenu navigation" transition:fly={{ x: "-100%" }}>
         <SideMenu bind:menuBtnOpen bind:settingsBtnOpen bind:page />
       </div>
     {/if}
     {#if settingsBtnOpen}
-      <div class="settings" transition:fly={{ x: "100%" }}>
+      <div class="sidemenu settings" transition:fly={{ x: "100%" }}>
         <OptionsPanel
           saveHandler={() => {
             settingsBtnOpen = false;
@@ -70,26 +70,29 @@
     width: 100%;
   }
 
-  .sidemenu {
-    position: absolute;
+  .navigation {
     left: 0;
-    top: 0;
-    width: 100%;
-    max-width: 1280px;
-    height: 100%;
-    z-index: 1;
-    background-color: #242424;
+    border-right: 1px solid black;
   }
 
   .settings {
-    position: absolute;
     right: 0;
+    border-left: 1px solid black;
+  }
+
+  .sidemenu {
+    position: absolute;
     top: 0;
-    width: 100%;
-    max-width: 1280px;
     height: 100%;
+    width: calc(calc(100vw - 1280px) / 2);
     z-index: 1;
-    background-color: #242424;
+    background-color: #1a1a1a;
+  }
+
+  @media (max-width: 1700px) {
+    .sidemenu {
+      width: 100%;
+    }
   }
 
   .content-container {
