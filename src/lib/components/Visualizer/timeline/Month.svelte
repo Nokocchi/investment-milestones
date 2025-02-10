@@ -15,12 +15,14 @@
   let coasting = month.coasting;
   let hideMilestones = $state(true);
   let showAllMilestones = $derived(options.showAllMilestones);
-
-  // TODO: Figure out a way to scale text so that everything fits, but only if necessary. Or, use short form yearsAndMonthsUntil if necessary. 
+  let screenWidth: number = $state(0);
+  // Scale font size with screen size so that the data in the list will always fit. Max font size is 1rem. 500 is a magical constant, but seems to look nice.
+  let fontSize: string = $derived(Math.min(1, screenWidth/500) + "rem"); 
 
 </script>
 
-<div class={["month-wrapper", ReachedState[reachedState], { coasting }]} onclick={() => (hideMilestones = !hideMilestones)}>
+<svelte:window bind:innerWidth={screenWidth} />
+<div class={["month-wrapper", ReachedState[reachedState], { coasting }]} style="--font-size: {fontSize}" onclick={() => (hideMilestones = !hideMilestones)}>
   <div class="month-header-wrapper">
     <div class="left month-column">
       {month.monthName}
@@ -54,7 +56,7 @@
       </div>
       <div class="month-column months-until row-padding">
         {#if month.yearsUntil}
-          {month.yearsUntil}Y <br />
+          {month.yearsUntil}Y
         {/if}
         {#if month.monthsUntil}
           {month.monthsUntil}M
@@ -76,7 +78,7 @@
   .month-wrapper {
     display: flex;
     flex-direction: column;
-    font-size: 0.8rem;
+    font-size: var(--font-size);
   }
 
   .month-wrapper.coasting {
@@ -93,7 +95,7 @@
     display: flex;
     flex-direction: row;
     border: 1px solid white;
-    padding: 0.5rem;
+    padding: 0.7em;
     position: relative;
   }
 
@@ -125,7 +127,7 @@
 
   .months-until {
     flex: 1 1 10%;
-    white-space: wrap;
+    white-space: pre-line;
   }
 
   .noMilestones {
