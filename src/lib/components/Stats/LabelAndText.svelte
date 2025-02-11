@@ -1,8 +1,15 @@
 <script lang="ts">
-    let { label, text, text2, text3 }: { label: string; text: string; text2?: string; text3?: string } = $props();
+    import { tooltip } from "../../shared/tooltip";
+
+    let { label, text, text2, text3, tooltipText }: { label: string; text: string; text2?: string; text3?: string, tooltipText?: string } = $props();
 </script>
 
-<p class="label">{label}</p>
+<p class="label">
+    {label}
+    {#if tooltipText}
+        <span use:tooltip={tooltipText}></span>
+    {/if}
+</p>
 <div class="text">
     <p>{text}</p>
     {#if text2}
