@@ -17,12 +17,15 @@
   let showAllMilestones = $derived(options.showAllMilestones);
   let screenWidth: number = $state(0);
   // Scale font size with screen size so that the data in the list will always fit. Max font size is 1rem. 500 is a magical constant, but seems to look nice.
-  let fontSize: string = $derived(Math.min(1, screenWidth/500) + "rem"); 
-
+  let fontSize: string = $derived((screenWidth > 1280 ? 1 : Math.min(1, screenWidth / 500)) + "rem");
 </script>
 
-<svelte:window bind:innerWidth={screenWidth} />
-<div class={["month-wrapper", ReachedState[reachedState], { coasting }]} style="--font-size: {fontSize}" onclick={() => (hideMilestones = !hideMilestones)}>
+<svelte:window bind:outerWidth={screenWidth} />
+<div
+  class={["month-wrapper", ReachedState[reachedState], { coasting }]}
+  style="--font-size: {fontSize}"
+  onclick={() => (hideMilestones = !hideMilestones)}
+>
   <div class="month-header-wrapper">
     <div class="left month-column">
       {month.monthName}
@@ -55,11 +58,10 @@
         {/if}
       </div>
       <div class="month-column months-until row-padding">
-        {#if month.yearsUntil}
-          {month.yearsUntil}Y
-        {/if}
-        {#if month.monthsUntil}
-          {month.monthsUntil}M
+        {#if screenWidth >= 1280}
+          {month.timeUntilStringLong}
+        {:else}
+          {month.timeUntilStringShort}
         {/if}
       </div>
     </div>
@@ -100,13 +102,13 @@
   }
 
   .left {
-    flex: 1 1 10%;
+    flex: 1 1 8%;
     display: flex;
     flex-direction: row;
   }
 
   .right {
-    flex: 1 1 90%;
+    flex: 1 1 92%;
     display: flex;
     flex-direction: row;
     position: relative;
@@ -122,7 +124,7 @@
   }
 
   .goal-percentage {
-    flex: 1 1 10%;
+    flex: 1 1 15%;
   }
 
   .months-until {

@@ -30,7 +30,7 @@ export const getMonthAsAgeYearString = (months: number | null, age: number): str
     return `${year} | ${ageInFuture} years old`;
 }
 
-export const getMonthsAsYearMonthString = (months: number | null, reachedText: string = "", nullText: string = "Impossible") => {
+export const getMonthsAsYearMonthString = (months: number | null, reachedText: string = "", nullText: string = "Impossible", shortForm: boolean = false, divider: string = ", ") => {
     if (months == 0) {
         return reachedText;
     }
@@ -49,26 +49,34 @@ export const getMonthsAsYearMonthString = (months: number | null, reachedText: s
 
     let yearSegment = "";
     if (yearsInFutureFloored != 0) {
-        yearSegment = `${yearsInFutureFloored} year`;
-        if (yearsInFutureFloored > 1) {
-            yearSegment += "s";
+        if (shortForm) {
+            yearSegment = `${yearsInFutureFloored}Y`
+        } else {
+            yearSegment = `${yearsInFutureFloored} year`;
+            if (yearsInFutureFloored > 1) {
+                yearSegment += "s";
+            }
         }
     }
 
     let monthSegment = "";
     if (monthPart != 0) {
-        monthSegment = `${monthPart} month`;
-        if (monthPart > 1) {
-            monthSegment += "s";
+        if (shortForm) {
+            monthSegment = `${monthPart}M`
+        } else {
+            monthSegment = `${monthPart} month`;
+            if (monthPart > 1) {
+                monthSegment += "s";
+            }
         }
     }
 
-    let divider = "";
+    let actualDivider = "";
     if (monthPart != 0 && yearsInFutureFloored != 0) {
-        divider = ", ";
+        actualDivider = divider;
     }
 
-    return yearSegment + divider + monthSegment;
+    return yearSegment + actualDivider + monthSegment;
 };
 
 export const getPercentage = (a: number, b: number): number => {
@@ -146,7 +154,7 @@ export const findMonthlyContribution = (
         monthsWithoutContribution
     );
 
-    if (noContributionCheck >= finalAmount){
+    if (noContributionCheck >= finalAmount) {
         return 0;
     }
 
@@ -157,8 +165,8 @@ export const findMonthlyContribution = (
 
     // Use bisection method to find the correct monthly contribution
     while (calculatedFinalSoFar < finalAmount || (calculatedFinalSoFar - finalAmount) > 1) {
-        console.log("Final amount", finalAmount);
-        console.log("Calculated final", calculatedFinalSoFar);
+        //console.log("Final amount", finalAmount);
+        //console.log("Calculated final", calculatedFinalSoFar);
         monthlyContributionSoFar = (lowerBound + upperBound) / 2;
         calculatedFinalSoFar = calculateFinalBalance(
             principal,
@@ -168,8 +176,8 @@ export const findMonthlyContribution = (
             monthsWithoutContribution
         );
 
-        console.log("lower bound", lowerBound);
-        console.log("upper bound", upperBound);
+        //console.log("lower bound", lowerBound);
+        //console.log("upper bound", upperBound);
 
         if (calculatedFinalSoFar < finalAmount) {
             // Increase the monthly contribution

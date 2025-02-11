@@ -27,6 +27,8 @@
     import Year from "./timeline/Year.svelte";
     import Stats from "../Stats/Stats.svelte";
 
+    let screenWidth: number = $state(0);
+
     function getNetWorthByMonth(options: DerivedOptions) {
         const netWorthList = [options.currentNetWorth];
         const numberOfYears = options.retireByAge - options.currentAge;
@@ -222,7 +224,7 @@
 
         for (const [i, networthAtThisMonth] of netWorthByMonthListNowAndFuture.entries()) {
             let networthNextMonth = i + 1 >= netWorthByMonthListNowAndFuture.length ? 0 : netWorthByMonthListNowAndFuture[i + 1];
-            let yearsAndMonthsUntil = "";
+       
             let reachedPercentage = options.monthsSinceInvestmentStart
                 ? Math.min(100, (options.monthsSinceInvestmentStart / (options.monthsSinceInvestmentStart + i)) * 100)
                 : null;
@@ -247,9 +249,8 @@
 
             let calendarMonth = (CURRENT_MONTH + i) % monthsInAYear;
 
-            let yearsInFuture = i / monthsInAYear;
-            let yearsInFutureFloored = Math.floor(yearsInFuture);
-            let monthPart = i % monthsInAYear;
+            const timeUntilStringShort = getMonthsAsYearMonthString(i, "HERE", "", true, "\n");
+            const timeUntilStringLong = getMonthsAsYearMonthString(i, "HERE", "", false, "\n");
 
             let monthReachedState: ReachedState;
             if (networthAtThisMonth <= currentNetWorth) {
@@ -289,8 +290,8 @@
                 milestones: milestones,
                 monthlyGrowth: Math.max(0, networthNextMonth - networthAtThisMonth - monthlyContribution),
                 reachedState: monthReachedState,
-                yearsUntil: yearsInFutureFloored,
-                monthsUntil: monthPart,
+                timeUntilStringShort: timeUntilStringShort,
+                timeUntilStringLong: timeUntilStringLong,
                 percentageOfReachingThis: reachedPercentage,
                 percentageTowardsFire: percentageTowardsFire,
                 percentageTowardsCoastFire: percentageTowardsCoastFire,
@@ -345,7 +346,6 @@
                 monthsLeft,
             );
             if (noContributionsFinalAmount > options.fireNumber) {
-                console.log("Can coast with ", netWorthByMonth[i]);
                 return i;
             }
         }
@@ -376,6 +376,7 @@
     //console.log("Coast fire months in future", coastFireReachedMonthsInFuture);
 </script>
 
+<svelte:window bind:outerWidth={screenWidth} />
 <Stats {derivedOptions} {netWorthByMonthListNowAndFuture} {fireMonthsInFuture} {coastFireReachedMonthsInFuture} />
 {#key timelineData}
     {#each timelineData as yearData}
