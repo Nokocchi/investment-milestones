@@ -1,15 +1,21 @@
 <script lang="ts">
-    import { tooltip } from "../../shared/tooltip";
+    import Tooltip from "./Tooltip.svelte";
 
-    let { label, text, text2, text3, tooltipText }: { label: string; text: string; text2?: string; text3?: string, tooltipText?: string } = $props();
+    let { label, text, text2, text3, tooltipText }: { label: string; text: string; text2?: string; text3?: string; tooltipText?: string } =
+        $props();
 </script>
 
-<p class="label">
-    {label}
-    {#if tooltipText}
-        <span use:tooltip={tooltipText}></span>
-    {/if}
-</p>
+<div class="label-and-tooltip">
+    <p class="label">
+        {label}
+    </p>
+    <div class="tooltip">
+        {#if tooltipText}
+            <Tooltip {tooltipText} />
+        {/if}
+    </div>
+</div>
+
 <div class="text">
     <p>{text}</p>
     {#if text2}
@@ -27,10 +33,19 @@
         text-align: left;
     }
 
+    .label-and-tooltip {
+        text-align: left;
+    }
+
+    .tooltip {
+        display: inline-block;
+    }
+
     .label {
         color: darkgreen;
         font-weight: bold;
         font-size: 1.2em;
+        display: inline-block;
     }
 
     .text {

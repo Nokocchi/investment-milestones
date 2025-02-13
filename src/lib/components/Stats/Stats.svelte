@@ -6,6 +6,15 @@
     import MonthCircle from "./MonthCircle.svelte";
     import { CircleType } from "./MonthCircle.svelte";
     import LabelAndToggle from "./LabelAndToggle.svelte";
+    import {
+    tooltipText_CoastFromChosenDate,
+        tooltipText_EarnPerHour,
+        tooltipText_estimatedCoastFireText,
+        tooltipText_FireNumber,
+        tooltipText_neededToRetireAmountText,
+        tooltipText_plannedRetirementText,
+        tooltipText_whenFireText,
+    } from "../../shared/TooltipTexts";
 
     const {
         derivedOptions,
@@ -20,7 +29,7 @@
     } = $props();
 
     let screenWidth: number = $state(0);
-    let tooltipMaxWidth: string = $derived(screenWidth / 6 + "px");
+    let tooltipMaxWidth: string = $derived(screenWidth > 1280 ? screenWidth / 2 + "px" : screenWidth / 4 + "px");
 
     const coastFireReachedPercentage =
         coastFireReachedMonthsInFuture !== null
@@ -32,18 +41,6 @@
         fireMonthsInFuture !== null
             ? (derivedOptions.monthsSinceInvestmentStart / (derivedOptions.monthsSinceInvestmentStart + fireMonthsInFuture)) * 100
             : null;
-
-    const neededToRetireAmountText: string = derivedOptions.coastFromDate
-        ? `Assuming you keep investing until your coast fire date ${derivedOptions.coastFromDate.toLocaleDateString()}, and then you coast until your retirement age of ${derivedOptions.retireByAge}`
-        : `Assuming you keep investing until your retirement age of ${derivedOptions.retireByAge}`;
-
-    const whenFireText: string = derivedOptions.coastFromDate
-        ? `This is the estimated date and time you will hit your fire number, assuming you are coasting from ${derivedOptions.coastFromDate.toLocaleDateString()}, and not investing anything after this.`
-        : `This is the estimated date and time you will hit your fire number`;
-
-    const estimatedCoastFireText: string = `The estimated date and time that you could completely stop investing, and your net worth would grow to your fire number ${roundAndFormat(derivedOptions.fireNumber, derivedOptions.currency)} by the chosen retirement age ${derivedOptions.retireByAge}, assuming an annual interest of ${derivedOptions.annualInterestPercent}%`;
-
-    const plannedRetirementText: string = "When you want to retire. Your investments are simulated until this date" + (derivedOptions.coastFromDate ? `. You have selected a coast fire date of ${derivedOptions.coastFromDate.toLocaleDateString()}, so monthly contributions are only taken into account until this date` : "");
 </script>
 
 <svelte:window bind:outerWidth={screenWidth} />
@@ -66,12 +63,17 @@
         <LabelAndText
             label={"Your FIRE number"}
             text={roundAndFormat(derivedOptions.fireNumber, derivedOptions.currency)}
-            tooltipText={`This is the amount of money you need to be financially independent, assuming a SWR of ${derivedOptions.safeWithdrawalRatePercentage}%, an annual interest of ${derivedOptions.annualInterestPercent}%, and monthly expenses of ${roundAndFormat(derivedOptions.monthlyExpensesAfterTax, derivedOptions.currency)}`}
+            tooltipText={tooltipText_FireNumber(
+                derivedOptions.safeWithdrawalRatePercentage,
+                derivedOptions.annualInterestPercent,
+                derivedOptions.monthlyExpensesAfterTax,
+                derivedOptions.currency,
+            )}
         />
         <LabelAndText
             label={"Earn per work hour"}
             text={roundAndFormat(derivedOptions.perHour, derivedOptions.currency)}
-            tooltipText={"Assuming 40 hours of work per week, and 46 work hours per year, you work 1840 hours per year. Assuming your current annual interest is earned in similar 1840 one-hour increments, this value shows how much you earn from interest per work hour."}
+            tooltipText={tooltipText_EarnPerHour()}
         />
         <LabelAndText label={"Monthly interest"} text={roundAndFormat(derivedOptions.monthlyInterestGrowth, derivedOptions.currency)} />
         <LabelAndText
@@ -89,7 +91,7 @@
             text={coastFireReachedMonthsInFuture == 0 && !fireMonthsInFuture
                 ? "N/A"
                 : roundAndFormat(derivedOptions.minimumMonthlyContributionsNeededToReachFire, derivedOptions.currency)}
-            tooltipText={neededToRetireAmountText}
+            tooltipText={tooltipText_neededToRetireAmountText(derivedOptions.retireByAge, derivedOptions.coastFromDate)}
         />
     </div>
     <div class="column">
@@ -102,7 +104,7 @@
                 text3={derivedOptions.coastFromDateMonthsInFuture
                     ? `${roundAndFormat(netWorthByMonthListNowAndFuture[derivedOptions.coastFromDateMonthsInFuture], derivedOptions.currency)}`
                     : undefined}
-                tooltipText={"This is the date from which you will no longer invest any money, and instead you are letting your net worth grow by itself."}
+                tooltipText={tooltipText_CoastFromChosenDate()}
             />
         {:else}
             <LabelAndText
@@ -112,7 +114,12 @@
                 text3={coastFireReachedMonthsInFuture
                     ? `${roundAndFormat(netWorthByMonthListNowAndFuture[coastFireReachedMonthsInFuture], derivedOptions.currency)}`
                     : undefined}
-                tooltipText={estimatedCoastFireText}
+                tooltipText={tooltipText_estimatedCoastFireText(
+                    derivedOptions.fireNumber,
+                    derivedOptions.currency,
+                    derivedOptions.retireByAge,
+                    derivedOptions.annualInterestPercent,
+                )}
             />
         {/if}
         <LabelAndText
@@ -122,14 +129,14 @@
             text3={fireMonthsInFuture
                 ? `${roundAndFormat(netWorthByMonthListNowAndFuture[fireMonthsInFuture], derivedOptions.currency)}`
                 : undefined}
-            tooltipText={whenFireText}
+            tooltipText={tooltipText_whenFireText(derivedOptions.coastFromDate)}
         />
         <LabelAndText
             label={"Planned retirement"}
             text={getMonthsAsYearMonthString(netWorthByMonthListNowAndFuture.length - 1)}
             text2={getMonthAsAgeYearString(netWorthByMonthListNowAndFuture.length - 1, derivedOptions.currentAge)}
             text3={`${roundAndFormat(netWorthByMonthListNowAndFuture[netWorthByMonthListNowAndFuture.length - 1], derivedOptions.currency)}`}
-            tooltipText={plannedRetirementText}
+            tooltipText={tooltipText_plannedRetirementText(derivedOptions.coastFromDate)}
         />
         <LabelAndToggle label="Expand all milestones" bind:checked={options.showAllMilestones} />
     </div>
@@ -153,6 +160,6 @@
     }
 
     :global(#tooltip) {
-        width: var(--tooltip-max-width);
+        width: var(--tooltip-width);
     }
 </style>
