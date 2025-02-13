@@ -11,6 +11,10 @@
     };
 
     $effect(() => saveToLocalStorage(options));
+
+    const saveHandlerInternal = () => {
+        saveHandler();
+    }
 </script>
 
 <div>
@@ -30,7 +34,7 @@
             <LabelAndInput label="Coast from" type={InputType.date} bind:value={options.coastFromDate} />
         </div>
     </div>
-    <button onclick={saveHandler}>Save</button>
+    <button onclick={saveHandlerInternal}>Save</button>
 </div>
 
 <style>

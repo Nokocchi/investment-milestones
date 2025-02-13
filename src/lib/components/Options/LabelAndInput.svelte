@@ -15,41 +15,47 @@
 
     const formatter = Intl.NumberFormat("en-US");
 
-    const formatIfNecessary = (value?: string) => {
+    const cleanUpWithRegex = (val: string): string => {
+        return val.replace(/[^0-9]/g, "");
+    };
+
+    const onInputHandler = () => {
+        if(type === InputType.currency && internalValue){
+            internalValue = cleanUpWithRegex(internalValue);
+        }
+    };
+
+    const formatIfNecessary = (value?: string): string | undefined => {
         if (type !== InputType.currency) {
             return value;
         }
         
-        return formatter.format(getValueAsNumber(value));
-    }
-
-    const getValueAsNumber = (val?: string): number => {
-        if (!val) {
-            return 0;
+        if(!value){
+            return "";
         }
 
-        return +(String(val).replace(/[^0-9]/g, ""));
-    };
+        return formatter.format(+cleanUpWithRegex(value));
+    }
 
-    let internalValue = $state(formatIfNecessary(value));
-    const typeAdjusted = type === InputType.currency ? InputType.string : type;
-
-    // Make sure the caret is in the correct location after update. 
-    const onInputHandler = () => {
+    const onBlurHandler = () => {
         if (type !== InputType.currency) {
             value = internalValue;
             return;
         }
-        const asNumber = getValueAsNumber(internalValue);
-        const currencyString = formatter.format(asNumber);
-        internalValue = currencyString;
-        value = String(asNumber);
-    };
+        value = String(internalValue);
+        internalValue = formatIfNecessary(internalValue);
+    }
+
+
+
+    let internalValue = $state(formatIfNecessary(value));
+    const typeAdjusted = type === InputType.currency ? InputType.string : type;
+
 </script>
 
 <label class="input-with-label">
     {label}
-    <input type={InputType[typeAdjusted]} bind:value={internalValue} oninput={onInputHandler} />
+    <input type={InputType[typeAdjusted]} bind:value={internalValue} oninput={onInputHandler} onblur={onBlurHandler}/>
 </label>
 
 <style>

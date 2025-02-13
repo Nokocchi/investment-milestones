@@ -378,6 +378,11 @@
 
 <svelte:window bind:outerWidth={screenWidth} />
 <Stats {derivedOptions} {netWorthByMonthListNowAndFuture} {fireMonthsInFuture} {coastFireReachedMonthsInFuture} />
+<div class="row">
+    <p>🎯: How close are you to reaching this amount</p> 
+    <p>🏄: How close is this month to Coast FIRE</p> 
+    <p>🔥: How close is this month to FIRE</p> 
+</div>
 {#key timelineData}
     {#each timelineData as yearData}
         <Year {yearData} />
@@ -385,4 +390,9 @@
 {/key}
 
 <style>
+    .row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
 </style>

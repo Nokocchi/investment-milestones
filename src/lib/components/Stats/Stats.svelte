@@ -62,7 +62,7 @@
         <LabelAndText label={"Net worth"} text={roundAndFormat(derivedOptions.currentNetWorth, derivedOptions.currency)} />
         <LabelAndText
             label={"Your FIRE number"}
-            text={roundAndFormat(derivedOptions.fireNumber, derivedOptions.currency)}
+            text={derivedOptions.safeWithdrawalRatePercentage ? roundAndFormat(derivedOptions.fireNumber, derivedOptions.currency) : "Impossible"}
             tooltipText={tooltipText_FireNumber(
                 derivedOptions.safeWithdrawalRatePercentage,
                 derivedOptions.annualInterestPercent,
@@ -83,13 +83,13 @@
         <!-- The needed amount is nice to keep, for the extra info. Maybe I can mark as "already reached"? derivedOptions.netWorthNeededNowForCoast <= derivedOptions.currentNetWorth -->
         <LabelAndText
             label={"Needed now to coast"}
-            text={roundAndFormat(derivedOptions.netWorthNeededNowForCoast, derivedOptions.currency)}
+            text={derivedOptions.safeWithdrawalRatePercentage ? roundAndFormat(derivedOptions.netWorthNeededNowForCoast, derivedOptions.currency) : "Impossible"}
         />
         <!-- If we have no months left to invest, and we are projected not to hit fire, there's nothing to print here -->
         <LabelAndText
             label={"Minimum monthly Contribution for FIRE"}
-            text={coastFireReachedMonthsInFuture == 0 && !fireMonthsInFuture
-                ? "N/A"
+            text={(coastFireReachedMonthsInFuture == 0 && !fireMonthsInFuture) || (!derivedOptions.safeWithdrawalRatePercentage)
+                ? "Impossible"
                 : roundAndFormat(derivedOptions.minimumMonthlyContributionsNeededToReachFire, derivedOptions.currency)}
             tooltipText={tooltipText_neededToRetireAmountText(derivedOptions.retireByAge, derivedOptions.coastFromDate)}
         />

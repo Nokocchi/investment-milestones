@@ -1,12 +1,15 @@
-# NEW MILESTONES
-# - None at the moment
-
 # UI TODO:
 # Minimum needed for fire: some kind of icon that shows if you currently are investing more or less than this
-# If current age or retirement age are not filled out (often on first visit), make it a nice experience: Maybe show the options page in this case? Save the menu in local storage? Make it obvious that current age and retirement age need to be filled out
+# Chosen coast fire: Some kind of icon that shows if the coast fire date you picked is feasible
+# If current age or retirement age are not filled out (often on first visit), make it a nice experience: Maybe show the options page in this case? Make it obvious that current age and retirement age need to be filled out
 # Make milestone table look nicer
+# If "investing since", "monthly expenses after tax", "safe withdrawal rate" etc. are not filled out, the tool does not show a lot of data. Maybe show a warning about this? 
+# In options panel, refuse to save or show warning if mandatory fields are missing.
+# In options panel, show which fields are mandatory.
 # Some better checks for the coasting date picker: Can I somehow limit it to be between current date and chosen retirement age?
-# tooltip buttons to make things easier to understand
+# Somehow show that the percentages are in terms of TIME since investment start.
+# If you've chosen a coast date, make it visible on the Month table when you are coasting. But, not just background-color: green..
+# Figure out what to do when "investing since" is not filled out. Do we generate percentages based on numbers alone, and then switch to time-based when it is filled out? Or do we simply not generate any percentage data at all? 
 
 # FEATURE IDEAS:
 # Maybe a way to define multiple investments periods with different monthly contributions? 
@@ -18,18 +21,14 @@
 # Turn it into a whole page of various visualized investment things. Like, a graph showing "if you invested x every month from now, how much would you have compared to if you started y years ago? What if you had a principal of z in both scenarios? How much would somebody have to invest if they want to catch up to you in x years, and they started investing y years later than you?"
 
 # BUGS:
-# When deleting from or typing in the currency input, put cursor where it belongs was before.
+# Option inputs: Make them behave nice. Tabbing in a currency field seems to save the vale with a separator in it. Changing a field with a separator is a bit wonky because the separators disappear when you make a change. 
+# When did you start investing: If today is chosen (or nothing at all), the icons in the table are not generated properly.
 
 # Stats TODO: 
-# "Minimum monthly Contribution for FIRE" seems to be a little bit off. Maybe we're off by a month? It leaves us with a few months of coasting, for somer eason
+# "Minimum monthly Contribution for FIRE" seems to be a little bit off. Maybe we're off by a month? It leaves us with a few months of coasting, for somer reason
+# Make tooltips a bit better: They should have a proper icon, and should be easier to press on mobile. 
 
 #------------------------------------------------------------------------------
-
-# TOOLTIPS:
-# Retirement Age
-# - When you want to retire. Your investments are simulated until this date. The tool will say whether coast fire or fire are possible given this timeframe and your other selected options.
-# - Some info about the fact that it's important to pick an investment start date and invest steadily. The FIRE and Coast FIRE percentage circles cannot calculate how far along you are if you started investing this month, or invest different amounts
-# "Minimum monthly Contribution for FIRE" takes into account the chosen coast fire date.
 
 
 # Questions
