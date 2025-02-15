@@ -44,7 +44,7 @@
 
 <svelte:window bind:outerWidth={screenWidth} />
 <div style="--tooltip-width:{tooltipWidth}" class="relative">
-    <span bind:this={floating.elements.reference} {...interactions.getReferenceProps()}>?</span>
+    <i class="fa fa-question-circle" bind:this={floating.elements.reference} {...interactions.getReferenceProps()}></i>
     {#if open}
         <div
             bind:this={floating.elements.floating}

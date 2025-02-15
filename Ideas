@@ -1,12 +1,12 @@
-# UI TODO:
-# Minimum needed for fire: some kind of icon that shows if you currently are investing more or less than this
-# Chosen coast fire: Some kind of icon that shows if the coast fire date you picked is feasible
+# OPTIONS/STATS TODO:
 # If current age or retirement age are not filled out (often on first visit), make it a nice experience: Maybe show the options page in this case? Make it obvious that current age and retirement age need to be filled out
-# Make milestone table look nicer
-# If "investing since", "monthly expenses after tax", "safe withdrawal rate" etc. are not filled out, the tool does not show a lot of data. Maybe show a warning about this? 
 # In options panel, refuse to save or show warning if mandatory fields are missing.
 # In options panel, show which fields are mandatory.
-# Some better checks for the coasting date picker: Can I somehow limit it to be between current date and chosen retirement age?
+# Coast Fire date: If you have picked a date, and later changed retirement age or current age so that the coast fire date no longer makes sense, then handle this gracefully
+# If "investing since", "monthly expenses after tax", "safe withdrawal rate" etc. are not filled out, the tool does not show a lot of data. Maybe show a warning about this? 
+
+# GENERAL UI TODO:
+# Make milestone table look nicer
 # Somehow show that the percentages are in terms of TIME since investment start.
 # If you've chosen a coast date, make it visible on the Month table when you are coasting. But, not just background-color: green..
 # Figure out what to do when "investing since" is not filled out. Do we generate percentages based on numbers alone, and then switch to time-based when it is filled out? Or do we simply not generate any percentage data at all? 

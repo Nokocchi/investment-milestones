@@ -29,6 +29,7 @@
         let coastFromDateOkay = true;
         if (coastFromDateUnchecked) {
             const coastFromDate = new Date(coastFromDateUnchecked);
+            coastFromDate.setHours(23, 59, 59); // In case the coast fire date is today. The defaul h/m/s are 00:00:00, which would not pass the check below.
             const chosenCoastDateMonthsInFuture = getAbsoluteMonth(coastFromDate) - CURRENT_DATETIME_ABSOLUTE;
             coastFromDateOkay = (coastFromDate >= CURRENT_DATETIME) && (chosenCoastDateMonthsInFuture <= monthsUntilRetirement);
         }

@@ -7,10 +7,14 @@
         label,
         type,
         value = $bindable(),
+        min,
+        max
     }: {
         label: string;
         type: InputType;
         value: string | undefined;
+        min?: string,
+        max?: string
     } = $props();
 
     const formatter = Intl.NumberFormat("en-US");
@@ -46,8 +50,6 @@
         internalValue = formatIfNecessary(internalValue);
     }
 
-
-
     let internalValue = $state(formatIfNecessary(value));
     const typeAdjusted = type === InputType.currency ? InputType.string : type;
 
@@ -55,7 +57,7 @@
 
 <label class="input-with-label">
     {label}
-    <input type={InputType[typeAdjusted]} bind:value={internalValue} oninput={onInputHandler} onblur={onBlurHandler}/>
+    <input type={InputType[typeAdjusted]} bind:value={internalValue} oninput={onInputHandler} onblur={onBlurHandler} {min} {max}/>
 </label>
 
 <style>

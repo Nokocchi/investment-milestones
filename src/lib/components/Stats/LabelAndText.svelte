@@ -1,8 +1,23 @@
 <script lang="ts">
+    import { options } from "../../shared/shared.svelte";
     import Tooltip from "./Tooltip.svelte";
 
-    let { label, text, text2, text3, tooltipText }: { label: string; text: string; text2?: string; text3?: string; tooltipText?: string } =
-        $props();
+    let {
+        label,
+        texts,
+        tooltipText,
+        difference,
+    }: { label: string; texts: (string | undefined)[]; tooltipText?: string; difference?: number } = $props();
+
+    const getDifferenceText = (difference?: number): string | undefined => {
+        if (!difference){
+            return undefined;
+        }
+
+        return `${(difference > 0 ? "+" : "")} ${difference.toLocaleString()} ${options.currency}`;
+    }
+
+    const differenceText: string | undefined = getDifferenceText(difference);
 </script>
 
 <div class="label-and-tooltip">
@@ -16,14 +31,16 @@
     </div>
 </div>
 
+<!-- TODO: This component needs to be refactored. Maybe it should take either a string array or a "text&difference" object of some sort -->
 <div class="text">
-    <p>{text}</p>
-    {#if text2}
-        <p>{text2}</p>
-    {/if}
-    {#if text3}
-        <p>{text3}</p>
-    {/if}
+    {#each texts as text}
+        <p>
+            {text}
+            {#if difference}
+                <span class={["diff", { negative: difference < 0}]}>{differenceText}</span>
+            {/if}
+        </p>
+    {/each}
 </div>
 
 <style>
@@ -50,5 +67,13 @@
 
     .text {
         margin-bottom: 25px;
+    }
+
+    .diff {
+        color: green;
+    }
+
+    .diff.negative {
+        color: red;
     }
 </style>
