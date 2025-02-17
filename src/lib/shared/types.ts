@@ -1,8 +1,6 @@
 import type { SVGAttributes } from 'svelte/elements';
-import type { ReachedState } from './constants';
 
 export type MonthData = {
-    reachedState: ReachedState;
     monthName: string;
     estimatedNetWorth: number;
     timeUntilStringShort: string;
@@ -18,7 +16,6 @@ export type MonthData = {
 export type YearHeader = {
     year: number;
     age: number;
-    reachedState: ReachedState
 };
 
 export type YearData = {
@@ -91,4 +88,19 @@ export type DerivedOptions = {
     coastFromDateMonthsInFuture?: number;
     netWorthNeededNowForCoast: number;
     minimumMonthlyContributionsNeededToReachFire: number;
+}
+
+export enum TextColor {
+    RED,
+    GREEN
+}
+
+export type TextAndColor = {
+    value?: string;
+    color?: TextColor;
+}
+
+export type TextWithSubtext = {
+    text?: TextAndColor;
+    subtext?: TextAndColor;
 }

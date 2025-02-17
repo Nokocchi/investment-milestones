@@ -2,12 +2,10 @@
   import { slide } from "svelte/transition";
   import { options } from "../../../shared/shared.svelte";
   import type { MonthData } from "../../../shared/types";
-  import { ReachedState } from "../../../shared/constants";
   import Table from "../Table.svelte";
 
   let { month }: { month: MonthData } = $props();
   let tableData: string[][] = [];
-  let reachedState = month.reachedState;
   for (const milestone of month.milestones) {
     tableData.push([Math.round(milestone.neededNetWorth).toLocaleString() + " " + options.currency, milestone.message]);
   }
@@ -22,7 +20,7 @@
 
 <svelte:window bind:outerWidth={screenWidth} />
 <div
-  class={["month-wrapper", ReachedState[reachedState], { coasting }]}
+  class={["month-wrapper", { coasting }]}
   style="--font-size: {fontSize}"
   onclick={() => (hideMilestones = !hideMilestones)}
 >
@@ -84,13 +82,7 @@
   }
 
   .month-wrapper.coasting {
-    background: green;
-  }
-
-  .month-wrapper.REACHED {
-  }
-
-  .month-wrapper.HERE {
+    background: rgba(0, 255, 0, 10%);
   }
 
   .month-header-wrapper {
@@ -135,11 +127,7 @@
   .noMilestones {
     display: none;
   }
-
-  .hideMilestones {
-    display: none;
-  }
-
+  
   .month-column {
     align-self: center;
   }

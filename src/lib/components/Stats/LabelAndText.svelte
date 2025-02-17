@@ -1,23 +1,8 @@
 <script lang="ts">
-    import { options } from "../../shared/shared.svelte";
+    import { TextColor, type TextWithSubtext } from "../../shared/types";
     import Tooltip from "./Tooltip.svelte";
 
-    let {
-        label,
-        texts,
-        tooltipText,
-        difference,
-    }: { label: string; texts: (string | undefined)[]; tooltipText?: string; difference?: number } = $props();
-
-    const getDifferenceText = (difference?: number): string | undefined => {
-        if (!difference){
-            return undefined;
-        }
-
-        return `${(difference > 0 ? "+" : "")} ${difference.toLocaleString()} ${options.currency}`;
-    }
-
-    const differenceText: string | undefined = getDifferenceText(difference);
+    let { label, texts, tooltipText }: { label: string; texts: TextWithSubtext[]; tooltipText?: string } = $props();
 </script>
 
 <div class="label-and-tooltip">
@@ -31,15 +16,16 @@
     </div>
 </div>
 
-<!-- TODO: This component needs to be refactored. Maybe it should take either a string array or a "text&difference" object of some sort -->
 <div class="text">
-    {#each texts as text}
-        <p>
-            {text}
-            {#if difference}
-                <span class={["diff", { negative: difference < 0}]}>{differenceText}</span>
-            {/if}
-        </p>
+    {#each texts as { text, subtext }}
+        {#if text && text.value}
+            <p class={[text.color != null ? TextColor[text.color] : undefined]}>
+                {text.value}
+                {#if subtext && subtext.value}
+                    <span class={[subtext.color != null ? TextColor[subtext.color] : undefined]}>{subtext.value}</span>
+                {/if}
+            </p>
+        {/if}
     {/each}
 </div>
 
@@ -69,11 +55,19 @@
         margin-bottom: 25px;
     }
 
-    .diff {
+    .text p.RED {
+        color: red;
+    }
+
+    .text p.GREEN {
         color: green;
     }
 
-    .diff.negative {
+    .text span.RED {
         color: red;
+    }
+
+    .text span.GREEN {
+        color: green;
     }
 </style>

@@ -5,7 +5,6 @@
         CURRENT_YEAR,
         monthNames,
         monthsInAYear,
-        ReachedState,
         workHoursPerYear,
     } from "../../shared/constants";
     import {
@@ -249,19 +248,8 @@
 
             let calendarMonth = (CURRENT_MONTH + i) % monthsInAYear;
 
-            const timeUntilStringShort = getMonthsAsYearMonthString(i, "HERE", "", true, "\n");
-            const timeUntilStringLong = getMonthsAsYearMonthString(i, "HERE", "", false, "\n");
-
-            let monthReachedState: ReachedState;
-            if (networthAtThisMonth <= currentNetWorth) {
-                if (netWorthByMonthListNowAndFuture[i + 1] > currentNetWorth) {
-                    monthReachedState = ReachedState.HERE;
-                } else {
-                    monthReachedState = ReachedState.REACHED;
-                }
-            } else {
-                monthReachedState = ReachedState.IN_FUTURE;
-            }
+            const timeUntilStringShort = getMonthsAsYearMonthString(i, "NOW", "", true, "\n");
+            const timeUntilStringLong = getMonthsAsYearMonthString(i, "NOW", "", false, "\n");
 
             let milestones: Milestone[] = [];
             for (const [neededNetworth, milestoneMessages] of [...netWorthMilestoneSortedMap.entries()]) {
@@ -289,7 +277,6 @@
                 monthName: monthNames[calendarMonth],
                 milestones: milestones,
                 monthlyGrowth: Math.max(0, networthNextMonth - networthAtThisMonth - monthlyContribution),
-                reachedState: monthReachedState,
                 timeUntilStringShort: timeUntilStringShort,
                 timeUntilStringLong: timeUntilStringLong,
                 percentageOfReachingThis: reachedPercentage,
@@ -302,12 +289,9 @@
             if (i == 0 || calendarMonth == 0) {
                 let year = CURRENT_YEAR + yearIndex;
 
-                const yearReachedState = year <= CURRENT_YEAR ? ReachedState.REACHED : ReachedState.IN_FUTURE;
-
                 let yearHeader: YearHeader = {
                     year: year,
-                    age: options.currentAge + yearIndex,
-                    reachedState: yearReachedState,
+                    age: options.currentAge + yearIndex
                 };
 
                 let yearData = {
@@ -372,16 +356,14 @@
         coastFireReachedMonthsInFuture,
     );
 
-    //console.log("Fire months in future", fireMonthsInFuture);
-    //console.log("Coast fire months in future", coastFireReachedMonthsInFuture);
 </script>
 
 <svelte:window bind:outerWidth={screenWidth} />
 <Stats {derivedOptions} {netWorthByMonthListNowAndFuture} {fireMonthsInFuture} {coastFireReachedMonthsInFuture} />
 <div class="row">
-    <p>🎯: How close are you to reaching this amount</p> 
-    <p>🏄: How close is this month to Coast FIRE</p> 
-    <p>🔥: How close is this month to FIRE</p> 
+    <p>🎯: How close you are to reaching this amount</p> 
+    <p>🏄: How close this month is to Coast FIRE</p> 
+    <p>🔥: How close this month is to FIRE</p> 
 </div>
 {#key timelineData}
     {#each timelineData as yearData}

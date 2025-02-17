@@ -32,11 +32,11 @@
 <div>
     <div class="options-panel">
         <div class="column">
-            <LabelAndInput label="Monthly Contribution" type={InputType.currency} bind:value={options.monthlyContribution} />
-            <LabelAndInput label="Current net worth" type={InputType.currency} bind:value={options.currentNetWorth} />
+            <LabelAndInput label="Monthly Contribution" type={InputType.number} bind:value={options.monthlyContribution} />
+            <LabelAndInput label="Current net worth" type={InputType.number} bind:value={options.currentNetWorth} />
             <LabelAndInput label="Annual interest %" type={InputType.number} bind:value={options.annualInterestPercent} />
             <LabelAndInput label="Safe withdrawal rate %" type={InputType.number} bind:value={options.safeWithdrawalRatePercentage} />
-            <LabelAndInput label="Monthly expenses after tax" type={InputType.currency} bind:value={options.monthlyExpensesAfterTax} />
+            <LabelAndInput label="Monthly expenses after tax" type={InputType.number} bind:value={options.monthlyExpensesAfterTax} />
         </div>
         <div class="column">
             <LabelAndInput label="When did you start investing?" type={InputType.date} bind:value={options.investmentStart} />

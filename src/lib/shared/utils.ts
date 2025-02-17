@@ -1,4 +1,5 @@
 import { CURRENT_YEAR, monthsInAYear } from "./constants";
+import type { TextWithSubtext } from "./types";
 
 export function* range(start: number, stop?: number, step: number = 1, includeLast: boolean = false) {
     if (stop == null) {
@@ -209,4 +210,20 @@ export const getPrincipalNeededForNoContributionFutureValue = (futureValue: numb
 
 export const roundAndFormat = (value: number, currency: string) => {
     return `${Math.round(value).toLocaleString()} ${currency}`;
+}
+
+export const formatNumberWithSign = (currency?: string, value?: number): string | undefined => {
+    if (!value) {
+        return undefined;
+    }
+
+    let numberPart = `${(value > 0 ? "+" : "")}${value.toLocaleString()}`
+    if (currency) {
+        numberPart += ` ${currency}`
+    }
+    return numberPart;
+}
+
+export const createSimpleText = (text?: string): TextWithSubtext => {
+    return { text: { value: text } }
 }

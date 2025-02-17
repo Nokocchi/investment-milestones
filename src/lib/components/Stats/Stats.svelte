@@ -1,7 +1,13 @@
 <script lang="ts">
     import { options } from "../../shared/shared.svelte";
-    import type { DerivedOptions } from "../../shared/types";
-    import { getMonthAsAgeYearString, getMonthsAsYearMonthString, roundAndFormat } from "../../shared/utils";
+    import { TextColor, type DerivedOptions, type TextWithSubtext } from "../../shared/types";
+    import {
+        createSimpleText,
+        formatNumberWithSign,
+        getMonthAsAgeYearString,
+        getMonthsAsYearMonthString,
+        roundAndFormat,
+    } from "../../shared/utils";
     import LabelAndText from "./LabelAndText.svelte";
     import MonthCircle from "./MonthCircle.svelte";
     import { CircleType } from "./MonthCircle.svelte";
@@ -31,7 +37,8 @@
     let screenWidth: number = $state(0);
     let tooltipMaxWidth: string = $derived(screenWidth > 1280 ? screenWidth / 2 + "px" : screenWidth / 4 + "px");
 
-    const hideMinimumMonthlyContributions = (coastFireReachedMonthsInFuture == 0 && !fireMonthsInFuture) || !derivedOptions.safeWithdrawalRatePercentage;
+    const hideMinimumMonthlyContributions =
+        (coastFireReachedMonthsInFuture == 0 && !fireMonthsInFuture) || !derivedOptions.safeWithdrawalRatePercentage;
 
     const coastFireReachedPercentage =
         coastFireReachedMonthsInFuture !== null
@@ -43,6 +50,82 @@
         fireMonthsInFuture !== null
             ? (derivedOptions.monthsSinceInvestmentStart / (derivedOptions.monthsSinceInvestmentStart + fireMonthsInFuture)) * 100
             : null;
+
+    const howFarFromCoastNumber = derivedOptions.currentNetWorth - derivedOptions.netWorthNeededNowForCoast;
+    const howFarFromMinimumMonthlyContribution =
+        derivedOptions.monthlyContribution - derivedOptions.minimumMonthlyContributionsNeededToReachFire;
+
+    const yourFireNumber = derivedOptions.safeWithdrawalRatePercentage
+        ? roundAndFormat(derivedOptions.fireNumber, derivedOptions.currency)
+        : "Impossible";
+
+    const netWorthText: TextWithSubtext = createSimpleText(roundAndFormat(derivedOptions.currentNetWorth, derivedOptions.currency));
+    const yourFireNumberText: TextWithSubtext = createSimpleText(yourFireNumber);
+    const earnPerWorkHour: TextWithSubtext = createSimpleText(roundAndFormat(derivedOptions.perHour, derivedOptions.currency));
+    const monthlyInterest: TextWithSubtext = createSimpleText(
+        roundAndFormat(derivedOptions.monthlyInterestGrowth, derivedOptions.currency),
+    );
+    const safeMonthlyWithdrawal: TextWithSubtext = createSimpleText(
+        roundAndFormat(derivedOptions.safeMonthlyWithdrawal, derivedOptions.currency),
+    );
+    const investingFor: TextWithSubtext = createSimpleText(getMonthsAsYearMonthString(derivedOptions.monthsSinceInvestmentStart));
+    const estimatedCoastFire1: TextWithSubtext = createSimpleText(getMonthsAsYearMonthString(coastFireReachedMonthsInFuture, "Reached"));
+    const estimatedCoastFire2: TextWithSubtext = createSimpleText(getMonthAsAgeYearString(fireMonthsInFuture, derivedOptions.currentAge));
+    const estimatedCoastFire3: TextWithSubtext = {
+        text: {
+            value: coastFireReachedMonthsInFuture
+                ? `${roundAndFormat(netWorthByMonthListNowAndFuture[coastFireReachedMonthsInFuture], derivedOptions.currency)}`
+                : undefined,
+        },
+    };
+
+    const estimatedFire1: TextWithSubtext = createSimpleText(getMonthsAsYearMonthString(fireMonthsInFuture, "Reached"));
+    const estimatedFire2: TextWithSubtext = createSimpleText(getMonthAsAgeYearString(fireMonthsInFuture, derivedOptions.currentAge));
+    const estimatedFire3: TextWithSubtext = {
+        text: {
+            value: fireMonthsInFuture
+                ? `${roundAndFormat(netWorthByMonthListNowAndFuture[fireMonthsInFuture], derivedOptions.currency)}`
+                : undefined,
+        },
+    };
+
+    const plannedRetirement1: TextWithSubtext = createSimpleText(getMonthsAsYearMonthString(netWorthByMonthListNowAndFuture.length - 1));
+    const plannedRetirement2: TextWithSubtext = createSimpleText(
+        getMonthAsAgeYearString(netWorthByMonthListNowAndFuture.length - 1, derivedOptions.currentAge),
+    );
+    const plannedRetirement3: TextWithSubtext = createSimpleText(
+        `${roundAndFormat(netWorthByMonthListNowAndFuture[netWorthByMonthListNowAndFuture.length - 1], derivedOptions.currency)}`,
+    );
+
+    const neededNowToCoast: TextWithSubtext = {
+        text: {
+            value: derivedOptions.safeWithdrawalRatePercentage
+                ? roundAndFormat(derivedOptions.netWorthNeededNowForCoast, derivedOptions.currency)
+                : "Impossible",
+        },
+        subtext: {
+            value: derivedOptions.safeWithdrawalRatePercentage
+                ? formatNumberWithSign(derivedOptions.currency, howFarFromCoastNumber)
+                : undefined,
+            color: howFarFromCoastNumber > 0 ? TextColor.GREEN : TextColor.RED,
+        },
+    };
+
+    const minimumMonthlyContributionsNeededToReachFire: TextWithSubtext = {
+        text: {
+            value: hideMinimumMonthlyContributions
+                ? "Impossible"
+                : roundAndFormat(derivedOptions.minimumMonthlyContributionsNeededToReachFire, derivedOptions.currency),
+        },
+        subtext: {
+            value: hideMinimumMonthlyContributions
+                ? undefined
+                : formatNumberWithSign(derivedOptions.currency, howFarFromMinimumMonthlyContribution),
+            color: howFarFromMinimumMonthlyContribution > 0 ? TextColor.GREEN : TextColor.RED,
+        },
+    };
+
+    const coastDateOkay: boolean = derivedOptions.coastFromDateMonthsInFuture != null && fireMonthsInFuture != null;
 </script>
 
 <svelte:window bind:outerWidth={screenWidth} />
@@ -61,14 +144,10 @@
 
 <div class="row" style="--tooltip-max-width: {tooltipMaxWidth}">
     <div class="column">
-        <LabelAndText label={"Net worth"} texts={[roundAndFormat(derivedOptions.currentNetWorth, derivedOptions.currency)]} />
+        <LabelAndText label={"Net worth"} texts={[netWorthText]} />
         <LabelAndText
             label={"Your FIRE number"}
-            texts={[
-                derivedOptions.safeWithdrawalRatePercentage
-                    ? roundAndFormat(derivedOptions.fireNumber, derivedOptions.currency)
-                    : "Impossible",
-            ]}
+            texts={[yourFireNumberText]}
             tooltipText={tooltipText_FireNumber(
                 derivedOptions.safeWithdrawalRatePercentage,
                 derivedOptions.annualInterestPercent,
@@ -76,62 +155,42 @@
                 derivedOptions.currency,
             )}
         />
-        <LabelAndText
-            label={"Earn per work hour"}
-            texts={[roundAndFormat(derivedOptions.perHour, derivedOptions.currency)]}
-            tooltipText={tooltipText_EarnPerHour()}
-        />
-        <LabelAndText label={"Monthly interest"} texts={[roundAndFormat(derivedOptions.monthlyInterestGrowth, derivedOptions.currency)]} />
-        <LabelAndText
-            label={"Safe monthly withdrawal"}
-            texts={[roundAndFormat(derivedOptions.safeMonthlyWithdrawal, derivedOptions.currency)]}
-        />
-        <!-- The needed amount is nice to keep, for the extra info. Maybe I can mark as "already reached"? derivedOptions.netWorthNeededNowForCoast <= derivedOptions.currentNetWorth -->
-        <LabelAndText
-            label={"Needed now to coast"}
-            texts={[
-                derivedOptions.safeWithdrawalRatePercentage
-                    ? roundAndFormat(derivedOptions.netWorthNeededNowForCoast, derivedOptions.currency)
-                    : "Impossible",
-            ]}
-            difference={derivedOptions.safeWithdrawalRatePercentage ? (derivedOptions.currentNetWorth - derivedOptions.netWorthNeededNowForCoast) : undefined}
-        />
-        <!-- If we have no months left to invest, and we are projected not to hit fire, there's nothing to print here -->
+        <LabelAndText label={"Earn per work hour"} texts={[earnPerWorkHour]} tooltipText={tooltipText_EarnPerHour()} />
+        <LabelAndText label={"Monthly interest"} texts={[monthlyInterest]} />
+        <LabelAndText label={"Safe monthly withdrawal"} texts={[safeMonthlyWithdrawal]} />
+        <LabelAndText label={"Needed now to coast"} texts={[neededNowToCoast]} />
         <LabelAndText
             label={"Minimum monthly Contribution for FIRE"}
-            texts={[
-                hideMinimumMonthlyContributions
-                    ? "Impossible"
-                    : roundAndFormat(derivedOptions.minimumMonthlyContributionsNeededToReachFire, derivedOptions.currency),
-            ]}
-            difference={hideMinimumMonthlyContributions ? undefined: derivedOptions.monthlyContribution - derivedOptions.minimumMonthlyContributionsNeededToReachFire}
+            texts={[minimumMonthlyContributionsNeededToReachFire]}
             tooltipText={tooltipText_neededToRetireAmountText(derivedOptions.retireByAge, derivedOptions.coastFromDate)}
         />
     </div>
     <div class="column">
-        <LabelAndText label={"Investing for"} texts={[getMonthsAsYearMonthString(derivedOptions.monthsSinceInvestmentStart)]} />
+        <LabelAndText label={"Investing for"} texts={[investingFor]} />
         {#if derivedOptions.coastFromDateMonthsInFuture}
             <LabelAndText
                 label={"Chosen Coast Date"}
                 texts={[
-                    getMonthsAsYearMonthString(derivedOptions.coastFromDateMonthsInFuture, "Reached"),
-                    getMonthAsAgeYearString(derivedOptions.coastFromDateMonthsInFuture, derivedOptions.currentAge),
-                    derivedOptions.coastFromDateMonthsInFuture
-                        ? `${roundAndFormat(netWorthByMonthListNowAndFuture[derivedOptions.coastFromDateMonthsInFuture], derivedOptions.currency)}`
-                        : undefined,
+                    createSimpleText(getMonthsAsYearMonthString(derivedOptions.coastFromDateMonthsInFuture, "Reached")),
+                    createSimpleText(getMonthAsAgeYearString(derivedOptions.coastFromDateMonthsInFuture, derivedOptions.currentAge)),
+                    createSimpleText(
+                        derivedOptions.coastFromDateMonthsInFuture
+                            ? `${roundAndFormat(netWorthByMonthListNowAndFuture[derivedOptions.coastFromDateMonthsInFuture], derivedOptions.currency)}`
+                            : undefined,
+                    ),
+                    {
+                        text: {
+                            value: coastDateOkay ? "Coast date OK" : "Too early to FIRE",
+                            color: coastDateOkay ? TextColor.GREEN : TextColor.RED,
+                        },
+                    },
                 ]}
                 tooltipText={tooltipText_CoastFromChosenDate()}
             />
         {:else}
             <LabelAndText
                 label={"Estimated Coast FIRE"}
-                texts={[
-                    getMonthsAsYearMonthString(coastFireReachedMonthsInFuture, "Reached"),
-                    getMonthAsAgeYearString(coastFireReachedMonthsInFuture, derivedOptions.currentAge),
-                    coastFireReachedMonthsInFuture
-                        ? `${roundAndFormat(netWorthByMonthListNowAndFuture[coastFireReachedMonthsInFuture], derivedOptions.currency)}`
-                        : undefined,
-                ]}
+                texts={[estimatedCoastFire1, estimatedCoastFire2, estimatedCoastFire3]}
                 tooltipText={tooltipText_estimatedCoastFireText(
                     derivedOptions.fireNumber,
                     derivedOptions.currency,
@@ -142,22 +201,12 @@
         {/if}
         <LabelAndText
             label={"Estimated FIRE"}
-            texts={[
-                getMonthsAsYearMonthString(fireMonthsInFuture, "Reached"),
-                getMonthAsAgeYearString(fireMonthsInFuture, derivedOptions.currentAge),
-                fireMonthsInFuture
-                    ? `${roundAndFormat(netWorthByMonthListNowAndFuture[fireMonthsInFuture], derivedOptions.currency)}`
-                    : undefined,
-            ]}
+            texts={[estimatedFire1, estimatedFire2, estimatedFire3]}
             tooltipText={tooltipText_whenFireText(derivedOptions.coastFromDate)}
         />
         <LabelAndText
             label={"Planned retirement"}
-            texts={[
-                getMonthsAsYearMonthString(netWorthByMonthListNowAndFuture.length - 1),
-                getMonthAsAgeYearString(netWorthByMonthListNowAndFuture.length - 1, derivedOptions.currentAge),
-                `${roundAndFormat(netWorthByMonthListNowAndFuture[netWorthByMonthListNowAndFuture.length - 1], derivedOptions.currency)}`,
-            ]}
+            texts={[plannedRetirement1, plannedRetirement2, plannedRetirement3]}
             tooltipText={tooltipText_plannedRetirementText(derivedOptions.coastFromDate)}
         />
         <LabelAndToggle label="Expand all milestones" bind:checked={options.showAllMilestones} />

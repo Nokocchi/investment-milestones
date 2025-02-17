@@ -18,11 +18,6 @@ export const monthNames = [
 export const monthsInAYear = monthNames.length;
 export const DEFAULT_RETIREMENT_AGE = 67;
 
-export enum ReachedState {
-    REACHED,
-    HERE,
-    IN_FUTURE
-}
 
 export enum InputType {
     number,
