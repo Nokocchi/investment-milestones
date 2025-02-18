@@ -5,7 +5,8 @@
         menuBtnOpen = $bindable(),
         settingsBtnOpen = $bindable(),
         page = $bindable(),
-    }: { menuBtnOpen: boolean; settingsBtnOpen: boolean; page: MenuChoice } = $props();
+        menuHeight = $bindable(),
+    }: { menuBtnOpen: boolean; settingsBtnOpen: boolean; page: MenuChoice, menuHeight: number; } = $props();
 
     const reset = () => {
         menuBtnOpen = false;
@@ -24,7 +25,7 @@
     };
 </script>
 
-<div class="menu">
+<div class="menu" bind:clientHeight={menuHeight}>
     <div class="limited-width">
         <button class="menu-btn" onclick={sideMenuClickHandler}>
             {#if menuBtnOpen}
@@ -48,7 +49,7 @@
 
 <style>
     .menu {
-        height: 45px;
+        height: 3rem;
         width: 100%;
         background-color: #1a1a1a;
         border-bottom: 1px solid black;

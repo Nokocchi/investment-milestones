@@ -12,36 +12,38 @@
   let page: MenuChoice = $state(MenuChoice.HOME);
   let menuBtnOpen: boolean = $state(false);
   let settingsBtnOpen: boolean = $state(false);
+  let menuHeight = $state(0);
 </script>
 
-<main>
+<main style="--menu-height: {menuHeight}px">
   <div class="top-menu">
-    <Menu bind:menuBtnOpen bind:settingsBtnOpen bind:page />
+    <Menu bind:menuBtnOpen bind:settingsBtnOpen bind:page bind:menuHeight/>
   </div>
+  {#if menuBtnOpen}
+    <div class="sidemenu navigation" transition:fly={{ x: "-100%" }}>
+      <SideMenu bind:menuBtnOpen bind:settingsBtnOpen bind:page />
+    </div>
+  {/if}
+  {#if settingsBtnOpen}
+    <div class="sidemenu settings" transition:fly={{ x: "100%" }}>
+      <OptionsPanel
+        saveHandler={() => {
+          settingsBtnOpen = false;
+        }}
+      />
+    </div>
+  {/if}
   <div class="rest-of-page">
-    {#if menuBtnOpen}
-      <div class="sidemenu navigation" transition:fly={{ x: "-100%" }}>
-        <SideMenu bind:menuBtnOpen bind:settingsBtnOpen bind:page />
+    <div class="full-width-scroll-container">
+      <div class="content-container">
+        {#if page == MenuChoice.HOME}
+          <FrontPage bind:page />
+        {:else if page == MenuChoice.VISUALIZER}
+          <MainPageProxy />
+        {:else if page == MenuChoice.ABOUT}
+          <About />
+        {/if}
       </div>
-    {/if}
-    {#if settingsBtnOpen}
-      <div class="sidemenu settings" transition:fly={{ x: "100%" }}>
-        <OptionsPanel
-          saveHandler={() => {
-            settingsBtnOpen = false;
-          }}
-        />
-      </div>
-    {/if}
-
-    <div class="content-container">
-      {#if page == MenuChoice.HOME}
-        <FrontPage bind:page />
-      {:else if page == MenuChoice.VISUALIZER}
-        <MainPageProxy />
-      {:else if page == MenuChoice.ABOUT}
-        <About />
-      {/if}
     </div>
   </div>
 </main>
@@ -55,44 +57,20 @@
     text-align: center;
     box-sizing: border-box;
     overflow-y: hidden;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     height: 100dvh;
-  }
-
-  .rest-of-page {
-    position: relative;
-    overflow-x: hidden;
-    flex-grow: 1;
   }
 
   .top-menu {
     width: 100%;
   }
 
-  .navigation {
-    left: 0;
-    border-right: 1px solid black;
-  }
-
-  .settings {
-    right: 0;
-    border-left: 1px solid black;
-  }
-
-  .sidemenu {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: calc(calc(100vw - 1280px) / 2);
-    z-index: 1;
-    background-color: #1a1a1a;
-  }
-
-  @media (max-width: 1700px) {
-    .sidemenu {
-      width: 100%;
-    }
+  .rest-of-page {
+    position: relative;
+    overflow-x: hidden;
+    flex-grow: 1;
   }
 
   .content-container {
@@ -109,5 +87,30 @@
     overflow-x: hidden;
     flex-grow: 1;
     padding: 1rem;
+  }
+
+  .navigation {
+    left: 0;
+    border-right: 1px solid black;
+  }
+
+  .settings {
+    right: 0;
+    border-left: 1px solid black;
+  }
+
+  .sidemenu {
+    position: absolute;
+    top: calc(var(--menu-height) + 1px); /*45px menu + 1px border*/
+    height: 100%;
+    width: calc((100vw - 1280px) / 2);
+    z-index: 1;
+    background-color: #1a1a1a;
+  }
+
+  @media (max-width: 1700px) {
+    .sidemenu {
+      width: 100%;
+    }
   }
 </style>
