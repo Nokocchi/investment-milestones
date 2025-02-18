@@ -12,6 +12,10 @@
         settingsBtnOpen = false;
         page = menuChoice;
     };
+
+    const navigateToGithub = () => {
+        window.location.replace("https://github.com/Nokocchi/investment-milestones");
+    }
 </script>
 
 <div class="menu">
@@ -19,6 +23,7 @@
         <button class={{ selected: page == MenuChoice.HOME }} onclick={() => clickHandler(MenuChoice.HOME)}>Home</button>
         <button class={{ selected: page == MenuChoice.VISUALIZER }} onclick={() => clickHandler(MenuChoice.VISUALIZER)}>Visualizer</button>
         <button class={{ selected: page == MenuChoice.ABOUT }} onclick={() => clickHandler(MenuChoice.ABOUT)}>About</button>
+        <button onclick={() => navigateToGithub()}>Source on Github</button>
     </div>
     <div class="author">
         Created by Nokocchi 2025
@@ -46,6 +51,10 @@
         padding: 1rem;
         border-radius: 0.5rem;
         background-color: #2a2a2a;
+    }
+
+    button.selected {
+        background-color: green;
     }
 
     button:hover {

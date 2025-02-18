@@ -70,7 +70,7 @@
     );
     const investingFor: TextWithSubtext = createSimpleText(getMonthsAsYearMonthString(derivedOptions.monthsSinceInvestmentStart));
     const estimatedCoastFire1: TextWithSubtext = createSimpleText(getMonthsAsYearMonthString(coastFireReachedMonthsInFuture, "Reached"));
-    const estimatedCoastFire2: TextWithSubtext = createSimpleText(getMonthAsAgeYearString(fireMonthsInFuture, derivedOptions.currentAge));
+    const estimatedCoastFire2: TextWithSubtext = createSimpleText(getMonthAsAgeYearString(coastFireReachedMonthsInFuture, derivedOptions.currentAge));
     const estimatedCoastFire3: TextWithSubtext = {
         text: {
             value: coastFireReachedMonthsInFuture

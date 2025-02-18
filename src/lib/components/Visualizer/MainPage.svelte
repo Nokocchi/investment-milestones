@@ -38,7 +38,7 @@
         for (let i = 0; i < numberOfYears * monthsInAYear; i++) {
             const monthlyContribution =
                 coastFromDateMonthsInFuture != null && coastFromDateMonthsInFuture <= i ? 0 : options.monthlyContribution;
-            const amount = (netWorthList[i] + monthlyContribution) * (1 + options.monthlyInterestDivided);
+            const amount = (netWorthList[i] * (1 + options.monthlyInterestDivided)) + monthlyContribution ;
             netWorthList.push(amount);
         }
         return netWorthList;
@@ -82,6 +82,7 @@
         for (let monthlyInterestMilestone of milestones_monthlyInterest) {
             const needed = monthlyInterestMilestone / options.monthlyInterestDivided;
             const message = `${monthlyInterestMilestone.toLocaleString()} ${options.currency} monthly interest`;
+            console.log("needed: ", needed, "| message: ", message);
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
         }
 
