@@ -1,12 +1,5 @@
 <script lang="ts">
-    import {
-        CURRENT_DATETIME,
-        CURRENT_MONTH,
-        CURRENT_YEAR,
-        monthNames,
-        monthsInAYear,
-        workHoursPerYear,
-    } from "../../shared/constants";
+    import { CURRENT_DATETIME, CURRENT_MONTH, CURRENT_YEAR, monthNames, monthsInAYear, workHoursPerYear } from "../../shared/constants";
     import {
         milestones_annualGrowth,
         milestones_annualInterest,
@@ -38,7 +31,7 @@
         for (let i = 0; i < numberOfYears * monthsInAYear; i++) {
             const monthlyContribution =
                 coastFromDateMonthsInFuture != null && coastFromDateMonthsInFuture <= i ? 0 : options.monthlyContribution;
-            const amount = (netWorthList[i] * (1 + options.monthlyInterestDivided)) + monthlyContribution ;
+            const amount = netWorthList[i] * (1 + options.monthlyInterestDivided) + monthlyContribution;
             netWorthList.push(amount);
         }
         return netWorthList;
@@ -82,7 +75,6 @@
         for (let monthlyInterestMilestone of milestones_monthlyInterest) {
             const needed = monthlyInterestMilestone / options.monthlyInterestDivided;
             const message = `${monthlyInterestMilestone.toLocaleString()} ${options.currency} monthly interest`;
-            console.log("needed: ", needed, "| message: ", message);
             addToMap(netWorthMilestoneMap, needed, message, cutoffForMilestonesMonth0);
         }
 
@@ -224,13 +216,16 @@
 
         for (const [i, networthAtThisMonth] of netWorthByMonthListNowAndFuture.entries()) {
             let networthNextMonth = i + 1 >= netWorthByMonthListNowAndFuture.length ? 0 : netWorthByMonthListNowAndFuture[i + 1];
-       
-            let reachedPercentage = options.monthsSinceInvestmentStart
-                ? Math.min(100, (options.monthsSinceInvestmentStart / (options.monthsSinceInvestmentStart + i)) * 100)
-                : null;
 
+            // We want to count the current month as well, since we have already reached it.
+            let monthsSinceInvestmentStartAdjusted = options.monthsSinceInvestmentStart + 1;
+            let reachedPercentage =
+            monthsSinceInvestmentStartAdjusted != null
+                    ? Math.min(100, (monthsSinceInvestmentStartAdjusted / (monthsSinceInvestmentStartAdjusted + i)) * 100)
+                    : null;
+  
             let percentageTowardsFire =
-                fireMonthsInFuture !== null && options.monthsSinceInvestmentStart
+                fireMonthsInFuture !== null && options.monthsSinceInvestmentStart != null
                     ? Math.min(
                           100,
                           ((options.monthsSinceInvestmentStart + i) / (options.monthsSinceInvestmentStart + fireMonthsInFuture)) * 100,
@@ -238,7 +233,7 @@
                     : null;
 
             let percentageTowardsCoastFire =
-                coastFireReachedMonthsInFuture !== null && options.monthsSinceInvestmentStart
+                coastFireReachedMonthsInFuture !== null && options.monthsSinceInvestmentStart != null
                     ? Math.min(
                           100,
                           ((options.monthsSinceInvestmentStart + i) /
@@ -292,7 +287,7 @@
 
                 let yearHeader: YearHeader = {
                     year: year,
-                    age: options.currentAge + yearIndex
+                    age: options.currentAge + yearIndex,
                 };
 
                 let yearData = {
@@ -356,15 +351,14 @@
         fireMonthsInFuture,
         coastFireReachedMonthsInFuture,
     );
-
 </script>
 
 <svelte:window bind:outerWidth={screenWidth} />
 <Stats {derivedOptions} {netWorthByMonthListNowAndFuture} {fireMonthsInFuture} {coastFireReachedMonthsInFuture} />
 <div class="row">
-    <p>🎯: How close you are to reaching this amount</p> 
-    <p>🏄: How close this month is to Coast FIRE</p> 
-    <p>🔥: How close this month is to FIRE</p> 
+    <p>🎯: How close you are to reaching this amount</p>
+    <p>🏄: How close this month is to Coast FIRE</p>
+    <p>🔥: How close this month is to FIRE</p>
 </div>
 {#key timelineData}
     {#each timelineData as yearData}

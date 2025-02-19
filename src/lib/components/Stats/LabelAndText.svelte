@@ -49,6 +49,7 @@
         font-weight: bold;
         font-size: 1.2em;
         display: inline-block;
+        margin-right: 0.5rem;
     }
 
     .text {

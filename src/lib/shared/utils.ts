@@ -227,3 +227,7 @@ export const formatNumberWithSign = (currency?: string, value?: number): string 
 export const createSimpleText = (text?: string): TextWithSubtext => {
     return { text: { value: text } }
 }
+
+export const getAsIsoYearMonth = (date: Date): string => {
+    return date.toISOString().split("-").slice(0, 2).join("-");
+};

@@ -33,19 +33,19 @@
       {options.currency}
     </div>
     <div class="month-column goal-percentage">
-      {#if month.percentageOfReachingThis}
+      {#if month.percentageOfReachingThis != null}
         {Math.floor(month.percentageOfReachingThis)}%<br />
         🎯
       {/if}
     </div>
     <div class="month-column goal-percentage">
-      {#if month.percentageTowardsCoastFire}
+      {#if month.percentageTowardsCoastFire != null}
         {Math.floor(month.percentageTowardsCoastFire)}%<br />
         🏄
       {/if}
     </div>
     <div class="month-column goal-percentage">
-      {#if month.percentageTowardsFire}
+      {#if month.percentageTowardsFire != null}
         {Math.floor(month.percentageTowardsFire)}%<br />
         🔥
       {/if}

@@ -37,7 +37,7 @@
     .visualizer-btn {
         background-color: green;
         border-color: black;
-        height: 3rem;
+        padding: 1rem;
         border-radius: 0.5rem;
     }
 

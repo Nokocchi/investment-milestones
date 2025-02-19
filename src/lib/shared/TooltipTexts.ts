@@ -32,3 +32,15 @@ export const tooltipText_FireNumber = (safeWithdrawalRatePercentage: number, ann
 export const tooltipText_CoastFromChosenDate = () => {
     return "This is the date from which you will no longer invest any money, and instead you are letting your net worth grow by itself.";
 }
+
+export const tooltipText_monthlyExpensesAfterTax = () => {
+    return "Your monthly expenses, not including any investments."
+}
+
+export const tooltipText_investmentStart = () => {
+    return "The year and month you started investing. This is used to calculate how far you are from different milestones, as a function of time. "
+}
+
+export const tooltipText_coastFromDate = () => {
+    return "At this date, you will stop contributing every month, and instead you will let your portfolio grow in value by itself. You need to fill in your current age and retirement age before this can be selected."
+}

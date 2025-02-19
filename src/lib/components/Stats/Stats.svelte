@@ -38,7 +38,8 @@
     let tooltipMaxWidth: string = $derived(screenWidth > 1280 ? screenWidth / 2 + "px" : screenWidth / 4 + "px");
 
     const hideMinimumMonthlyContributions =
-        (coastFireReachedMonthsInFuture == 0 && !fireMonthsInFuture) || !derivedOptions.safeWithdrawalRatePercentage;
+    // Coast fire date has been chosen, but it's not enough to FIRE || No safe withdrawal rate
+        (coastFireReachedMonthsInFuture == 0 && fireMonthsInFuture === null) || !derivedOptions.safeWithdrawalRatePercentage;
 
     const coastFireReachedPercentage =
         coastFireReachedMonthsInFuture !== null
@@ -107,7 +108,7 @@
             value: derivedOptions.safeWithdrawalRatePercentage
                 ? formatNumberWithSign(derivedOptions.currency, howFarFromCoastNumber)
                 : undefined,
-            color: howFarFromCoastNumber > 0 ? TextColor.GREEN : TextColor.RED,
+            color: howFarFromCoastNumber >= 0 ? TextColor.GREEN : TextColor.RED,
         },
     };
 
@@ -121,7 +122,7 @@
             value: hideMinimumMonthlyContributions
                 ? undefined
                 : formatNumberWithSign(derivedOptions.currency, howFarFromMinimumMonthlyContribution),
-            color: howFarFromMinimumMonthlyContribution > 0 ? TextColor.GREEN : TextColor.RED,
+            color: howFarFromMinimumMonthlyContribution >= 0 ? TextColor.GREEN : TextColor.RED,
         },
     };
 

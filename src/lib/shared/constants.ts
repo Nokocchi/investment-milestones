@@ -22,7 +22,7 @@ export const DEFAULT_RETIREMENT_AGE = 67;
 export enum InputType {
     number,
     string,
-    date,
+    month,
     currency
 }
 

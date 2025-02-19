@@ -2,7 +2,7 @@
 # If current age or retirement age are not filled out (often on first visit), make it a nice experience: Maybe show the options page in this case? Make it obvious that current age and retirement age need to be filled out
 # In options panel, refuse to save or show warning if mandatory fields are missing.
 # In options panel, show which fields are mandatory.
-# Coast Fire date: If you have picked a date, and later changed retirement age or current age so that the coast fire date no longer makes sense, then handle this gracefully
+# Coast Fire date: If you have picked a date, and later changed retirement age or current age so that the coast fire date no longer makes sense, then handle this gracefully. Maybe just reset coast fire date input if these are changed?
 # If "investing since", "monthly expenses after tax", "safe withdrawal rate" etc. are not filled out, the tool does not show a lot of data. Maybe show a warning about this? 
 
 # GENERAL UI TODO:
@@ -10,6 +10,12 @@
 # Somehow show that the percentages are in terms of TIME since investment start.
 # If you've chosen a coast date, make it visible on the Month table when you are coasting. But, not just background-color: green..
 # Figure out what to do when "investing since" is not filled out. Do we generate percentages based on numbers alone, and then switch to time-based when it is filled out? Or do we simply not generate any percentage data at all? 
+# Move the scroll bar to the right of the screen
+
+# BUGS:
+# Option inputs: Make them behave nice. Tabbing in a currency field seems to save the vale with a separator in it. Changing a field with a separator is a bit wonky because the separators disappear when you make a change. 
+
+#------------------------------------------------------------------------------
 
 # FEATURE IDEAS:
 # Maybe a way to define multiple investments periods with different monthly contributions? 
@@ -19,16 +25,6 @@
 # Show certain milestones graph, with net worth as function of months of investment
 # Add option to track specific milestones? How can I make important milestones stand out? 
 # Turn it into a whole page of various visualized investment things. Like, a graph showing "if you invested x every month from now, how much would you have compared to if you started y years ago? What if you had a principal of z in both scenarios? How much would somebody have to invest if they want to catch up to you in x years, and they started investing y years later than you?"
-
-# BUGS:
-# Option inputs: Make them behave nice. Tabbing in a currency field seems to save the vale with a separator in it. Changing a field with a separator is a bit wonky because the separators disappear when you make a change. 
-# When did you start investing: If today is chosen (or nothing at all), the icons in the table are not generated properly.
-
-# Stats TODO: 
-# "Minimum monthly Contribution for FIRE" seems to be a little bit off. Maybe we're off by a month? It leaves us with a few months of coasting, for somer reason
-# Make tooltips a bit better: They should have a proper icon, and should be easier to press on mobile. 
-
-#------------------------------------------------------------------------------
 
 
 # Questions

@@ -69,6 +69,7 @@
         const netWorthNeededNowForCoast: number = Math.ceil(
             getPrincipalNeededForNoContributionFutureValue(fireNumber, monthlyInterestPlusOne, monthsUntilRetirement),
         );
+        
         const minimumMonthlyContributionsNeededToReachFire: number = Math.max(
             0,
             Math.ceil(
