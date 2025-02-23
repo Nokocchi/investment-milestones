@@ -6,16 +6,12 @@
 # If "investing since", "monthly expenses after tax", "safe withdrawal rate" etc. are not filled out, the tool does not show a lot of data. Maybe show a warning about this? 
 
 # GENERAL UI TODO:
-# Make milestone table look nicer
 # Somehow show that the percentages are in terms of TIME since investment start.
 # If you've chosen a coast date, make it visible on the Month table when you are coasting. But, not just background-color: green..
 # Figure out what to do when "investing since" is not filled out. Do we generate percentages based on numbers alone, and then switch to time-based when it is filled out? Or do we simply not generate any percentage data at all? 
 # Move the scroll bar to the right of the screen
 
-# BUGS:
-# Option inputs: Make them behave nice. Tabbing in a currency field seems to save the vale with a separator in it. Changing a field with a separator is a bit wonky because the separators disappear when you make a change. 
-
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # FEATURE IDEAS:
 # Maybe a way to define multiple investments periods with different monthly contributions? 
@@ -25,9 +21,3 @@
 # Show certain milestones graph, with net worth as function of months of investment
 # Add option to track specific milestones? How can I make important milestones stand out? 
 # Turn it into a whole page of various visualized investment things. Like, a graph showing "if you invested x every month from now, how much would you have compared to if you started y years ago? What if you had a principal of z in both scenarios? How much would somebody have to invest if they want to catch up to you in x years, and they started investing y years later than you?"
-
-
-# Questions
-# Does it matter that I calculate interest monthly in the networthlist, and annually when using formulas?
-# Utils future value formulas don't seem to give the same answer as the manual networthlist calculation
-# In the FV formula, you can take into account that each consecutive payment of x value is worth less and less due to inflation, so that you see the result in "today's money" but with the monthly contributions losing value? But I guess I don't want this, and instead I just want everything to be inflation adjusted, assuming you invest 3%/12 extra every month? Should I write something about this?

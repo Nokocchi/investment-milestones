@@ -30,14 +30,15 @@
 
     .s--slider {
         display: flex;
-        align-items: center;
+        text-align: left;
+        flex-direction: column;
     }
 
     .s--slider button {
         width: 3em;
         height: 1.6em;
         position: relative;
-        margin: 0 0 0 0.5em;
+        margin: 0.5rem 0 0 0;
         background: var(--gray);
         border: none;
     }

@@ -22,47 +22,39 @@
 </table>
 
 <style>
-	table,
-	th,
-	td {
-		border: 1px solid;
-		border-collapse: collapse;
-	}
-
 	table {
-		border: 1px solid #171718;
-		background-color: rgb(112, 105, 105);
+		background-color: #282828;
+		border-top: none;
+		border-bottom: none;
 		text-align: left;
 		border-collapse: collapse;
-		width: 100%;
+		width: calc(100% - 8px);
+		margin: auto;
 	}
-	table td,
-	table th {
-		border: 1px solid #228e9c;
-		padding: 3px 2px;
+
+	table thead {
+		background-color: #222222;
+		border-bottom: 1px solid black;
 	}
 
 	table tr:nth-child(even) {
-		background: #383c3f;
-	}
-	table thead {
-		background: #242627;
-		background: -moz-linear-gradient(top, #5592bb 0%, #327cad 66%, #1c6ea4 100%);
-		background: -webkit-linear-gradient(top, #5592bb 0%, #327cad 66%, #1c6ea4 100%);
-		background: linear-gradient(to bottom, #5592bb 0%, #327cad 66%, #1c6ea4 100%);
-		border-bottom: 2px solid #444444;
-	}
-	table thead th {
-		font-size: 15px;
-		font-weight: bold;
-		color: #ffffff;
-		border-left: 2px solid #5085b4;
-	}
-	table thead th:first-child {
-		border-left: none;
+		background: #242424;
 	}
 
-	table td:first-child {
-		width: 9rem;
+	table td, table th {
+		border-left: 1px solid black;
+		border-right: 1px solid black;
+		border-top: none;
+		border-bottom: none;
+		padding: 0.3rem 0.4rem;
 	}
+
+	table tr {
+		padding-left: 0.5rem;	
+	}
+
+	table tr:not(:last-child) {
+		border-bottom: 1px solid black;
+	}
+
 </style>

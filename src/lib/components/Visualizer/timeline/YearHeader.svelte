@@ -23,15 +23,21 @@
     .year-wrapper {
         display: flex;
         flex-direction: row;
-        border: 1px solid blue;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-bottom: none;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
         box-sizing: border-box;
-        background-color: rgba(150, 150, 255, 50%);
+        background-color: #1a1a1a;
         padding-bottom: 1rem;
         padding-top: 1rem;
+        font-weight: bold;
+        font-size: 1.1rem;
     }
 
     .header-column {
         align-self: center;
-        flex: 1 1 0px;
+
     }
 </style>

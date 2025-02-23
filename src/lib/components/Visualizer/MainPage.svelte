@@ -244,8 +244,8 @@
 
             let calendarMonth = (CURRENT_MONTH + i) % monthsInAYear;
 
-            const timeUntilStringShort = getMonthsAsYearMonthString(i, "NOW", "", true, "\n");
-            const timeUntilStringLong = getMonthsAsYearMonthString(i, "NOW", "", false, "\n");
+            const timeUntilStringShort = getMonthsAsYearMonthString(i, "Now", "", true, "\n");
+            const timeUntilStringLong = getMonthsAsYearMonthString(i, "Now", "", false, "\n");
 
             let milestones: Milestone[] = [];
             for (const [neededNetworth, milestoneMessages] of [...netWorthMilestoneSortedMap.entries()]) {
@@ -270,7 +270,7 @@
             const monthlyContribution = coasting ? 0 : options.monthlyContribution;
             let monthData: MonthData = {
                 estimatedNetWorth: networthAtThisMonth,
-                monthName: monthNames[calendarMonth],
+                calendarMonth: calendarMonth,
                 milestones: milestones,
                 monthlyGrowth: Math.max(0, networthNextMonth - networthAtThisMonth - monthlyContribution),
                 timeUntilStringShort: timeUntilStringShort,

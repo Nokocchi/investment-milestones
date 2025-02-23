@@ -1,7 +1,7 @@
 import type { SVGAttributes } from 'svelte/elements';
 
 export type MonthData = {
-    monthName: string;
+    calendarMonth: number;
     estimatedNetWorth: number;
     timeUntilStringShort: string;
     timeUntilStringLong: string;

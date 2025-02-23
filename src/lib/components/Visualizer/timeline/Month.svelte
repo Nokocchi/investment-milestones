@@ -3,6 +3,7 @@
   import { options } from "../../../shared/shared.svelte";
   import type { MonthData } from "../../../shared/types";
   import Table from "../Table.svelte";
+  import { monthNames } from "../../../shared/constants";
 
   let { month }: { month: MonthData } = $props();
   let tableData: string[][] = [];
@@ -11,7 +12,7 @@
   }
   let noMilestones = tableData.length <= 0;
   let coasting = month.coasting;
-  let hideMilestones = $state(true);
+  let showTheseMilestones = $state(false);
   let showAllMilestones = $derived(options.showAllMilestones);
   let screenWidth: number = $state(0);
   // Scale font size with screen size so that the data in the list will always fit. Max font size is 1rem. 500 is a magical constant, but seems to look nice.
@@ -19,10 +20,21 @@
 </script>
 
 <svelte:window bind:outerWidth={screenWidth} />
-<div class={["month-wrapper", { coasting }]} style="--font-size: {fontSize}" onclick={() => (hideMilestones = !hideMilestones)}>
+<div
+  class={[
+    "month-wrapper",
+    { coasting },
+    { even: month.calendarMonth % 2 == 0 },
+    { last: month.calendarMonth == 11 },
+    { showingMilestonesForAnyReason: month.milestones.length > 0 && (showTheseMilestones || showAllMilestones)},
+    { showingMilestonesDueToClick: month.milestones.length > 0 && showTheseMilestones }
+  ]}
+  style="--font-size: {fontSize}"
+  onclick={() => (showTheseMilestones = month.milestones.length > 0 && !showTheseMilestones)}
+>
   <div class="month-header-wrapper">
     <div class="month-column">
-      {month.monthName}
+      {monthNames[month.calendarMonth]}
     </div>
     <div class="month-column estimated-net-worth">
       {Math.round(month.estimatedNetWorth).toLocaleString()}<br />
@@ -60,7 +72,7 @@
     <div class={["milestone-indicator", { noMilestones }]}></div>
   </div>
   <div class="milestones">
-    {#if month.milestones.length > 0 && (showAllMilestones || !hideMilestones)}
+    {#if month.milestones.length > 0 && (showAllMilestones || showTheseMilestones)}
       <div transition:slide>
         <Table tableHeaders={["Needed net worth", "Milestones"]} {tableData} />
       </div>
@@ -73,20 +85,48 @@
     display: flex;
     flex-direction: column;
     font-size: var(--font-size);
+    background-color: unset;
+  }
+
+  .last .month-header-wrapper,
+  .showingMilestonesForAnyReason .month-header-wrapper {
+    border-bottom: 1px solid black;
+  }
+
+  .last {
+    border-bottom-right-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .last .month-header-wrapper {
+    border-bottom-right-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+  }
+
+  .even .month-header-wrapper {
+    background-color: #252525;
+  }
+
+  .showingMilestonesDueToClick .month-header-wrapper {
+    border-width: 2px;
   }
 
   .month-wrapper.coasting {
-    background: rgba(0, 255, 0, 10%);
+    background-color: #4a4a4a;
   }
 
   .month-header-wrapper {
     display: flex;
     flex-direction: row;
-    border: 1px solid white;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-top: 1px solid black;
     padding: 0.7em;
     position: relative;
     justify-content: space-between;
     gap: 0.5rem;
+    background-color: #2d2d2d;
   }
 
   .months-until {
@@ -106,7 +146,7 @@
     position: absolute;
     width: 10px;
     height: 10px;
-    background-color: gold;
+    background-color: orange;
     border-radius: 5px;
     top: 5px;
     right: 5px;
