@@ -27,16 +27,17 @@
 
 <style>
     .frontpage-content {
-        border: 1px solid #121212;
+        border: 1px solid var(--border-color);
         padding: 1rem;
         border-radius: 0.5rem;
-        background-color: #2A2A2A;
-        box-shadow: 2px 4px #121212;
+        background-color: var(--side-menu-bg-color);
+        box-shadow: 2px 4px var(--box-shadow-color);
     }
 
     .visualizer-btn {
-        background-color: green;
-        border-color: black;
+        font-weight: bold;
+        background-color: var(--goto-visualizer-btn-bg-color);
+        border-color: var(--goto-visualizer-btn-border-color);
         padding: 1rem;
         border-radius: 0.5rem;
     }

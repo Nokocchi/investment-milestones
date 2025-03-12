@@ -26,6 +26,7 @@
     { coasting },
     { even: month.calendarMonth % 2 == 0 },
     { last: month.calendarMonth == 11 },
+    { hasMilestones: month.milestones.length > 0},
     { showingMilestonesForAnyReason: month.milestones.length > 0 && (showTheseMilestones || showAllMilestones)},
     { showingMilestonesDueToClick: month.milestones.length > 0 && showTheseMilestones }
   ]}
@@ -88,9 +89,13 @@
     background-color: unset;
   }
 
+  .month-wrapper.hasMilestones {
+    cursor: pointer;
+  }
+
   .last .month-header-wrapper,
   .showingMilestonesForAnyReason .month-header-wrapper {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .last {
@@ -105,7 +110,7 @@
   }
 
   .even .month-header-wrapper {
-    background-color: #252525;
+    background-color: var(--timeline-even-bg-color);
   }
 
   .showingMilestonesDueToClick .month-header-wrapper {
@@ -113,20 +118,20 @@
   }
 
   .month-wrapper.coasting {
-    background-color: #4a4a4a;
+    background-color: var(--timeline-coasting-bg-color);
   }
 
   .month-header-wrapper {
     display: flex;
     flex-direction: row;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
-    border-top: 1px solid black;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
     padding: 0.7em;
     position: relative;
     justify-content: space-between;
     gap: 0.5rem;
-    background-color: #2d2d2d;
+    background-color: var(--timeline-bg-color);
   }
 
   .months-until {

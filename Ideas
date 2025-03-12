@@ -10,6 +10,8 @@
 # If you've chosen a coast date, make it visible on the Month table when you are coasting. But, not just background-color: green..
 # Figure out what to do when "investing since" is not filled out. Do we generate percentages based on numbers alone, and then switch to time-based when it is filled out? Or do we simply not generate any percentage data at all? 
 # Move the scroll bar to the right of the screen
+# Fix options panel so that it is only one background color, even if there's scroll
+# The very last month of the entire timeline does not have rounded bottom. Fix
 
 # ------------------------------------------------------------------------------
 

@@ -23,7 +23,7 @@
 
 <style>
 	table {
-		background-color: #282828;
+		background-color: var(--milestone-table-bg-color);
 		border-top: none;
 		border-bottom: none;
 		text-align: left;
@@ -33,17 +33,17 @@
 	}
 
 	table thead {
-		background-color: #222222;
-		border-bottom: 1px solid black;
+		background-color: var(--milestone-table-head-bg-color);
+		border-bottom: 1px solid var(--border-color);
 	}
 
 	table tr:nth-child(even) {
-		background: #242424;
+		background: var(--milestone-table-even-rows-bg-color);
 	}
 
 	table td, table th {
-		border-left: 1px solid black;
-		border-right: 1px solid black;
+		border-left: 1px solid var(--border-color);
+		border-right: 1px solid var(--border-color);
 		border-top: none;
 		border-bottom: none;
 		padding: 0.3rem 0.4rem;
@@ -54,7 +54,7 @@
 	}
 
 	table tr:not(:last-child) {
-		border-bottom: 1px solid black;
+		border-bottom: 1px solid var(--border-color);
 	}
 
 </style>

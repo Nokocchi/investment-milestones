@@ -6,9 +6,7 @@
 </script>
 
 <script lang="ts">
-    import { range } from "../../shared/utils";
-
-
+  import { range } from "../../shared/utils";
 
   const {
     value,
@@ -20,9 +18,7 @@
     title: string;
   } = $props();
 
-  const lineWidth = 30;
-  const bgColor = "black";
-  const textColor = "yellow";
+  const lineWidth = 35;
   const textStyle = "font: bold 4rem Helvetica, Arial, sans-serif;";
   const textPercent = "font: bold 5rem Helvetica, Arial, sans-serif;";
   const svgSize = "100%";
@@ -30,7 +26,7 @@
   const segmentDividerSize = 10;
   const valueNotNull = value === null ? 0 : value;
 
-  // When working with months, each segment is one month. But when working with percentage, each segment is 10%. 
+  // When working with months, each segment is one month. But when working with percentage, each segment is 10%.
   const adjustedValue = type === CircleType.MONTHS ? valueNotNull : valueNotNull / 10;
   const segments = type === CircleType.MONTHS ? 12 : 10;
 
@@ -53,9 +49,9 @@
   };
 </script>
 
-{title}
-<svg xmlns="http://www.w3.org/2000/svg" width={svgSize} height={svgSize} viewBox="-25 -25 400 400">
-  <circle stroke={bgColor} cx={radius} cy={radius} r={radius} stroke-width={lineWidth} fill="none" />
+<span class="title">{title}</span>
+<svg xmlns="http://www.w3.org/2000/svg" width={svgSize} height={svgSize} class="MONKEY" viewBox="-25 -25 400 400">
+  <circle cx={radius} cy={radius} r={radius} stroke-width={lineWidth} fill="none" />
   {#each range(segments) as segmentNumber}
     {#if segmentNumber < adjustedValue}
       <circle
@@ -71,7 +67,7 @@
       />
     {/if}
     <circle
-      stroke="hsl(200, 100%, 50%)"
+      class="notches"
       transform="rotate({getRotationOfSegment(segmentNumber) - 90} 175 175)"
       cx={radius}
       cy={radius}
@@ -83,16 +79,37 @@
     />
   {/each}
   {#if value === null}
-    <text style={textStyle} fill={textColor} x="50%" y="50%" dx="-25" text-anchor="middle">Impossible</text>
+    <text style={textStyle} x="50%" y="50%" dx="-25" text-anchor="middle">Impossible</text>
   {:else if type === CircleType.MONTHS}
-    <text style={textStyle} fill={textColor} x="50%" y="35%" dx="-25" text-anchor="middle">
+    <text style={textStyle} x="50%" y="35%" dx="-25" text-anchor="middle">
       {Math.floor(adjustedValue * 10) / 10}
     </text>
-    <text style={textStyle} fill={textColor} x="50%" y="55%" dx="-25" text-anchor="middle"> Months </text>
+    <text style={textStyle} x="50%" y="55%" dx="-25" text-anchor="middle"> Months </text>
   {:else}
-    <text style={textPercent} fill={textColor} x="50%" y="50%" dx="-25" text-anchor="middle">
+    <text style={textPercent} x="50%" y="50%" dx="-25" text-anchor="middle">
       {Math.floor(adjustedValue * 10)}
       <tspan dx="10">%</tspan>
     </text>
   {/if}
 </svg>
+
+<style>
+  .title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  svg {
+    stroke: var(--percentage-circle-bg-color);
+  }
+
+  text {
+    stroke: none;
+    fill: var(--percentage-circle-text-color);
+  }
+
+  .notches {
+    stroke: var(--percentage-circle-notches-color);
+  }
+</style>

@@ -93,4 +93,11 @@
         min-width: 50px;
         max-width: 400px;
     }
+
+    button {
+        background-color: var(--top-menu-btn-bg-color);
+        padding: 0.4rem 0.6rem;
+        border: none;
+        font-weight: bold;
+    }
 </style>

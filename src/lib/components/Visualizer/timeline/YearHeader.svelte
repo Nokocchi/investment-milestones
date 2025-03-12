@@ -21,15 +21,16 @@
 
 <style>
     .year-wrapper {
+ 
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-        border: 1px solid black;
+        border: 1px solid var(--border-color);
         border-bottom: none;
         border-top-left-radius: 1rem;
         border-top-right-radius: 1rem;
         box-sizing: border-box;
-        background-color: #1a1a1a;
+        background-color: var(--year-header-bg-color);
         padding-bottom: 1rem;
         padding-top: 1rem;
         font-weight: bold;

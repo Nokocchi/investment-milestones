@@ -74,9 +74,10 @@
 
     .floating {
         z-index: 1;
-        background-color: black;
+        background-color: var(--tooltip-bg-color);
         width: max-content;
         max-width: var(--tooltip-width);
+        border-radius: 0.5rem;
     }
 
     .floating p {

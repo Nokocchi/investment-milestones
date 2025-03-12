@@ -1,5 +1,7 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { MenuChoice } from "../../shared/constants";
+    import { initializeWithColorMode } from "../../shared/shared.svelte";
 
     let {
         menuBtnOpen = $bindable(),
@@ -22,8 +24,29 @@
         settingsBtnOpen = false;
         menuBtnOpen = !menuBtnOpen;
     };
+
+    const setColorModeOnBody = (colorMode: string) => {
+        if (!colorMode) {
+            return;
+        }
+        if (body != undefined) {
+            body.classList.toggle("darkMode", colorMode === "dark");
+            body.classList.toggle("lightMode", colorMode === "light");
+        }
+    };
+
+    let body: HTMLBodyElement | undefined;
+    let colorMode: string = $state(initializeWithColorMode);
+
+    $effect(() => setColorModeOnBody(colorMode));
+
+    const darkModeClickHandler = () => {
+        colorMode = colorMode === "light" ? "dark" : "light";
+        localStorage.setItem("colorMode", String(colorMode));
+    };
 </script>
 
+<svelte:body bind:this={body} />
 <div class="menu">
     <div class="limited-width">
         <button class="menu-btn" onclick={sideMenuClickHandler}>
@@ -36,13 +59,24 @@
             {/if}
         </button>
         <button class="home" onclick={reset}>INVESTMENT VISUALIZER</button>
-        <button class="settings-btn" onclick={settingsClickHandler}>
-            {#if settingsBtnOpen}
-                X
+        <button class="settings-btn" onclick={darkModeClickHandler}>
+            {#if !colorMode || colorMode === "light"}
+                DARK
             {:else}
-                Settings
+                LIGHT
             {/if}
         </button>
+        {#if page === MenuChoice.VISUALIZER}
+            <button class="settings-btn" onclick={settingsClickHandler}>
+                {#if settingsBtnOpen}
+                    X
+                {:else}
+                    Settings
+                {/if}
+            </button>
+        {:else}
+            <div class="placeholder"></div>
+        {/if}
     </div>
 </div>
 
@@ -50,8 +84,8 @@
     .menu {
         height: 45px;
         width: 100%;
-        background-color: #1a1a1a;
-        border-bottom: 1px solid black;
+        background-color: var(--top-menu-bg-color);
+        border-bottom: 1px solid var(--border-color);
     }
 
     .limited-width {
@@ -63,16 +97,18 @@
         justify-content: space-between;
         align-items: center;
         max-width: 1280px;
-        
     }
 
-    button {
+    button,
+    .placeholder {
         height: 100%;
         width: 4rem;
+        background-color: var(--top-menu-btn-bg-color);
+        border-color: var(--top-menu-btn-bg-color);
     }
 
     .home {
-        background-color: #1a1a1a;
+        background-color: var(--top-menu-bg-color);
         flex-grow: 1;
         border: none;
         text-align: center;

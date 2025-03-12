@@ -72,12 +72,12 @@
 
   .navigation {
     left: 0;
-    border-right: 1px solid black;
+    border-right: 1px solid var(--border-color);
   }
 
   .settings {
     right: 0;
-    border-left: 1px solid black;
+    border-left: 1px solid var(--border-color);
   }
 
   .sidemenu {
@@ -86,7 +86,7 @@
     height: 100%;
     width: calc(calc(100vw - 1280px) / 2);
     z-index: 1;
-    background-color: #1a1a1a;
+    background-color: var(--menu-bg-color);
   }
 
   @media (max-width: 1700px) {

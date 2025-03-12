@@ -9,4 +9,6 @@ const defaultOptions: Options = {
 }
 
 const localStorageOptions = JSON.parse(localStorage.getItem("options") ?? JSON.stringify(defaultOptions));
+const colorModeLocalStorage: string | null = localStorage.getItem("colorMode");
+export const initializeWithColorMode: string = colorModeLocalStorage ? colorModeLocalStorage : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? "dark" : "light";
 export const options: Options = $state({...localStorageOptions});

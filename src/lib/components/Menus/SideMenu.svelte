@@ -47,17 +47,17 @@
 
     button {
         margin-bottom: 1rem;
-        border: 1px solid #121212;
+        border: 1px solid var(--border-color);
         padding: 1rem;
         border-radius: 0.5rem;
-        background-color: #2a2a2a;
+        background-color: var(--side-menu-bg-color);
     }
 
     button.selected {
-        background-color: green;
+        background-color: var(--menu-btn-selected-bg-color);
     }
 
     button:hover {
-        background-color: #3a3a3a;
+        background-color: var(--menu-btn-hover-bg-color);
     }
 </style>

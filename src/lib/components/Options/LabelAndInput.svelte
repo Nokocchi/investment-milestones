@@ -60,23 +60,23 @@
     const typeAdjusted = type === InputType.currency ? InputType.string : type;
 </script>
 
-<label class={["input-with-label", { hasTooltip }]}>
-    <div class="label-with-tooltip">
-        <p>{label}</p>
-        {#if tooltipText}
-            <Tooltip {tooltipText} />
-        {/if}
-    </div>
-    <input
-        {disabled}
-        type={InputType[typeAdjusted]}
-        bind:value={internalValue}
-        oninput={onInputHandler}
-        onblur={onBlurHandler}
-        {min}
-        {max}
-    />
-</label>
+<label class={["input-with-label", { hasTooltip }]} for="input"></label>
+<div class="label-with-tooltip">
+    <p>{label}</p>
+    {#if tooltipText}
+        <Tooltip {tooltipText} />
+    {/if}
+</div>
+<input
+    id="input"
+    {disabled}
+    type={InputType[typeAdjusted]}
+    bind:value={internalValue}
+    oninput={onInputHandler}
+    onblur={onBlurHandler}
+    {min}
+    {max}
+/>
 
 <style>
     .input-with-label {
@@ -88,6 +88,10 @@
 
     .label-with-tooltip {
         margin-bottom: 0.5rem;
+    }
+
+    .label-with-tooltip p {
+        margin-right: 0.5rem;
     }
 
     .hasTooltip p {
