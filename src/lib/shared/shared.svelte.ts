@@ -1,11 +1,20 @@
-import { CURRENT_DATETIME } from "./constants";
+import { CURRENT_DATETIME, CURRENT_YEAR } from "./constants";
 import type { Options } from "./types";
 import { getAsIsoYearMonth } from "./utils";
+
+let five_years_ago = new Date();
+five_years_ago.setFullYear(CURRENT_YEAR - 5);
 
 const defaultOptions: Options = {
     annualInterestPercent: "7",
     safeWithdrawalRatePercentage: "4",
-    investmentStart: getAsIsoYearMonth(CURRENT_DATETIME)
+    investmentStart: getAsIsoYearMonth(five_years_ago),
+    currentAge: "32",
+    retireByAge: "50",
+    monthlyExpensesAfterTax: "30000",
+    currency: "SEK",
+    currentNetWorth: "2500000",
+    monthlyContribution: "5000"
 }
 
 const localStorageOptions = JSON.parse(localStorage.getItem("options") ?? JSON.stringify(defaultOptions));

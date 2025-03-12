@@ -11,7 +11,7 @@
     tableData.push([Math.round(milestone.neededNetWorth).toLocaleString() + " " + options.currency, milestone.message]);
   }
   let noMilestones = tableData.length <= 0;
-  let coasting = month.coasting;
+  let notCoasting = !month.coasting;
   let showTheseMilestones = $state(false);
   let showAllMilestones = $derived(options.showAllMilestones);
   let screenWidth: number = $state(0);
@@ -23,7 +23,6 @@
 <div
   class={[
     "month-wrapper",
-    { coasting },
     { even: month.calendarMonth % 2 == 0 },
     { last: month.calendarMonth == 11 },
     { hasMilestones: month.milestones.length > 0},
@@ -34,6 +33,7 @@
   onclick={() => (showTheseMilestones = month.milestones.length > 0 && !showTheseMilestones)}
 >
   <div class="month-header-wrapper">
+    <div class={["coasting-indicator", { notCoasting }]}>🏄</div>
     <div class="month-column">
       {monthNames[month.calendarMonth]}
     </div>
@@ -117,8 +117,14 @@
     border-width: 2px;
   }
 
-  .month-wrapper.coasting {
-    background-color: var(--timeline-coasting-bg-color);
+  .coasting-indicator {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+  }
+
+  .notCoasting {
+    display: none;
   }
 
   .month-header-wrapper {
